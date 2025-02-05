@@ -1,17 +1,17 @@
-*.iml
-.gradle
-/local.properties
+# Android Studio-specifika filer
+.gradle/
 .idea/
-/.idea/caches
-/.idea/libraries
-/.idea/modules.xml
-/.idea/workspace.xml
-/.idea/navEditor.xml
-/.idea/assetWizardSettings.xml
-.DS_Store
-/build
-/captures
-.externalNativeBuild
-.cxx
+*.iml
+build/
+captures/
+.externalNativeBuild/
+.cxx/
+
+# Lokala egenskaper
 local.properties
-/app/google-services.json
+
+# Google Services
+google-services.json
+
+# Systemfiler
+.DS_Store
