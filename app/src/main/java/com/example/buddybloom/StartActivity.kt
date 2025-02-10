@@ -1,17 +1,18 @@
 package com.example.buddybloom
 
+
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
-import android.widget.VideoView
+import android.widget.ImageView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.bumptech.glide.Glide
 
 //TODO Set as launcher activity when done
 class StartActivity : AppCompatActivity() {
-    private lateinit var videoView: VideoView
+    private lateinit var imageView: ImageView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -21,15 +22,10 @@ class StartActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-
-        videoView = findViewById(R.id.vv_splash)
-        val videoUri = Uri.parse("android.resource://$packageName/${R.raw.splash}")
-        videoView.setVideoURI(videoUri)
-        videoView.setOnCompletionListener {
+        imageView = findViewById(R.id.iv_logo_animated)
+        Glide.with(this).load(R.raw.icon_animated).into(imageView)
+        imageView.postDelayed({
             startActivity(Intent(this, MainActivity::class.java))
-            finish()
-        }
-
-        videoView.start()
+        }, 3000)
     }
 }

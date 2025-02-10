@@ -8,8 +8,8 @@
     android:background="@color/darkgreen"
     tools:context=".StartActivity">
 
-    <VideoView
-        android:id="@+id/vv_splash"
+    <ImageView
+        android:id="@+id/iv_logo_animated"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintHeight_max="350dp"
