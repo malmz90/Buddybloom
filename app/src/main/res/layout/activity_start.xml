@@ -5,12 +5,15 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/darkgreen"
     tools:context=".StartActivity">
 
-    <com.google.android.material.textview.MaterialTextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="START"
+    <VideoView
+        android:id="@+id/vv_splash"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintHeight_max="350dp"
+        app:layout_constraintWidth_max="350dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
