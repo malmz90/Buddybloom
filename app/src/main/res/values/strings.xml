@@ -1,6 +1,17 @@
 <resources>
-    <string name="app_name">Buddybloom</string>
+    <string name="app_name">BuddyBloom</string>
     <string name="water">WATER</string>
     <string name="fertilize">FERTILIZE</string>
     <string name="blinds">BLINDS</string>
+    <string name="about_buddybloom">About BuddyBloom</string>
+    <string name="about_info">Welcome to BuddyBloom!\n
+    Your virtual plantapp for every user who just can’t \n
+        seem to keep their plants alive at home. \n
+        Practice watering, fertilize and generally take care \n
+        of 1 or more plants right here!\n \n
+    Check up on it daily or there will be consequences\n
+        for your plant... \n\n
+    So, \n how many daystreaks will you pass!? \n
+        Try it out and share with your friends!</string>
+
 </resources>
