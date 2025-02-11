@@ -19,12 +19,12 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/bkg_logo" />
+        app:srcCompat="@drawable/logo_bkg" />
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fvc_game_activity"
         android:layout_width="match_parent"
-        android:layout_height="500dp"
+        android:layout_height="650dp"
         android:layout_marginStart="1dp"
         android:layout_marginEnd="1dp"
         android:layout_marginBottom="80dp"

@@ -1,5 +1,6 @@
 package com.example.buddybloom
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -21,6 +22,21 @@ class HomeActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+        val registerFragment = RegisterFragment()
+        //val loginFragment = LoginFragment()
+
+        binding.btnRegister.setOnClickListener {
+            val transaction = supportFragmentManager.beginTransaction()
+            transaction.replace(R.id.fcv_home,registerFragment)
+            transaction.commit()
+        }
+
+        binding.btnSignIn.setOnClickListener {
+            //  val transaction = supportFragmentManager.beginTransaction()
+            // transaction.replace(R.id.fcv_home,loginFragment)
+            // transaction.commit()
+        }
+
 
         binding.btnAbout.setOnClickListener {
             val aboutInfoFragment = AboutInfoFragment()
