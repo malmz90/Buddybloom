@@ -7,31 +7,26 @@
     android:background="@color/turquisegreen"
     tools:context=".StartPagePlantFragment">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraintLayout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
         <ImageView
             android:id="@+id/imageView2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/outline_shield_24"
-            app:layout_constraintBottom_toBottomOf="@+id/cardView"
-            app:layout_constraintEnd_toStartOf="@+id/cardView"
+            android:src="@drawable/icon_day_count"
+            app:layout_constraintBottom_toBottomOf="@+id/cv_plant"
+            app:layout_constraintEnd_toStartOf="@+id/cv_plant"
             app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="@+id/cardView"
-            app:layout_constraintTop_toBottomOf="@+id/cardView"
+            app:layout_constraintStart_toStartOf="@+id/cv_plant"
+            app:layout_constraintTop_toBottomOf="@+id/cv_plant"
             app:layout_constraintVertical_bias="0.52" />
 
         <androidx.cardview.widget.CardView
-            android:id="@+id/cardView"
-            android:layout_width="235dp"
-            android:layout_height="235dp"
-            android:layout_marginTop="170dp"
+            android:id="@+id/cv_plant"
+            android:layout_width="250dp"
+            android:layout_height="250dp"
+            android:layout_marginTop="160dp"
             android:rotationX="-2"
             app:cardBackgroundColor="@color/white"
-            app:cardCornerRadius="120dp"
+            app:cardCornerRadius="250dp"
             app:cardElevation="9dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -46,8 +41,7 @@
                 android:clipToOutline="true"
                 android:paddingBottom="85dp"
                 android:scaleType="centerCrop"
-                android:src="@drawable/elefant1" />
-
+                android:src="@drawable/flower_elefant1" />
         </androidx.cardview.widget.CardView>
 
         <Button
@@ -59,7 +53,7 @@
             android:backgroundTint="@color/darkgreen"
             app:strokeColor="@color/darkbrown"
             app:strokeWidth="1dp"
-            android:drawableLeft="@drawable/baseline_thermostat_24"
+            android:drawableLeft="@drawable/icon_weather"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
@@ -70,14 +64,12 @@
             android:layout_marginEnd="32dp"
             android:layout_marginBottom="314dp"
             android:backgroundTint="@color/darkgreen"
-            android:drawableLeft="@drawable/baseline_task_24"
+            android:drawableLeft="@drawable/icon_daily_task"
             android:elevation="5dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:strokeColor="@color/darkbrown"
             app:strokeWidth="1dp" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/bkg_btn"
@@ -94,7 +86,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="3dp"
             android:backgroundTint="@color/eggwhite"
-            android:drawableLeft="@drawable/baseline_water_drop_24"
+            android:drawableLeft="@drawable/icon_drop"
             android:elevation="14dp"
             android:text="@string/water"
             android:textColor="@color/darkgreen"
@@ -112,7 +104,7 @@
             android:layout_marginStart="53dp"
             android:layout_marginTop="3dp"
             android:backgroundTint="@color/eggwhite"
-            android:drawableLeft="@drawable/baseline_filter_alt_24"
+            android:drawableLeft="@drawable/icon_fertilize"
             android:elevation="14dp"
             android:text="@string/fertilize"
             android:textColor="@color/darkgreen"
@@ -128,7 +120,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:background="@color/eggwhite"
-            android:drawableLeft="@drawable/baseline_sunny_24"
+            android:drawableLeft="@drawable/icon_sunny"
             android:drawablePadding="15dp"
             android:padding="10dp"
             android:text="@string/blinds"
@@ -146,7 +138,7 @@
             android:background="@drawable/border_circle"
             android:backgroundTint="@color/turquise"
             android:scaleType="fitCenter"
-            android:src="@drawable/bugspray_icon"
+            android:src="@drawable/icon_bugspray"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/imgBtn_waterspray"
@@ -161,7 +153,7 @@
             android:background="@drawable/border_circle"
             android:backgroundTint="@color/turquise"
             android:scaleType="fitCenter"
-            android:src="@drawable/waterspray_icon"
+            android:src="@drawable/icon_waterspray"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/imgBtn_bugspray"
             app:layout_constraintStart_toStartOf="parent"

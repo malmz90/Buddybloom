@@ -47,6 +47,8 @@
         android:gravity="center_vertical"
         android:text="About BuddyBloom"
         android:textColor="@color/eggwhite"
+        android:drawableLeft="@drawable/icon_info"
+        android:drawableTint="@color/eggwhite"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/fcv_home" />
