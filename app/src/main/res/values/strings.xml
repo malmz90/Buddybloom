@@ -1,7 +1,5 @@
 <resources>
     <string name="app_name">Buddybloom</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="water">WATER</string>
     <string name="fertilize">FERTILIZE</string>
     <string name="blinds">BLINDS</string>
