@@ -10,7 +10,18 @@ class FirebaseManager {
     private val db = Firebase.firestore
     private val auth = FirebaseAuth.getInstance()
 
-
+    fun loginUser(email: String, password: String, callback: (Boolean) -> Unit) {
+        auth.signInWithEmailAndPassword(email, password)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    Log.d("Firebase", "Login successful")
+                    callback(true)
+                } else {
+                    Log.e("Firebase", "Login failed: ${task.exception?.message}")
+                    callback(false)
+                }
+            }
+    }
 
     fun registerUser(email : String, password : String, name : String, callback: (Boolean) -> Unit) {
        auth.createUserWithEmailAndPassword(email, password)
