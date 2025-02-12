@@ -33,9 +33,6 @@ class LoginFragment : Fragment() {
             loginUser()
         }
 
-        binding.tvForgot.setOnClickListener {
-            // Handle forgot password - you can implement this later
-        }
 
         avm.loginResult.observe(viewLifecycleOwner) { success ->
             if (success) {
@@ -63,7 +60,7 @@ class LoginFragment : Fragment() {
         activity?.let {
             val intent = Intent(it, GameActivity::class.java)
             startActivity(intent)
-            it.finish() // This will close the current activity containing the login fragment
+            it.finish()
         }
     }
 }
