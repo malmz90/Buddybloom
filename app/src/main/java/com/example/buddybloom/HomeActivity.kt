@@ -36,8 +36,6 @@ class HomeActivity : AppCompatActivity() {
              val transaction = supportFragmentManager.beginTransaction()
              transaction.replace(R.id.fcv_home,LoginFragment())
              transaction.commit()
-            //TODO REMOVE!!!
-            WeatherDialogFragment().show(supportFragmentManager, null)
         }
 
 

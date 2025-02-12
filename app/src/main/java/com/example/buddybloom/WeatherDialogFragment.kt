@@ -17,9 +17,8 @@ class WeatherDialogFragment : DialogFragment(R.layout.dialog_weather) {
     private lateinit var closeButton: MaterialButton
     private lateinit var recyclerView: RecyclerView
 
-    //TODO For testing, to be removed
+    //TODO For testing, to be replaced with viewmodel
     private val testRepo = WeatherRepository()
-    private lateinit var testButton: MaterialButton
 
     override fun onStart() {
         super.onStart()
@@ -38,7 +37,6 @@ class WeatherDialogFragment : DialogFragment(R.layout.dialog_weather) {
         super.onViewCreated(view, savedInstanceState)
         closeButton = view.findViewById(R.id.btn_close)
         recyclerView = view.findViewById(R.id.rv_weather_dialog)
-        testButton = view.findViewById(R.id.btn_test_pass_day)
         val weatherAdapter = WeatherAdapter(null)
         val linearLayoutManager =
             LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false).apply {
@@ -56,13 +54,9 @@ class WeatherDialogFragment : DialogFragment(R.layout.dialog_weather) {
             }
         }
 
-        //TODO add game logic here later
+        //TODO for testing, replace with viewmodel/observer later
         weatherAdapter.update(testRepo.getWeeklyWeatherReport())
         closeButton.setOnClickListener { dismiss() }
-        testButton.setOnClickListener {
-            testRepo.updateWeeklyWeatherReport()
-            weatherAdapter.update(testRepo.getWeeklyWeatherReport())
-        }
     }
 
 
