@@ -6,7 +6,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
 import com.example.buddybloom.databinding.FragmentStartPagePlantBinding
+import java.util.concurrent.TimeUnit
+
 
 class StartPagePlantFragment : Fragment() {
 
@@ -16,8 +22,34 @@ class StartPagePlantFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentStartPagePlantBinding.inflate(inflater, container, false)
-        return binding?.root
+
+        val workRequest = PeriodicWorkRequestBuilder<PlantWorker>(1, TimeUnit.HOURS)
+            .build()
+
+        WorkManager.getInstance(requireContext()).enqueueUniquePeriodicWork(
+            "PlantWateringWork",
+            ExistingPeriodicWorkPolicy.KEEP,
+            workRequest
+        )
+
+        val binding = FragmentStartPagePlantBinding.inflate(inflater,container,false)
+        val myPlant = Plant("elefant",2,100)
+        val thirsty = myPlant.isThirsty()
+        while(thirsty){
+            myPlant.isThirsty()
+        }
+
+
+        binding.btnWater.setOnClickListener {
+            myPlant.increaseWaterLevel(10)
+            Toast.makeText(requireContext(), "Your plant increased water level with 10", Toast.LENGTH_SHORT).show()
+
+        }
+        binding.btnFertilize.setOnClickListener {
+            Toast.makeText(requireContext(), "Your plant increased nutrition with 10", Toast.LENGTH_SHORT).show()
+        }
+        return binding.root
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
