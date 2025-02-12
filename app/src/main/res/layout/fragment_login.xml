@@ -12,12 +12,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
+        app:boxBackgroundColor="@color/eggwhite"
         app:endIconMode="clear_text">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/et_email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:drawableEnd="@drawable/baseline_highlight_off_24"
             android:hint="Email"
             android:inputType="textEmailAddress" />
     </com.google.android.material.textfield.TextInputLayout>
@@ -28,6 +30,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
+        app:boxBackgroundColor="@color/eggwhite"
         app:endIconMode="password_toggle">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -43,11 +46,11 @@
         android:id="@+id/tv_Forgot"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
         android:layout_gravity="center"
-        android:text="Forgot Password?"
-        android:textColor="@color/beige"
-        />
+        android:layout_marginTop="16dp"
+        android:drawableStart="@drawable/icon_info"
+        android:text="  Forgot Password?"
+        android:textColor="@color/beige" />
 
     <!-- Login btn -->
     <com.google.android.material.button.MaterialButton
@@ -55,12 +58,13 @@
         style="@style/Widget.Material3.Button.TextButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
         android:layout_gravity="center"
+        android:layout_marginTop="32dp"
         android:backgroundTint="@android:color/white"
         android:paddingHorizontal="48dp"
         android:paddingVertical="12dp"
-        android:text="LOGIN"
-        android:textColor="#4CAF50" />
+        android:text="LOG IN"
+        android:textColor="#4CAF50"
+        app:backgroundTint="@color/whiteish" />
 
 </LinearLayout>
