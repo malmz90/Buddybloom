@@ -33,7 +33,7 @@ class StartPagePlantFragment : Fragment() {
         )
 
         val binding = FragmentStartPagePlantBinding.inflate(inflater,container,false)
-        val myPlant = Plant("elefant",2,100)
+        val myPlant = Plant("elefant",100)
         val thirsty = myPlant.isThirsty()
         while(thirsty){
             myPlant.isThirsty()

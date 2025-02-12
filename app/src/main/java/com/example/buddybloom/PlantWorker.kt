@@ -7,7 +7,7 @@ import androidx.work.WorkerParameters
 class PlantWorker(appContext: Context, workerParams: WorkerParameters):
     Worker(appContext, workerParams) {
     override fun doWork(): Result {
-        val myPlant = Plant("",2,100)
+        val myPlant = Plant("",100)
         myPlant.decreaseWaterLevel(10)
         myPlant.isThirsty()
     // Uppdatera UI eller spara data om det behövs
