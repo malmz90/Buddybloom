@@ -18,5 +18,17 @@
     <string name="confirm">CONFIRM</string>
     <string name="cancel">CANCEL</string>
     <string name="close">CLOSE</string>
+    <string name="about_buddybloom_text">About BuddyBloom</string>
+    <string name="sign_in">Sign In</string>
+    <string name="register">Register</string>
+    <string name="reset">RESET</string>
+    <string name="forgot_password_email">Forgot Password? Enter Email:</string>
+    <string name="email">Email</string>
+    <string name="daily_goals">Daily Goals for your plant</string>
+    <string name="username">Username</string>
+    <string name="registerCaps">REGISTER</string>
+    <string name="google">SIGN IN WITH Google</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="password">Password</string>
 
 </resources>

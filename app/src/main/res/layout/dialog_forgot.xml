@@ -18,7 +18,7 @@
             android:id="@+id/tv_forgot_pw"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Forgot Password? Enter Email: "
+            android:text="@string/forgot_password_email"
             android:textAlignment="center"
             android:textSize="20sp"
             android:layout_marginBottom="15dp"
@@ -38,18 +38,29 @@
             app:layout_constraintTop_toTopOf="parent" />
 
 
-        <EditText
-            android:id="@+id/et_email"
-            android:layout_width="wrap_content"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/et_email_forgot"
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="textEmailAddress"
-            android:hint="Email"
-            android:layout_marginTop="30dp"
-            app:layout_constraintTop_toTopOf="@+id/gold_line"
-            app:layout_constraintTop_toBottomOf="@id/tv_forgot_pw"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="16dp"
+            app:boxBackgroundColor="@color/eggwhite"
+            app:endIconMode="clear_text"
+            app:layout_constraintBottom_toTopOf="@id/tv_reset"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            app:layout_constraintTop_toBottomOf="@id/gold_line">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableEnd="@drawable/icon_x"
+                android:hint="Email"
+                android:inputType="textEmailAddress" />
+        </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
             android:id="@+id/tv_reset"
@@ -60,18 +71,18 @@
             android:textSize="17sp"
             android:text="@string/reset_link"
             android:elevation="650dp"
-            app:layout_constraintTop_toBottomOf="@+id/et_email"
+            app:layout_constraintTop_toBottomOf="@+id/et_email_forgot"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
 
         <Button
-            android:id="@+id/btn_confirm"
+            android:id="@+id/btn_reset"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:backgroundTint="@color/darkgreen"
             android:elevation="4dp"
-            android:text="@string/confirm"
+            android:text="@string/reset"
             android:textColor="@color/eggwhite"
             app:layout_constraintEnd_toStartOf="@+id/btn_cancel"
             app:layout_constraintStart_toStartOf="parent"
@@ -89,15 +100,10 @@
             android:text="@string/cancel"
             android:textColor="@color/eggwhite"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/btn_confirm"
+            app:layout_constraintStart_toEndOf="@+id/btn_reset"
             app:layout_constraintTop_toBottomOf="@+id/tv_reset"
             app:strokeColor="@color/darkbrown"
             app:strokeWidth="1dp" />
 
-
-
-
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>
