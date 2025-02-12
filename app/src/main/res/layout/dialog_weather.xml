@@ -9,21 +9,25 @@
         android:id="@+id/dialog_box"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/border_lightgreen"
         android:padding="20dp"
-        app:layout_constraintTop_toTopOf="parent"
-        android:background="@drawable/border_lightgreen">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <TextView
             android:id="@+id/tv_weather_dialog"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Weekly Weather Report"
-            android:textColor="@color/eggwhite"
-            android:textStyle="bold"
-            android:textAlignment="center"
-            android:textSize="20sp"
             android:layout_marginBottom="15dp"
+            android:text="Weekly Weather Report"
+            android:textAlignment="center"
+            android:textColor="@color/eggwhite"
+            android:textSize="20sp"
+            android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@+id/gold_line"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -39,20 +43,18 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_weather_dialog"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="30dp"
-            android:layout_marginEnd="30dp"
+            android:layout_marginTop="10dp"
             android:background="@color/lightgreen"
             android:padding="10dp"
-            android:layout_marginTop="10dp"
-            app:layout_constraintTop_toBottomOf="@id/gold_line"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/gold_line"
             tools:layout_editor_absoluteY="20dp"
-            tools:listitem="@layout/item_weather"/>
+            tools:listitem="@layout/item_weather" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_close"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -67,5 +69,13 @@
             app:strokeColor="@color/darkbrown"
             app:strokeWidth="1dp" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_test_pass_day"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Test"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
