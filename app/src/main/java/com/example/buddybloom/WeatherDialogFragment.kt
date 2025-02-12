@@ -1,7 +1,10 @@
 package com.example.buddybloom
 
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.TypedValue
+import android.view.MotionEvent
 import android.view.View
 import android.view.WindowManager
 import androidx.fragment.app.DialogFragment
@@ -16,13 +19,18 @@ class WeatherDialogFragment : DialogFragment(R.layout.dialog_weather) {
 
     //TODO For testing, to be removed
     private val testRepo = WeatherRepository()
-    private lateinit var testButton :MaterialButton
+    private lateinit var testButton: MaterialButton
 
     override fun onStart() {
         super.onStart()
         dialog?.window?.apply {
-            val widthInPixels = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 375f, resources.displayMetrics).toInt()
+            val widthInPixels = TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP,
+                375f,
+                resources.displayMetrics
+            ).toInt()
             setLayout(widthInPixels, WindowManager.LayoutParams.WRAP_CONTENT)
+            setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         }
     }
 
@@ -32,13 +40,23 @@ class WeatherDialogFragment : DialogFragment(R.layout.dialog_weather) {
         recyclerView = view.findViewById(R.id.rv_weather_dialog)
         testButton = view.findViewById(R.id.btn_test_pass_day)
         val weatherAdapter = WeatherAdapter(null)
-        val linearLayoutManager = LinearLayoutManager(context,  LinearLayoutManager.HORIZONTAL, false)
+        val linearLayoutManager =
+            LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false).apply {
+
+            }
         recyclerView.apply {
             adapter = weatherAdapter
             layoutManager = linearLayoutManager
+            //Disables scrolling and tap/drag animations
+            setOnTouchListener { v, event ->
+                if (event.action == MotionEvent.ACTION_UP) {
+                    v.performClick()
+                }
+                true
+            }
         }
 
-        //TODO add game logic here
+        //TODO add game logic here later
         weatherAdapter.update(testRepo.getWeeklyWeatherReport())
         closeButton.setOnClickListener { dismiss() }
         testButton.setOnClickListener {

@@ -1,5 +1,7 @@
 package com.example.buddybloom
 
+import android.content.res.ColorStateList
+import android.graphics.drawable.GradientDrawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,7 +14,7 @@ import com.google.android.material.textview.MaterialTextView
 class WeatherAdapter(private var weeklyWeatherReport: WeatherReport.Weekly?) :
     RecyclerView.Adapter<WeatherAdapter.WeatherViewHolder>() {
     inner class WeatherViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val textCardView:CardView = itemView.findViewById(R.id.cv_text)
+        val textCardView: CardView = itemView.findViewById(R.id.cv_text)
         val dayText: MaterialTextView = itemView.findViewById(R.id.tv_day)
         val weatherIcon: ImageView = itemView.findViewById(R.id.iv_weather)
         val tempText: MaterialTextView = itemView.findViewById(R.id.tv_temp)
@@ -31,18 +33,22 @@ class WeatherAdapter(private var weeklyWeatherReport: WeatherReport.Weekly?) :
         val currentWeather = weeklyWeatherReport?.dailyReports?.get(position)
         currentWeather?.let {
             holder.dayText.text = it.weekDay?.uppercase() ?: "---"
-            holder.textCardView.setBackgroundResource(
-                if (position == 0) {
-                    R.color.day_green
-                } else {
-                    when (currentWeather.weekDay?.uppercase()) {
-                        "SAT", "SUN" -> R.color.day_red
-                        else -> {
-                            R.color.day_blue
+            val background = GradientDrawable().apply {
+                cornerRadius = 7f
+                color = ColorStateList.valueOf(
+                    if (position == 0) {
+                        holder.itemView.context.getColor(R.color.day_green)
+                    } else {
+                        when (currentWeather.weekDay?.uppercase()) {
+                            "SAT", "SUN" -> holder.itemView.context.getColor(R.color.day_red)
+                            else -> {
+                                holder.itemView.context.getColor(R.color.day_blue)
+                            }
                         }
                     }
-                }
-            )
+                )
+            }
+            holder.textCardView.background = background
             holder.weatherIcon.setImageResource(
                 when (it.condition) {
                     WeatherReport.Condition.SUNNY -> R.drawable.icon_sunny
