@@ -19,7 +19,13 @@ class ChoosePlantRecyclerAdapter(val plants : MutableList<Plant>, val onPlantCli
 
     override fun onBindViewHolder(holder: ChoosePlantRecyclerAdapter.ViewHolder, position: Int) {
         val chosenPlant = plants[position]
-        holder.ivChoosePlant.setImageResource(chosenPlant.imageId)
+        val imageResource = when(chosenPlant.name) {
+            "Elephant" -> R.drawable.flower_elefant4
+            "Hibiscus" -> R.drawable.flower_hibiscus4
+            "Zebra" -> R.drawable.flower_zebra4
+            else -> R.drawable.flower_elefant4
+        }
+        holder.ivChoosePlant.setImageResource(imageResource)
         holder.itemView.setOnClickListener {
             onPlantClicked(chosenPlant)
         }

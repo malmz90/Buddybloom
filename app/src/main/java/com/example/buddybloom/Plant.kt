@@ -5,7 +5,7 @@ import android.util.Log
 import android.widget.Toast
 
 
-data class Plant(val name : String, var imageId : Int, var waterLevel: Int) {
+data class Plant(val name : String, var waterLevel: Int) {
 
     fun decreaseWaterLevel(amount: Int) {
         waterLevel -= amount

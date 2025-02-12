@@ -26,6 +26,26 @@ class FirebaseManager {
             }
     }
 
+    fun saveUserPlant(plant: Plant, callback: (Boolean) -> Unit) {
+        val userId = auth.currentUser?.uid ?: return
+
+        val plantToSave = mapOf(
+            "name" to plant.name,
+            "waterLevel" to plant.waterLevel
+        )
+
+        db.collection("users").document(userId)
+            .update("userPlants", listOf(plantToSave))
+            .addOnSuccessListener {
+                Log.d("Firebase", "Plant saved successfully")
+                callback(true)
+            }
+            .addOnFailureListener { e ->
+                Log.e("Firebase", "Error saving plant: ${e.message}")
+                callback(false)
+            }
+    }
+
     fun loginUser(email: String, password: String, callback: (Boolean) -> Unit) {
         auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
