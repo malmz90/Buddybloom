@@ -3,6 +3,7 @@ package com.example.buddybloom
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.google.android.gms.tasks.Task
 
 class AccountViewModel : ViewModel() {
 
@@ -14,7 +15,8 @@ class AccountViewModel : ViewModel() {
     private val _loginResult = MutableLiveData<Boolean>()
     val loginResult: LiveData<Boolean> get() = _loginResult
 
-
+    private val _resetPasswordResult = MutableLiveData<Boolean>()
+    val resetPasswordResult: LiveData<Boolean> get() = _resetPasswordResult
 
     fun registerUser(email : String, password : String, name : String) {
         firebaseManager.registerUser(email, password, name) { success ->
@@ -28,4 +30,13 @@ class AccountViewModel : ViewModel() {
         }
     }
 
+    fun sendPasswordResetEmail(email: String){
+        if(email.isEmpty()){
+            _resetPasswordResult.value =false
+            return
+        }
+        firebaseManager.sendPasswordResetEmail(email).addOnCompleteListener { task ->
+            _resetPasswordResult.value = task.isSuccessful
+        }
+    }
 }
