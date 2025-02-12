@@ -6,6 +6,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.fragment.app.Fragment
 import com.example.buddybloom.databinding.ActivityHomeBinding
 
 class HomeActivity : AppCompatActivity() {
@@ -23,18 +24,18 @@ class HomeActivity : AppCompatActivity() {
             insets
         }
         val registerFragment = RegisterFragment()
-        //val loginFragment = LoginFragment()
+        val loginFragment = LoginFragment()
 
         binding.btnRegister.setOnClickListener {
             val transaction = supportFragmentManager.beginTransaction()
-            transaction.replace(R.id.fcv_home,registerFragment)
+            transaction.replace(R.id.fcv_home,RegisterFragment())
             transaction.commit()
         }
 
         binding.btnSignIn.setOnClickListener {
-            //  val transaction = supportFragmentManager.beginTransaction()
-            // transaction.replace(R.id.fcv_home,loginFragment)
-            // transaction.commit()
+             val transaction = supportFragmentManager.beginTransaction()
+             transaction.replace(R.id.fcv_home,LoginFragment())
+             transaction.commit()
         }
 
 

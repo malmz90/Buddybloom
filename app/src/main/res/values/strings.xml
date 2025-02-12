@@ -13,5 +13,10 @@
         for your plant... \n\n
     So, \n how many daystreaks will you pass!? \n
         Try it out and share with your friends!</string>
+    <string name="forgot_password">Forgot Password?</string>
+    <string name="reset_link">A reset link will be sent \n to your email!</string>
+    <string name="confirm">CONFIRM</string>
+    <string name="cancel">CANCEL</string>
+    <string name="close">CLOSE</string>
 
 </resources>
