@@ -10,6 +10,21 @@ class FirebaseManager {
     private val db = Firebase.firestore
     private val auth = FirebaseAuth.getInstance()
 
+    fun getCurrentUserPlant(callback: (Plant?) -> Unit) {
+        val userId = auth.currentUser?.uid ?: return
+
+        db.collection("users").document(userId)
+            .get()
+            .addOnSuccessListener { document ->
+                val user = document.toObject(User::class.java)
+                callback(user?.userPlants?.firstOrNull())
+            }
+            .addOnFailureListener { e ->
+                Log.e("Firebase", "Error getting plant: ${e.message}")
+                callback(null)
+            }
+    }
+
     fun loginUser(email: String, password: String, callback: (Boolean) -> Unit) {
         auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
