@@ -27,7 +27,7 @@
         android:id="@+id/navbar_menu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/eggwhite"
+        android:background="@color/whiteish"
         app:layout_constraintBottom_toBottomOf="parent"
         app:menu="@menu/bottom_nav_menu"
         app:labelVisibilityMode="unlabeled"

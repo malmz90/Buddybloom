@@ -15,9 +15,10 @@ import java.util.concurrent.TimeUnit
 
 
 class StartPagePlantFragment : Fragment() {
-    private var binding: FragmentStartPagePlantBinding? = null
+
     private val firebaseManager = FirebaseManager()
     private var userPlant: Plant? = null
+    private lateinit var binding : FragmentStartPagePlantBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -73,6 +74,16 @@ class StartPagePlantFragment : Fragment() {
                         Toast.LENGTH_SHORT).show()
                 }
 
+                binding.btnWeather.setOnClickListener {
+                    val weatherDialog = WeatherDialogFragment()
+                    weatherDialog.show(parentFragmentManager, "WeatherDialogFragment")
+                }
+
+                binding.btnDailyCheck.setOnClickListener {
+                    val dailyChecksDialog = DailyChecksDialogFragment()
+                    dailyChecksDialog.show(parentFragmentManager, "DailyChecksDialogFragment")
+                }
+
                 imgBtnWaterspray.setOnClickListener {
                     Toast.makeText(requireContext(),
                         "You've successfully sprayed water on your plant!",
@@ -86,10 +97,5 @@ class StartPagePlantFragment : Fragment() {
                 }
             }
         }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        binding = null
     }
 }

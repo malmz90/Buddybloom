@@ -18,30 +18,20 @@ class HomeActivity : AppCompatActivity() {
         enableEdgeToEdge()
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        if (savedInstanceState == null) {
+            loadFragment(HomeFragment())
+        }
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.home)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-        val registerFragment = RegisterFragment()
-        val loginFragment = LoginFragment()
+    }
 
-        binding.btnRegister.setOnClickListener {
-            val transaction = supportFragmentManager.beginTransaction()
-            transaction.replace(R.id.fcv_home,RegisterFragment())
-            transaction.commit()
-        }
-
-        binding.btnSignIn.setOnClickListener {
-             val transaction = supportFragmentManager.beginTransaction()
-             transaction.replace(R.id.fcv_home,LoginFragment())
-             transaction.commit()
-        }
-
-
-        binding.btnAbout.setOnClickListener {
-            val aboutInfoFragment = AboutInfoFragment()
-            aboutInfoFragment.show(supportFragmentManager, "AboutInfoFragmentTag")
-        }
+    private fun loadFragment(fragment: Fragment) {
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fcv_home, fragment)
+            .commit()
     }
 }
