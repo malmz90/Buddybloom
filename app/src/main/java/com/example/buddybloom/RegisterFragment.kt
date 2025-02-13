@@ -29,11 +29,6 @@ class RegisterFragment : Fragment() {
 
         avm = ViewModelProvider(this)[AccountViewModel::class.java]
 
-        view.setOnTouchListener { _, _ ->
-            (activity as? HomeActivity)?.hideKeyboard()
-            false
-        }
-
         binding.btnRegister.setOnClickListener {
             registerUser()
         }
@@ -51,13 +46,15 @@ class RegisterFragment : Fragment() {
 
     // Function to check if the password is strong
     private fun isPasswordStrong(password: String): Boolean {
-        val passwordPattern = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@!#\$%^&+=]).{8,}$"
+//        val passwordPattern = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@!#\$%^&+=]).{8,}$"
+        val passwordPattern = "^(?=.*[a-z]).{3,}$" // Tempo under dev
         return password.matches(passwordPattern.toRegex())
     }
 
     private fun registerUser() {
         val email = binding.tietEmail.text.toString().trim()
         val password = binding.tietPassword.text.toString().trim()
+        val confirmPassword = binding.tietConfirmpassword.text.toString().trim()
         val name = binding.tietUsername.text.toString().trim()
 
         // Check that the fields are not empty
@@ -80,7 +77,11 @@ class RegisterFragment : Fragment() {
             return
         }
 
-        binding.progressBar.visibility = View.VISIBLE
+        // Check that the passwords match
+        if (password != confirmPassword) {
+            Toast.makeText(context, "The passwords do not match!", Toast.LENGTH_SHORT).show()
+            return
+        }
         avm.registerUser(email, password, name)
     }
 
