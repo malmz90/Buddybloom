@@ -31,7 +31,8 @@ class FirebaseManager {
 
         val plantToSave = mapOf(
             "name" to plant.name,
-            "waterLevel" to plant.waterLevel
+            "waterLevel" to plant.waterLevel,
+            "createdAt" to plant.createdAt
         )
 
         db.collection("users").document(userId)
