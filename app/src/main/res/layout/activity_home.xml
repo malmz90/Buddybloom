@@ -29,51 +29,9 @@
         android:layout_height="200dp"
         android:layout_marginTop="20dp"
         android:src="@drawable/logo"
-
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/btn_about"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="125dp"
-        android:layout_marginEnd="125dp"
-        android:backgroundTint="@color/darkgreen"
-        android:gravity="center_vertical"
-        android:text="About BuddyBloom"
-        android:textColor="@color/eggwhite"
-        android:drawableLeft="@drawable/icon_info"
-        android:drawableTint="@color/eggwhite"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/fcv_home" />
-
-    <Button
-        android:id="@+id/btn_signIn"
-        android:layout_width="110dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="84dp"
-        android:layout_marginTop="24dp"
-        android:backgroundTint="@color/greenish"
-        android:text="Sign In"
-        android:textColor="@color/eggwhite"
-        app:layout_constraintStart_toStartOf="@+id/fcv_home"
-        app:layout_constraintTop_toBottomOf="@+id/iv_logo1" />
-
-    <Button
-        android:id="@+id/btn_register"
-        android:layout_width="110dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="24dp"
-        android:backgroundTint="@color/greenish"
-        android:text="Register"
-        android:textColor="@color/eggwhite"
-        app:layout_constraintStart_toEndOf="@+id/btn_signIn"
-        app:layout_constraintTop_toBottomOf="@+id/iv_logo1" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

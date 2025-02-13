@@ -1,6 +1,7 @@
 package com.example.buddybloom
 
 import android.util.Log
+import com.google.android.gms.tasks.Task
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.firestore
@@ -9,6 +10,42 @@ class FirebaseManager {
 
     private val db = Firebase.firestore
     private val auth = FirebaseAuth.getInstance()
+
+    fun getCurrentUserPlant(callback: (Plant?) -> Unit) {
+        val userId = auth.currentUser?.uid ?: return
+
+        db.collection("users").document(userId)
+            .get()
+            .addOnSuccessListener { document ->
+                val user = document.toObject(User::class.java)
+                callback(user?.userPlants?.firstOrNull())
+            }
+            .addOnFailureListener { e ->
+                Log.e("Firebase", "Error getting plant: ${e.message}")
+                callback(null)
+            }
+    }
+
+    fun saveUserPlant(plant: Plant, callback: (Boolean) -> Unit) {
+        val userId = auth.currentUser?.uid ?: return
+
+        val plantToSave = mapOf(
+            "name" to plant.name,
+            "waterLevel" to plant.waterLevel,
+            "createdAt" to plant.createdAt,
+        )
+
+        db.collection("users").document(userId)
+            .update("userPlants", listOf(plantToSave))
+            .addOnSuccessListener {
+                Log.d("Firebase", "Plant saved successfully")
+                callback(true)
+            }
+            .addOnFailureListener { e ->
+                Log.e("Firebase", "Error saving plant: ${e.message}")
+                callback(false)
+            }
+    }
 
     fun loginUser(email: String, password: String, callback: (Boolean) -> Unit) {
         auth.signInWithEmailAndPassword(email, password)
@@ -58,6 +95,9 @@ class FirebaseManager {
             }
     }
 
+    fun sendPasswordResetEmail(email: String): Task<Void>{
+        return auth.sendPasswordResetEmail(email)
+    }
 
 
 }

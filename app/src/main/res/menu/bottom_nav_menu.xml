@@ -3,20 +3,14 @@
     <item
         android:id="@+id/nav_profile"
         android:icon="@drawable/icon_profile"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
         android:title="Profile" />
     <item
         android:id="@+id/nav_plant"
         android:icon="@drawable/icon_add_plant"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
         android:title="Plant" />
     <item
         android:id="@+id/nav_home"
         android:icon="@drawable/icon_home"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
         android:title="Home"/>
 
 </menu>

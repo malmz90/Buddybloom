@@ -18,7 +18,8 @@
             android:id="@+id/tiet_email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Email"
+            android:hint="@string/email"
+            android:textColor="@color/black"
             android:background="@color/eggwhite"
             android:inputType="textEmailAddress" />
     </com.google.android.material.textfield.TextInputLayout>
@@ -35,7 +36,8 @@
             android:id="@+id/tiet_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Password"
+            android:hint="@string/password"
+            android:textColor="@color/black"
             android:background="@color/eggwhite"
             android:inputType="textPassword" />
     </com.google.android.material.textfield.TextInputLayout>
@@ -52,7 +54,8 @@
             android:id="@+id/tiet_confirmpassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Confirm Password"
+            android:hint="@string/confirm_password"
+            android:textColor="@color/black"
             android:background="@color/eggwhite"
             android:inputType="textPassword" />
     </com.google.android.material.textfield.TextInputLayout>
@@ -69,8 +72,9 @@
             android:id="@+id/tiet_username"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Username"
+            android:hint="@string/username"
             android:background="@color/eggwhite"
+            android:textColor="@color/black"
             android:inputType="text" />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -81,10 +85,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:backgroundTint="@android:color/white"
+        android:backgroundTint="@color/whiteish"
+        android:elevation="5dp"
+        android:translationZ="1dp"
+        android:stateListAnimator="@null"
         android:paddingHorizontal="48dp"
         android:paddingVertical="12dp"
-        android:text="REGISTER"
+        android:text="@string/registerCaps"
         android:textColor="#4CAF50" />
 
     <!-- Google Sign In Button -->
@@ -95,7 +102,19 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:backgroundTint="@color/lightgrey"
-        android:text="SIGN IN WITH Google"
+        android:elevation="5dp"
+        android:translationZ="1dp"
+        android:stateListAnimator="@null"
+        android:text="@string/google"
         app:cornerRadius="4dp" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="?android:attr/progressBarStyleSmall"
+        android:layout_gravity="center"
+        android:layout_marginTop="30dp"
+        android:visibility="gone"/>
 
 </LinearLayout>
