@@ -45,14 +45,37 @@ class RegisterFragment : Fragment() {
         }
     }
 
-
-
+    // Function to check if the password is strong
+    private fun isPasswordStrong(password: String): Boolean {
+        val passwordPattern = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@!#\$%^&+=]).{8,}$"
+        return password.matches(passwordPattern.toRegex())
+    }
 
     private fun registerUser() {
-        val email = binding.tietEmail.text.toString()
-        val password = binding.tietPassword.text.toString()
-        val name = binding.tietUsername.text.toString()
 
+        val email = binding.tietEmail.text.toString().trim()
+        val password = binding.tietPassword.text.toString().trim()
+        val name = binding.tietUsername.text.toString().trim()
+
+        // Check that the fields are not empty
+        if (email.isEmpty() || password.isEmpty() || name.isEmpty()) {
+            Toast.makeText(context, "Fill in all fields!", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        // Check the email is in the correct format
+        if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            Toast.makeText(context, "Invalid email address!", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        // Check if the password meets security
+        if (!isPasswordStrong(password)) {
+            Toast.makeText(context, "The password must be at least 8 characters long " +
+                    "and contain an uppercase letter, lowercase letter, number and special character!",
+                Toast.LENGTH_LONG).show()
+            return
+        }
         avm.registerUser(email, password, name)
     }
 
@@ -62,6 +85,5 @@ class RegisterFragment : Fragment() {
             commit()
         }
     }
-
 }
 
