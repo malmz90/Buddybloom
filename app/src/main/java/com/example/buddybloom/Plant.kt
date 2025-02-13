@@ -6,6 +6,7 @@ import android.widget.Toast
 
 
 data class Plant(val name : String, var waterLevel: Int) {
+    constructor() : this("", 100)
 
     fun decreaseWaterLevel(amount: Int) {
         waterLevel -= amount
