@@ -29,11 +29,6 @@ class RegisterFragment : Fragment() {
 
         avm = ViewModelProvider(this)[AccountViewModel::class.java]
 
-        view.setOnTouchListener { _, _ ->
-            (activity as? HomeActivity)?.hideKeyboard()
-            false
-        }
-
         binding.btnRegister.setOnClickListener {
             registerUser()
         }
@@ -87,7 +82,6 @@ class RegisterFragment : Fragment() {
             Toast.makeText(context, "The passwords do not match!", Toast.LENGTH_SHORT).show()
             return
         }
-
         avm.registerUser(email, password, name)
     }
 
