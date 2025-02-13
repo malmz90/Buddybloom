@@ -47,7 +47,8 @@ class RegisterFragment : Fragment() {
 
     // Function to check if the password is strong
     private fun isPasswordStrong(password: String): Boolean {
-        val passwordPattern = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@!#\$%^&+=]).{8,}$"
+//        val passwordPattern = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@!#\$%^&+=]).{8,}$"
+        val passwordPattern = "^(?=.*[a-z]).{3,}$" // Tempo under dev
         return password.matches(passwordPattern.toRegex())
     }
 
@@ -55,10 +56,11 @@ class RegisterFragment : Fragment() {
 
         val email = binding.tietEmail.text.toString().trim()
         val password = binding.tietPassword.text.toString().trim()
+        val confirmPassword = binding.tietConfirmpassword.text.toString().trim()
         val name = binding.tietUsername.text.toString().trim()
 
         // Check that the fields are not empty
-        if (email.isEmpty() || password.isEmpty() || name.isEmpty()) {
+        if (email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()|| name.isEmpty()) {
             Toast.makeText(context, "Fill in all fields!", Toast.LENGTH_SHORT).show()
             return
         }
@@ -74,6 +76,12 @@ class RegisterFragment : Fragment() {
             Toast.makeText(context, "The password must be at least 8 characters long " +
                     "and contain an uppercase letter, lowercase letter, number and special character!",
                 Toast.LENGTH_LONG).show()
+            return
+        }
+
+        // Check that the passwords match
+        if (password != confirmPassword) {
+            Toast.makeText(context, "The passwords do not match!", Toast.LENGTH_SHORT).show()
             return
         }
         avm.registerUser(email, password, name)
