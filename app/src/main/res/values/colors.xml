@@ -14,4 +14,8 @@
     <color name="darkred">#852221</color>
     <color name="darkbrown">#24231F</color>
     <color name="lightgreen">#A0CFB0</color>
+    <color name="day_blue">#638EE9</color>
+    <color name="day_green">#4A8C85</color>
+    <color name="day_red">#4D0F0B</color>
+    <color name="transparent">#00000000</color>
 </resources>
