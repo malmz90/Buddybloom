@@ -108,4 +108,13 @@
         android:text="@string/google"
         app:cornerRadius="4dp" />
 
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="?android:attr/progressBarStyleSmall"
+        android:layout_gravity="center"
+        android:layout_marginTop="30dp"
+        android:visibility="gone"/>
+
 </LinearLayout>

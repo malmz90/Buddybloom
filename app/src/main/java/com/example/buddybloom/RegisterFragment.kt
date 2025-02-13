@@ -29,18 +29,22 @@ class RegisterFragment : Fragment() {
 
         avm = ViewModelProvider(this)[AccountViewModel::class.java]
 
+        view.setOnTouchListener { _, _ ->
+            (activity as? HomeActivity)?.hideKeyboard()
+            false
+        }
 
         binding.btnRegister.setOnClickListener {
             registerUser()
         }
 
-
         avm.registerResult.observe(viewLifecycleOwner) { success ->
+            binding.progressBar.visibility = View.GONE
             if (success) {
                 Toast.makeText(context, "Registration succeeded!", Toast.LENGTH_SHORT).show()
                 removeFragment()
             } else {
-                Toast.makeText(context, "Registration failed!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Registration failed! Check all fields", Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -52,7 +56,6 @@ class RegisterFragment : Fragment() {
     }
 
     private fun registerUser() {
-
         val email = binding.tietEmail.text.toString().trim()
         val password = binding.tietPassword.text.toString().trim()
         val name = binding.tietUsername.text.toString().trim()
@@ -76,6 +79,8 @@ class RegisterFragment : Fragment() {
                 Toast.LENGTH_LONG).show()
             return
         }
+
+        binding.progressBar.visibility = View.VISIBLE
         avm.registerUser(email, password, name)
     }
 
@@ -86,4 +91,3 @@ class RegisterFragment : Fragment() {
         }
     }
 }
-
