@@ -8,6 +8,7 @@
 
     <!-- Email -->
     <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/textinput_et_layout"
         style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -20,12 +21,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:drawableEnd="@drawable/icon_x"
-            android:hint="Email"
+            android:hint="@string/email"
+            android:textColor="@color/black"
             android:inputType="textEmailAddress" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <!-- Password -->
     <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/textinput_pw_layout"
         style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -37,9 +40,11 @@
             android:id="@+id/et_pass"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Password"
+            android:hint="@string/password"
+            android:textColor="@color/black"
             android:inputType="textPassword" />
     </com.google.android.material.textfield.TextInputLayout>
+
 
     <!-- Text Forgot Password -->
     <TextView
@@ -48,7 +53,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="16dp"
-        android:text="  Forgot Password?"
+        android:text="@string/forgot_password_btn"
         android:textColor="@color/beige" />
 
     <!-- Login btn -->
@@ -59,11 +64,23 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="32dp"
-        android:backgroundTint="@android:color/white"
+        android:backgroundTint="@color/whiteish"
+        android:elevation="5dp"
+        android:translationZ="1dp"
+        android:stateListAnimator="@null"
         android:paddingHorizontal="48dp"
         android:paddingVertical="12dp"
-        android:text="LOGIN"
+        android:text="@string/login"
         android:textColor="#4CAF50"
         app:backgroundTint="@color/whiteish" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="?android:attr/progressBarStyleSmall"
+        android:layout_gravity="center"
+        android:layout_marginTop="30dp"
+        android:visibility="gone"/>
 
 </LinearLayout>

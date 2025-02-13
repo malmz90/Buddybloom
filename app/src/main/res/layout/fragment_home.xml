@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".HomeFragment">
+
+    <Button
+        android:id="@+id/btn_about"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="125dp"
+        android:layout_marginEnd="125dp"
+        android:layout_marginBottom="10dp"
+        android:backgroundTint="@color/darkgreen"
+        android:drawableLeft="@drawable/icon_info"
+        android:drawableTint="@color/eggwhite"
+        android:gravity="center_vertical"
+        android:text="@string/about_buddybloom_text"
+        android:textColor="@color/eggwhite"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/btn_signIn"
+        android:layout_width="110dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="150dp"
+        android:backgroundTint="@color/whiteish"
+        android:text="@string/sign_inCAPS"
+        android:textColor="@color/greenish"
+        android:elevation="5dp"
+        android:translationZ="1dp"
+        android:stateListAnimator="@null"
+        app:layout_constraintBottom_toTopOf="@+id/btn_about"
+        app:layout_constraintEnd_toStartOf="@+id/btn_register"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/btn_register"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginBottom="150dp"
+        android:backgroundTint="@color/whiteish"
+        android:text="@string/registerCaps"
+        android:textColor="@color/greenish"
+        android:elevation="5dp"
+        android:translationZ="1dp"
+        android:stateListAnimator="@null"
+        app:layout_constraintBottom_toTopOf="@+id/btn_about"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/btn_signIn" />
+</androidx.constraintlayout.widget.ConstraintLayout>

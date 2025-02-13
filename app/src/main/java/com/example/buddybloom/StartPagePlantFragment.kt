@@ -16,12 +16,16 @@ import java.util.concurrent.TimeUnit
 
 class StartPagePlantFragment : Fragment() {
 
-    private var binding : FragmentStartPagePlantBinding? = null
+    private val firebaseManager = FirebaseManager()
+    private var userPlant: Plant? = null
+    private lateinit var binding : FragmentStartPagePlantBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        binding = FragmentStartPagePlantBinding.inflate(inflater, container, false)
+
 
         val workRequest = PeriodicWorkRequestBuilder<PlantWorker>(1, TimeUnit.HOURS)
             .build()
@@ -32,39 +36,66 @@ class StartPagePlantFragment : Fragment() {
             workRequest
         )
 
-        val binding = FragmentStartPagePlantBinding.inflate(inflater,container,false)
-        val myPlant = Plant("elefant",100)
-        val thirsty = myPlant.isThirsty()
-        while(thirsty){
-            myPlant.isThirsty()
+        // Get user's plant from Firebase
+        firebaseManager.getCurrentUserPlant { plant ->
+            plant?.let {
+                userPlant = it
+                activity?.runOnUiThread {
+                    setupPlantUI()
+                }
+            }
         }
 
-
-        binding.btnWater.setOnClickListener {
-            myPlant.increaseWaterLevel(10)
-            Toast.makeText(requireContext(), "Your plant increased water level with 10", Toast.LENGTH_SHORT).show()
-
-        }
-        binding.btnFertilize.setOnClickListener {
-            Toast.makeText(requireContext(), "Your plant increased nutrition with 10", Toast.LENGTH_SHORT).show()
-        }
-        return binding.root
-
+        return binding?.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    private fun setupPlantUI() {
+        binding?.apply {
+            userPlant?.let { plant ->
+                // Set the plant image
+                imgFlower.setImageResource(plant.getPlantImage())
 
-        binding?.switchBlinds?.setOnClickListener {
-            Toast.makeText(requireContext(), "You've successfully protected your plant!", Toast.LENGTH_SHORT).show()
-        }
+                btnWater.setOnClickListener {
+                    plant.increaseWaterLevel(10)
+                    Toast.makeText(requireContext(),
+                        "Your plant increased water level with 10",
+                        Toast.LENGTH_SHORT).show()
+                }
 
-        binding?.imgBtnWaterspray?.setOnClickListener {
-            Toast.makeText(requireContext(), "You've successfully sprayed water on your plant!", Toast.LENGTH_SHORT).show()
-        }
-        binding?.imgBtnBugspray?.setOnClickListener {
-            Toast.makeText(requireContext(), "You've successfully saved your plant from bugs!", Toast.LENGTH_SHORT).show()
-        }
+                btnFertilize.setOnClickListener {
+                    Toast.makeText(requireContext(),
+                        "Your plant increased nutrition with 10",
+                        Toast.LENGTH_SHORT).show()
+                }
 
+                switchBlinds.setOnClickListener {
+                    Toast.makeText(requireContext(),
+                        "You've successfully protected your plant!",
+                        Toast.LENGTH_SHORT).show()
+                }
+
+                binding.btnWeather.setOnClickListener {
+                    val weatherDialog = WeatherDialogFragment()
+                    weatherDialog.show(parentFragmentManager, "WeatherDialogFragment")
+                }
+
+                binding.btnDailyCheck.setOnClickListener {
+                    val dailyChecksDialog = DailyChecksDialogFragment()
+                    dailyChecksDialog.show(parentFragmentManager, "DailyChecksDialogFragment")
+                }
+
+                imgBtnWaterspray.setOnClickListener {
+                    Toast.makeText(requireContext(),
+                        "You've successfully sprayed water on your plant!",
+                        Toast.LENGTH_SHORT).show()
+                }
+
+                imgBtnBugspray.setOnClickListener {
+                    Toast.makeText(requireContext(),
+                        "You've successfully saved your plant from bugs!",
+                        Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
     }
 }
