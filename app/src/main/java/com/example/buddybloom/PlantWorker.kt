@@ -1,6 +1,7 @@
 package com.example.buddybloom
 
 import android.content.Context
+import android.util.Log
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.example.buddybloom.data.model.WeatherReport
@@ -8,17 +9,35 @@ import com.google.firebase.Timestamp
 import java.util.Calendar
 import java.util.Locale
 
-class PlantWorker(appContext: Context, workerParams: WorkerParameters) :
+class PlantWorker(appContext: Context, workerParams: WorkerParameters):
     Worker(appContext, workerParams) {
     override fun doWork(): Result {
-        val myPlant = Plant("", 100)
-        myPlant.decreaseWaterLevel(10)
-        myPlant.isThirsty()
-        // Uppdatera UI eller spara data om det behövs
 
-        // Returnera Result.success() när jobbet är klart
-        return Result.success()
-    }
+//        val myPlant = Plant("",100)
+//        myPlant.decreaseWaterLevel(10)
+//        myPlant.isThirsty()
+
+        val firebaseManager = FirebaseManager()
+
+        firebaseManager.getCurrentUserPlant { plant ->
+            if (plant != null) {
+                plant.decreaseWaterLevel(10)
+                    plant.isThirsty()
+                firebaseManager.saveUserPlant(plant) { success ->
+                    if (success) {
+                        Log.d("PlantWorker", "Plant data updated successfully!")
+                    } else {
+                        Log.e("PlantWorker", "Failed to update plant data.")
+                    }
+                }
+            } else {
+                Log.e("PlantWorker", "No plant found to update.")
+            }
+        }
+
+
+    return Result.success()
+}
 }
 // TODO Denna funktion får "en dag att gå" och genererar en ny uppdaterad veckorapport.
 //  Bör köras en gång om dagen och den nya rapporten stoppas in i updateWeatherReport() i FirebaseManager för att uppdatera på Firestore
