@@ -45,16 +45,49 @@ data class Plant(val name : String, var waterLevel: Int, var createdAt: Long = S
         }
     }
 
+    val firebaseManager = FirebaseManager()
 
     fun decreaseWaterLevel(amount: Int) {
-        waterLevel -= amount
+        firebaseManager.getCurrentUserPlant { plant ->
+            if (plant != null) {
+                plant.waterLevel -= amount
+                if (waterLevel < 0) waterLevel = 0
+                Log.d("PlantStatus", "Your plant got Thirsty!")
+                if (plant.waterLevel > 100) plant.waterLevel = 100
+
+                firebaseManager.saveUserPlant(plant) { success ->
+                    if (success) {
+                        Log.d("PlantStatus", "Water level updated successfully in Firebase!")
+                    } else {
+                        Log.e("PlantStatus", "Failed to update water level in Firebase.")
+                    }
+                }
+            } else {
+                Log.e("PlantStatus", "No plant found to update.")
+            }
+        }
+
         if (waterLevel < 0) waterLevel = 0
     }
 
     fun increaseWaterLevel(amount: Int) {
-        waterLevel += amount
-        Log.d("PlantStatus", "Your plant increasde!")
-        if (waterLevel > 100) waterLevel = 100
+        firebaseManager.getCurrentUserPlant { plant ->
+            if (plant != null) {
+                plant.waterLevel += amount
+                Log.d("PlantStatus", "Your plant increased!")
+                if (plant.waterLevel > 100) plant.waterLevel = 100
+
+                firebaseManager.saveUserPlant(plant) { success ->
+                    if (success) {
+                        Log.d("PlantStatus", "Water level updated successfully in Firebase!")
+                    } else {
+                        Log.e("PlantStatus", "Failed to update water level in Firebase.")
+                    }
+                }
+            } else {
+                Log.e("PlantStatus", "No plant found to update.")
+            }
+        }
     }
 
     fun isThirsty(): Boolean {
@@ -62,7 +95,6 @@ data class Plant(val name : String, var waterLevel: Int, var createdAt: Long = S
         if (isThirsty) {
             Log.d("PlantStatus", "Your plant is thirsty!")
         }
-
         return waterLevel < 30
     }
 
