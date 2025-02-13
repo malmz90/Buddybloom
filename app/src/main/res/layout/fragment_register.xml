@@ -19,7 +19,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Email"
-            android:background="@color/eggwhite"
+            android:textColor="@color/black"
             android:inputType="textEmailAddress" />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -35,8 +35,8 @@
             android:id="@+id/tiet_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textColor="@color/black"
             android:hint="Password"
-            android:background="@color/eggwhite"
             android:inputType="textPassword" />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -52,8 +52,8 @@
             android:id="@+id/tiet_confirmpassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textColor="@color/black"
             android:hint="Confirm Password"
-            android:background="@color/eggwhite"
             android:inputType="textPassword" />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -69,8 +69,8 @@
             android:id="@+id/tiet_username"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textColor="@color/black"
             android:hint="Username"
-            android:background="@color/eggwhite"
             android:inputType="text" />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -94,7 +94,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:backgroundTint="@color/lightgrey"
+        android:backgroundTint="@android:color/white"
         android:text="SIGN IN WITH Google"
         app:cornerRadius="4dp" />
 
