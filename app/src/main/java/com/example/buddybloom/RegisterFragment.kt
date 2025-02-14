@@ -58,7 +58,7 @@ class RegisterFragment : Fragment() {
         val name = binding.tietUsername.text.toString().trim()
 
         // Check that the fields are not empty
-        if (email.isEmpty() || password.isEmpty() || name.isEmpty()) {
+        if (email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()|| name.isEmpty()) {
             Toast.makeText(context, "Fill in all fields!", Toast.LENGTH_SHORT).show()
             return
         }
