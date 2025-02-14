@@ -22,13 +22,10 @@ class FirebaseManager {
     fun getCurrentUserPlant(callback: (Plant?) -> Unit) {
         val userId = auth.currentUser?.uid ?: return
 
-        db.collection("users").document(userId)
-            .get()
-            .addOnSuccessListener { document ->
+        db.collection("users").document(userId).get().addOnSuccessListener { document ->
                 val user = document.toObject(User::class.java)
                 callback(user?.userPlants?.firstOrNull())
-            }
-            .addOnFailureListener { e ->
+            }.addOnFailureListener { e ->
                 Log.e("Firebase", "Error getting plant: ${e.message}")
                 callback(null)
             }
@@ -43,21 +40,18 @@ class FirebaseManager {
             "createdAt" to plant.createdAt,
         )
 
-        db.collection("users").document(userId)
-            .update("userPlants", listOf(plantToSave))
+        db.collection("users").document(userId).update("userPlants", listOf(plantToSave))
             .addOnSuccessListener {
                 Log.d("Firebase", "Plant saved successfully")
                 callback(true)
-            }
-            .addOnFailureListener { e ->
+            }.addOnFailureListener { e ->
                 Log.e("Firebase", "Error saving plant: ${e.message}")
                 callback(false)
             }
     }
 
     fun loginUser(email: String, password: String, callback: (Boolean) -> Unit) {
-        auth.signInWithEmailAndPassword(email, password)
-            .addOnCompleteListener { task ->
+        auth.signInWithEmailAndPassword(email, password).addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     Log.d("Firebase", "Login successful")
                     callback(true)
@@ -69,14 +63,11 @@ class FirebaseManager {
     }
 
     fun registerUser(email: String, password: String, name: String, callback: (Boolean) -> Unit) {
-        auth.createUserWithEmailAndPassword(email, password)
-            .addOnCompleteListener { task ->
+        auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     val currentUser = auth.currentUser
                     val user = User(
-                        id = currentUser?.uid ?: "",
-                        email = email,
-                        name = name
+                        id = currentUser?.uid ?: "", email = email, name = name
                     )
                     saveUser(user) { success ->
                         callback(success)
@@ -96,7 +87,7 @@ class FirebaseManager {
         val userId = auth.currentUser?.uid ?: return
         val docRef = db.collection("users").document(userId)
         val batch = db.batch()
-        val startingWeeklyWeatherReport = generateStartingSunnyWeeklyReport()
+        val startingWeeklyWeatherReport = generateStartingSunnyWeeklyReport(Calendar.getInstance())
 
         batch.set(docRef, user)
         batch.update(docRef, "weeklyWeatherReport", startingWeeklyWeatherReport)
@@ -114,8 +105,40 @@ class FirebaseManager {
         return auth.sendPasswordResetEmail(email)
     }
 
+    fun getUserCreationDate(onCreationDateFetched: (Timestamp?) -> Unit) {
+        userId?.let {
+            db.collection("users").document(it).get().addOnSuccessListener { snapshot ->
+                val timestamp = snapshot.toObject<User>()?.creationDate
+                onCreationDateFetched(timestamp)
+            }
+        }
+    }
 
-    fun getWeatherReport(): LiveData<WeatherReport.Weekly?> {
+    fun getLastUpdated(onLastUpdateFetched: (Timestamp?) -> Unit) {
+        if (userId != null) {
+            db.collection("users").document(userId).get().addOnSuccessListener { snapshot ->
+                val timestamp = snapshot.toObject<User>()?.lastUpdated
+                onLastUpdateFetched(timestamp)
+            }.addOnFailureListener { error ->
+                    Log.e(
+                        "Unable to fetch timestamp lastUpdated", error.message.toString()
+                    )
+                }
+        } else {
+            Log.e("FirebaseUser error: ", "User id = null")
+        }
+    }
+
+    fun updateLastUpdated(timestamp: Timestamp) {
+        Log.e("FirebaseManager: ", "updateLastUpdate triggered")
+        userId?.let {
+            db.collection("users").document(it).update("lastUpdated", timestamp)
+            Log.i("FirebaseManager:", "lastUpdate updated!")
+        }
+    }
+
+
+    fun getWeatherReportLiveData(): LiveData<WeatherReport.Weekly?> {
         val liveData = MutableLiveData<WeatherReport.Weekly?>()
         userId?.let {
             db.collection("users").document(it).addSnapshotListener { snapshot, error ->
@@ -136,11 +159,20 @@ class FirebaseManager {
         }
     }
 
+    fun getCurrentWeatherReport(onWeatherReportFetched: (WeatherReport.Weekly?) -> Unit) {
+        if (userId != null) {
+            db.collection("users").document(userId).get().addOnSuccessListener { snapshot ->
+                val report = snapshot?.toObject<User>()?.weeklyWeatherReport
+                onWeatherReportFetched(report)
+            }
+        } else {
+            Log.e("FirebaseUser error: ", "User id = null")
+        }
+    }
     /**
      * Generates one weekly weather report where every day is sunny and temperature and sunshine duration is random. Daily data is empty.
      */
-    private fun generateStartingSunnyWeeklyReport(): WeatherReport.Weekly {
-        val startingDate = Calendar.getInstance()
+    fun generateStartingSunnyWeeklyReport(startingDate:Calendar): WeatherReport.Weekly {
         startingDate.apply {
             set(Calendar.HOUR_OF_DAY, 0)
             set(Calendar.MINUTE, 0)
@@ -155,9 +187,7 @@ class FirebaseManager {
                 condition = WeatherReport.Condition.SUNNY,
                 temperature = (-5..25).random(),
                 weekDay = startingDate.getDisplayName(
-                    Calendar.DAY_OF_WEEK,
-                    Calendar.SHORT,
-                    Locale.getDefault()
+                    Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.getDefault()
                 )
 
             )
@@ -167,3 +197,5 @@ class FirebaseManager {
         return WeatherReport.Weekly(dailyReports = days)
     }
 }
+
+

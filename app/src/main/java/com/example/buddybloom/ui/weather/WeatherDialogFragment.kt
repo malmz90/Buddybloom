@@ -19,7 +19,6 @@ class WeatherDialogFragment : DialogFragment(R.layout.dialog_weather) {
     private lateinit var recyclerView: RecyclerView
     private lateinit var viewModel: WeatherViewModel
 
-
     override fun onStart() {
         super.onStart()
         dialog?.window?.apply {

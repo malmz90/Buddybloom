@@ -10,10 +10,6 @@ import com.example.buddybloom.data.model.WeatherReport
 class WeatherViewModel : ViewModel() {
     private val firebaseManager = FirebaseManager()
 
-
-    private var _weeklyWeatherReport = firebaseManager.getWeatherReport()
+    private var _weeklyWeatherReport = firebaseManager.getWeatherReportLiveData()
     val weeklyWeatherReport: LiveData<WeatherReport.Weekly?> get() = _weeklyWeatherReport
-
-
-
 }
