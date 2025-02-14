@@ -87,7 +87,7 @@ class RegisterFragment : Fragment() {
 
     private fun removeFragment() {
         parentFragmentManager.beginTransaction().apply{
-            remove(this@RegisterFragment)
+            replace(R.id.fcv_home, HomeFragment())
             commit()
         }
     }

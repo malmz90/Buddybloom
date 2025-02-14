@@ -1,5 +1,6 @@
 package com.example.buddybloom
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -25,6 +26,12 @@ class GameActivity : AppCompatActivity() {
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
+        }
+
+        // Temporary logout-button to return to HomeActivity.
+        binding.btnLogout.setOnClickListener{
+            val logoutIntent = Intent(this, HomeActivity::class.java)
+            startActivity(logoutIntent)
         }
 
         // Add this line to check for plant when activity starts
