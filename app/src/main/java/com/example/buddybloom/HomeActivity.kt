@@ -34,4 +34,9 @@ class HomeActivity : AppCompatActivity() {
             .replace(R.id.fcv_home, fragment)
             .commit()
     }
+
+    fun hideKeyboard() {
+        val inputMethodManager = getSystemService(android.content.Context.INPUT_METHOD_SERVICE) as android.view.inputmethod.InputMethodManager
+        inputMethodManager.hideSoftInputFromWindow(currentFocus?.windowToken, 0)
+    }
 }
