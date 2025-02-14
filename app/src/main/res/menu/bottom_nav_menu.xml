@@ -10,7 +10,7 @@
         android:title="Plant" />
     <item
         android:id="@+id/nav_home"
-        android:icon="@drawable/icon_home"
+        android:icon="@drawable/icon_btn_plus"
         android:title="Home"/>
 
 </menu>
