@@ -9,10 +9,6 @@ class PlantWorker(appContext: Context, workerParams: WorkerParameters):
     Worker(appContext, workerParams) {
     override fun doWork(): Result {
 
-//        val myPlant = Plant("",100)
-//        myPlant.decreaseWaterLevel(10)
-//        myPlant.isThirsty()
-
         val firebaseManager = FirebaseManager()
 
         firebaseManager.getCurrentUserPlant { plant ->

@@ -35,7 +35,7 @@ class StartPagePlantFragment : Fragment() {
 //            .build()
 //
 //        WorkManager.getInstance(requireContext()).enqueue(workRequest)
-        val workRequest = PeriodicWorkRequestBuilder<PlantWorker>(15, TimeUnit.MINUTES)
+        val workRequest = PeriodicWorkRequestBuilder<PlantWorker>(1, TimeUnit.HOURS)
             .build()
 
         WorkManager.getInstance(requireContext()).enqueueUniquePeriodicWork(
@@ -44,11 +44,13 @@ class StartPagePlantFragment : Fragment() {
             workRequest
 
         )
+
+        // shall check if workManager is running while app i closed, do not work yet
         val workManager = WorkManager.getInstance(requireContext())
         val workInfoLiveData = workManager.getWorkInfosByTagLiveData("myPlantTag")
 
         workInfoLiveData.observe(viewLifecycleOwner, Observer { workInfos ->
-            // Kontrollera statusen för varje arbete
+
             workInfos?.forEach { workInfo ->
                 when (workInfo.state) {
                     WorkInfo.State.SUCCEEDED -> {
@@ -58,12 +60,12 @@ class StartPagePlantFragment : Fragment() {
                         Log.d("PlantWorker", "Work success!")
                     }
                     WorkInfo.State.FAILED -> {
-                        // Arbete misslyckades. 😢
+
                         Log.d("PlantWorker", "Work Faild!")
                     }
-                    // Kontrollera andra tillstånd som behövs
+
                     else -> {
-                        // Arbete pågår eller väntar
+
                         Log.d("PlantWorker", "Work is going on!")
                     }
                 }
