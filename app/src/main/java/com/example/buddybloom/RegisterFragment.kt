@@ -29,6 +29,9 @@ class RegisterFragment : Fragment() {
 
         avm = ViewModelProvider(this)[AccountViewModel::class.java]
 
+        val activity = requireActivity() as? HomeActivity
+        activity?.binding?.btnBack?.visibility = View.VISIBLE
+
         binding.btnRegister.setOnClickListener {
             registerUser()
         }
