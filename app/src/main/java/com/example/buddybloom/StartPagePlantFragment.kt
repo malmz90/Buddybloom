@@ -15,6 +15,7 @@ import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import com.example.buddybloom.databinding.FragmentStartPagePlantBinding
+import com.example.buddybloom.ui.weather.WeatherDialogFragment
 import java.util.concurrent.TimeUnit
 
 
@@ -30,20 +31,20 @@ class StartPagePlantFragment : Fragment() {
     ): View? {
         binding = FragmentStartPagePlantBinding.inflate(inflater, container, false)
 
-        // Test if work is doing its job right one time
-//        val workRequest = OneTimeWorkRequestBuilder<PlantWorker>()
-//            .build()
-//
-//        WorkManager.getInstance(requireContext()).enqueue(workRequest)
-        val workRequest = PeriodicWorkRequestBuilder<PlantWorker>(1, TimeUnit.HOURS)
+//         Test if work is doing its job right one time
+        val workRequest = OneTimeWorkRequestBuilder<PlantWorker>()
             .build()
 
-        WorkManager.getInstance(requireContext()).enqueueUniquePeriodicWork(
-            "PlantWateringWork",
-            ExistingPeriodicWorkPolicy.UPDATE,
-            workRequest
-
-        )
+        WorkManager.getInstance(requireContext()).enqueue(workRequest)
+//        val workRequest = PeriodicWorkRequestBuilder<PlantWorker>(1, TimeUnit.HOURS)
+//            .build()
+//
+//        WorkManager.getInstance(requireContext()).enqueueUniquePeriodicWork(
+//            "PlantWateringWork",
+//            ExistingPeriodicWorkPolicy.UPDATE,
+//            workRequest
+//
+//        )
 
         // shall check if workManager is running while app i closed, do not work yet
         val workManager = WorkManager.getInstance(requireContext())
