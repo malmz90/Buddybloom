@@ -36,6 +36,9 @@ class LoginFragment : Fragment() {
 
         avm = ViewModelProvider(this)[AccountViewModel::class.java]
 
+        val activity = requireActivity() as? HomeActivity
+        activity?.binding?.btnBack?.visibility = View.VISIBLE
+
         view.setOnTouchListener { _, _ ->
             (activity as? HomeActivity)?.hideKeyboard()
             false

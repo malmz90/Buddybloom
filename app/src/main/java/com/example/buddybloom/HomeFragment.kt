@@ -22,6 +22,10 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val activity = requireActivity() as? HomeActivity
+        activity?.binding?.btnBack?.visibility = View.GONE
+
         val registerFragment = RegisterFragment()
         val loginFragment = LoginFragment()
 
