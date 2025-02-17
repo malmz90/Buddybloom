@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/turquisegreen"
-    tools:context=".GameActivity">
+    tools:context=".ui.game.GameActivity">
 
     <ImageView
         android:id="@+id/iv_logo_game"

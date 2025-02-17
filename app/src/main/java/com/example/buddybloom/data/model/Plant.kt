@@ -1,8 +1,8 @@
-package com.example.buddybloom
+package com.example.buddybloom.data.model
 
-import android.content.Context
 import android.util.Log
-import android.widget.Toast
+import com.example.buddybloom.R
+import com.example.buddybloom.data.repository.PlantRepository
 
 
 data class Plant(val name : String, var waterLevel: Int, var createdAt: Long = System.currentTimeMillis()) {
@@ -45,7 +45,7 @@ data class Plant(val name : String, var waterLevel: Int, var createdAt: Long = S
         }
     }
 
-    val firebaseManager = FirebaseManager()
+    val plantRepository = PlantRepository()
 
     fun decreaseWaterLevel(amount: Int) {
         if (waterLevel < 0) waterLevel = 0
@@ -54,13 +54,13 @@ data class Plant(val name : String, var waterLevel: Int, var createdAt: Long = S
     }
 
     fun increaseWaterLevel(amount: Int) {
-        firebaseManager.getCurrentUserPlant { plant ->
+        plantRepository.getCurrentUserPlant { plant ->
             if (plant != null) {
                 plant.waterLevel += amount
                 Log.d("PlantStatus", "Your plant increased!")
                 if (plant.waterLevel > 100) plant.waterLevel = 100
 
-                firebaseManager.saveUserPlant(plant) { success ->
+                plantRepository.saveUserPlant(plant) { success ->
                     if (success) {
                         Log.d("PlantStatus", "Water level updated successfully in Firebase!")
                     } else {

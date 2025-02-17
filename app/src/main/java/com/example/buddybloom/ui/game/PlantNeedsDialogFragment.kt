@@ -1,24 +1,21 @@
-package com.example.buddybloom
+package com.example.buddybloom.ui.game
 
 import android.app.Dialog
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
+import com.example.buddybloom.R
 import com.google.android.material.button.MaterialButton
 
-class DailyChecksDialogFragment : DialogFragment() {
+class PlantNeedsDialogFragment : DialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val builder = AlertDialog.Builder(requireContext())
         val inflater = requireActivity().layoutInflater
-        val view = inflater.inflate(R.layout.dialog_daily_goals, null)
+        val view = inflater.inflate(R.layout.dialog_plant_needs, null)
 
         builder.setView(view)
 

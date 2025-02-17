@@ -1,13 +1,14 @@
-package com.example.buddybloom
+package com.example.buddybloom.ui.game
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.buddybloom.data.model.Plant
+import com.example.buddybloom.data.repository.PlantRepository
 import com.example.buddybloom.databinding.FragmentChoosePlantBinding
 
 
@@ -17,7 +18,7 @@ class ChoosePlantFragment : Fragment() {
     private lateinit var adapter : ChoosePlantRecyclerAdapter
     private val plants = mutableListOf<Plant>()
     private var userPlant : Plant? = null
-    private val firebaseManager = FirebaseManager()
+    private val plantRepository = PlantRepository()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -46,7 +47,7 @@ class ChoosePlantFragment : Fragment() {
     }
 
     private fun savePlant(plant: Plant) {
-        firebaseManager.saveUserPlant(plant) { success ->
+        plantRepository.saveUserPlant(plant) { success ->
             if (success) {
                 activity?.runOnUiThread {
                     Toast.makeText(context, "Plant saved successfully!", Toast.LENGTH_SHORT).show()

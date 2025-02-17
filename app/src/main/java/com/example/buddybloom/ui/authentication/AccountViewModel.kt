@@ -1,13 +1,13 @@
-package com.example.buddybloom
+package com.example.buddybloom.ui.authentication
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.google.android.gms.tasks.Task
+import com.example.buddybloom.data.repository.AccountRepository
 
 class AccountViewModel : ViewModel() {
 
-    private val firebaseManager = FirebaseManager()
+    private val accountRepository = AccountRepository()
 
     private val _registerResult = MutableLiveData<Boolean>()
     val registerResult : LiveData<Boolean> get() = _registerResult
@@ -19,13 +19,13 @@ class AccountViewModel : ViewModel() {
     val resetPasswordResult: LiveData<Boolean> get() = _resetPasswordResult
 
     fun registerUser(email : String, password : String, name : String) {
-        firebaseManager.registerUser(email, password, name) { success ->
+        accountRepository.registerUser(email, password, name) { success ->
             _registerResult.value = success
         }
 
     }
     fun loginUser(email: String, password: String) {
-        firebaseManager.loginUser(email, password) { success ->
+        accountRepository.loginUser(email, password) { success ->
             _loginResult.value = success
         }
     }
@@ -35,7 +35,7 @@ class AccountViewModel : ViewModel() {
             _resetPasswordResult.value =false
             return
         }
-        firebaseManager.sendPasswordResetEmail(email).addOnCompleteListener { task ->
+        accountRepository.sendPasswordResetEmail(email).addOnCompleteListener { task ->
             _resetPasswordResult.value = task.isSuccessful
         }
     }

@@ -1,4 +1,4 @@
-package com.example.buddybloom
+package com.example.buddybloom.ui.authentication
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,8 +7,8 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.example.buddybloom.R
 import com.example.buddybloom.databinding.FragmentRegisterBinding
-import com.google.android.material.textfield.TextInputEditText
 
 class RegisterFragment : Fragment() {
 
@@ -29,7 +29,7 @@ class RegisterFragment : Fragment() {
 
         avm = ViewModelProvider(this)[AccountViewModel::class.java]
 
-        val activity = requireActivity() as? HomeActivity
+        val activity = requireActivity() as? AuthenticationActivity
         activity?.binding?.btnBack?.visibility = View.VISIBLE
 
         binding.btnRegister.setOnClickListener {
@@ -90,7 +90,7 @@ class RegisterFragment : Fragment() {
 
     private fun removeFragment() {
         parentFragmentManager.beginTransaction().apply{
-            replace(R.id.fcv_home, HomeFragment())
+            replace(R.id.fcv_home, AuthenticationFragment())
             commit()
         }
     }

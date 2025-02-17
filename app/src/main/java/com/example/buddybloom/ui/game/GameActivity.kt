@@ -1,4 +1,4 @@
-package com.example.buddybloom
+package com.example.buddybloom.ui.game
 
 import android.content.Intent
 import android.os.Bundle
@@ -9,31 +9,31 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.work.WorkInfo
+import androidx.work.WorkManager
+import com.example.buddybloom.data.repository.PlantRepository
 import androidx.work.Constraints
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.NetworkType
 import androidx.work.PeriodicWorkRequestBuilder
-import androidx.work.WorkInfo
-import androidx.work.WorkManager
+import com.example.buddybloom.R
+import com.example.buddybloom.data.PlantWorker
 import com.example.buddybloom.databinding.ActivityGameBinding
+import com.example.buddybloom.ui.authentication.AuthenticationActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import java.util.concurrent.TimeUnit
 
 class GameActivity : AppCompatActivity() {
-    private val firebaseManager = FirebaseManager()
+    private val plantRepository = PlantRepository()
     lateinit var binding : ActivityGameBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-
-        setContentView(R.layout.activity_game)
-        plantWorksSchedule() // Begin schedule
-
         binding = ActivityGameBinding.inflate(layoutInflater)
-
         setContentView(binding.root)
+        plantWorksSchedule() // Begin schedule
         ViewCompat.setOnApplyWindowInsetsListener(binding.main) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
@@ -42,7 +42,7 @@ class GameActivity : AppCompatActivity() {
 
         // Temporary logout-button to return to HomeActivity.
         binding.btnLogout.setOnClickListener{
-            val logoutIntent = Intent(this, HomeActivity::class.java)
+            val logoutIntent = Intent(this, AuthenticationActivity::class.java)
             startActivity(logoutIntent)
         }
 
@@ -54,7 +54,7 @@ class GameActivity : AppCompatActivity() {
         bottomNavigationView.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.nav_profile -> {
-//                    replaceFragmentForNavbar(ProfileFragment())
+                    replaceFragmentForNavbar(ProfileFragment())
                     true
                 }
                 R.id.nav_plant -> {
@@ -94,7 +94,7 @@ class GameActivity : AppCompatActivity() {
             return
         }
 
-        firebaseManager.getCurrentUserPlant { plant ->
+        plantRepository.getCurrentUserPlant { plant ->
             if (plant == null) {
                 showChoosePlantFragment()
             } else {

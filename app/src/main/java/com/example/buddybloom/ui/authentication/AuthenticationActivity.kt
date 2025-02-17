@@ -1,37 +1,26 @@
-package com.example.buddybloom
+package com.example.buddybloom.ui.authentication
 
-import android.content.Intent
 import android.os.Bundle
-import android.util.Log
-import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
-import androidx.work.Constraints
-import androidx.work.ExistingPeriodicWorkPolicy
-import androidx.work.NetworkType
-import androidx.work.PeriodicWorkRequestBuilder
-import androidx.work.WorkInfo
-import androidx.work.WorkManager
-import com.example.buddybloom.databinding.ActivityHomeBinding
-import java.util.concurrent.TimeUnit
+import com.example.buddybloom.R
+import com.example.buddybloom.databinding.ActivityAuthenticationBinding
 
-class HomeActivity : AppCompatActivity() {
+class AuthenticationActivity : AppCompatActivity() {
 
-    lateinit var binding : ActivityHomeBinding
+    lateinit var binding : ActivityAuthenticationBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        
-        binding = ActivityHomeBinding.inflate(layoutInflater)
+        binding = ActivityAuthenticationBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         if (savedInstanceState == null) {
-            loadFragment(HomeFragment())
+            loadFragment(AuthenticationFragment())
         }
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.home)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -40,7 +29,7 @@ class HomeActivity : AppCompatActivity() {
         }
 
         binding.btnBack.setOnClickListener {
-            loadFragment(HomeFragment())
+            loadFragment(AuthenticationFragment())
         }
     }
 
@@ -54,5 +43,4 @@ class HomeActivity : AppCompatActivity() {
         val inputMethodManager = getSystemService(android.content.Context.INPUT_METHOD_SERVICE) as android.view.inputmethod.InputMethodManager
         inputMethodManager.hideSoftInputFromWindow(currentFocus?.windowToken, 0)
     }
-
 }

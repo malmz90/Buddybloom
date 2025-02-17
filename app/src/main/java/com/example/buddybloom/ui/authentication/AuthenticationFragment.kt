@@ -1,29 +1,30 @@
-package com.example.buddybloom
+package com.example.buddybloom.ui.authentication
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.example.buddybloom.databinding.FragmentHomeBinding
+import com.example.buddybloom.ui.AboutInfoFragment
+import com.example.buddybloom.R
+import com.example.buddybloom.databinding.FragmentAuthenticationBinding
 
-class HomeFragment : Fragment() {
+class AuthenticationFragment : Fragment() {
 
-    private lateinit var binding : FragmentHomeBinding
+    private lateinit var binding : FragmentAuthenticationBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentHomeBinding.inflate(inflater,container, false)
+        binding = FragmentAuthenticationBinding.inflate(inflater,container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val activity = requireActivity() as? HomeActivity
+        val activity = requireActivity() as? AuthenticationActivity
         activity?.binding?.btnBack?.visibility = View.GONE
 
         val registerFragment = RegisterFragment()
@@ -31,14 +32,14 @@ class HomeFragment : Fragment() {
 
         binding.btnRegister.setOnClickListener {
             requireActivity().supportFragmentManager.beginTransaction()
-                .replace(R.id.fcv_home,RegisterFragment())
+                .replace(R.id.fcv_home, RegisterFragment())
                 .addToBackStack(null)
                 .commit()
         }
 
         binding.btnSignIn.setOnClickListener {
             requireActivity().supportFragmentManager.beginTransaction()
-                .replace(R.id.fcv_home,LoginFragment())
+                .replace(R.id.fcv_home, LoginFragment())
                 .addToBackStack(null)
                 .commit()
         }
