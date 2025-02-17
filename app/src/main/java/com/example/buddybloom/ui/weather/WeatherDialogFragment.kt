@@ -34,14 +34,12 @@ class WeatherDialogFragment : DialogFragment(R.layout.dialog_weather) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        closeButton = view.findViewById(R.id.btn_close)
+        closeButton = view.findViewById(R.id.btn_history_close)
         recyclerView = view.findViewById(R.id.rv_weather_dialog)
         viewModel = ViewModelProvider(this)[WeatherViewModel::class.java]
         val weatherAdapter = WeatherAdapter(null)
         val linearLayoutManager =
-            LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false).apply {
-
-            }
+            LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         recyclerView.apply {
             adapter = weatherAdapter
             layoutManager = linearLayoutManager

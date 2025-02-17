@@ -12,7 +12,7 @@ import com.example.buddybloom.ui.authentication.DeleteAccountDialogFragment
 
 class ProfileFragment : Fragment() {
 
-    private lateinit var binding : FragmentProfileBinding
+    private lateinit var binding: FragmentProfileBinding
     private lateinit var accountViewModel: AccountViewModel
 
     override fun onCreateView(
@@ -31,6 +31,10 @@ class ProfileFragment : Fragment() {
         binding.deleteAccountText.setOnClickListener {
             val deleteAccountDialog = DeleteAccountDialogFragment()
             deleteAccountDialog.show(parentFragmentManager, "DeleteAccountDialogFragment")
+        }
+
+        binding.btnHistoryCheck.setOnClickListener {
+            HistoryDialogFragment().show(parentFragmentManager, null)
         }
     }
 }

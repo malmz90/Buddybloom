@@ -1,11 +1,15 @@
 package com.example.buddybloom.data.repository
 
 import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import com.example.buddybloom.data.model.PlantHistory
 import com.example.buddybloom.data.model.Plant
 import com.example.buddybloom.data.model.User
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.firestore
+import com.google.firebase.firestore.toObjects
 
 class PlantRepository {
 
@@ -42,5 +46,32 @@ class PlantRepository {
                 Log.e("Firebase", "Error saving plant: ${e.message}")
                 callback(false)
             }
+    }
+
+    fun savePlantHistory(plant: Plant, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
+        val userId = auth.currentUser?.uid ?: return
+        val docRef = db.collection("users").document(userId).collection("history").document()
+        docRef.set(PlantHistory(name = plant.name, streakCount = plant.streakDays)).addOnSuccessListener {
+            onSuccess()
+        }
+            .addOnFailureListener {
+                onFailure(it)
+            }
+    }
+
+    fun getPlantHistoryLiveData(): LiveData<List<PlantHistory>> {
+        val liveData = MutableLiveData<List<PlantHistory>>()
+        val userId = auth.currentUser?.uid ?: return liveData
+        db.collection("users").document(userId).collection("history")
+            .addSnapshotListener { snapshot, error ->
+                if (error != null) {
+                    Log.i("PlantRepository", "Error fetching history from Firebase")
+                    return@addSnapshotListener
+                } else {
+                    val historyItems = snapshot?.toObjects<PlantHistory>().orEmpty().sortedBy { it.timestamp }
+                    liveData.postValue(historyItems)
+                }
+            }
+        return liveData
     }
 }

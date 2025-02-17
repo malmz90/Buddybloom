@@ -22,13 +22,13 @@
             android:textAlignment="center"
             android:textSize="20sp"
             android:layout_marginBottom="15dp"
-            app:layout_constraintBottom_toTopOf="@+id/gold_line"
+            app:layout_constraintBottom_toTopOf="@+id/history_gold_line"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <View
-            android:id="@+id/gold_line"
+            android:id="@+id/history_gold_line"
             android:layout_width="match_parent"
             android:layout_height="4dp"
             android:layout_marginTop="30dp"
@@ -52,7 +52,7 @@
             app:layout_constraintBottom_toTopOf="@id/tv_reset"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/gold_line">
+            app:layout_constraintTop_toBottomOf="@id/history_gold_line">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"

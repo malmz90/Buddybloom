@@ -2,31 +2,30 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/dialog_history"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/dialog_box"
+        android:id="@+id/dialog_history_box"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:background="@drawable/border_lightgreen"
         android:padding="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.5">
 
-        <TextView
-            android:id="@+id/tv_weather_dialog"
-            android:layout_width="match_parent"
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tv_history_title"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="15dp"
-            android:text="Weekly Weather Report"
-            android:textAlignment="center"
-            android:textColor="@color/eggwhite"
+            android:gravity="center"
+            android:text="Your Plant History Details:"
             android:textSize="20sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@+id/history_gold_line"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -41,32 +40,40 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_weather_dialog"
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tv_empty_history"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:background="@color/lightgreen"
-            android:padding="10dp"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:text="No history to show."
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/history_gold_line"
-            tools:layout_editor_absoluteY="20dp"
-            tools:listitem="@layout/item_weather" />
+            app:layout_constraintTop_toBottomOf="@+id/history_gold_line" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_history"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toTopOf="@+id/btn_history_close"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/history_gold_line"
+            tools:listitem="@layout/item_history" />
+
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_history_close"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
             android:backgroundTint="@color/darkgreen"
             android:elevation="4dp"
             android:text="@string/close"
             android:textColor="@color/eggwhite"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/rv_weather_dialog"
             app:strokeColor="@color/darkbrown"
             app:strokeWidth="1dp" />
+
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
