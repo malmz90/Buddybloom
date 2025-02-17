@@ -28,8 +28,8 @@ class PlantRepository {
         }
     }
 
-    fun saveUserPlant(plant: Plant, callback: (Boolean) -> Unit) {
-        val userId = auth.currentUser?.uid ?: return
+    fun saveUserPlant(userId: String, plant: Plant, callback: (Boolean) -> Unit) {
+//        val userId = auth.currentUser?.uid ?: return
 
         val plantToSave = mapOf(
             "name" to plant.name,

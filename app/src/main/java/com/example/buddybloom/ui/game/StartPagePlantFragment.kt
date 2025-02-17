@@ -14,6 +14,7 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import com.example.buddybloom.R
+import androidx.lifecycle.ViewModelProvider
 import com.example.buddybloom.data.model.Plant
 import com.example.buddybloom.data.repository.PlantRepository
 import com.example.buddybloom.databinding.FragmentStartPagePlantBinding
@@ -22,24 +23,27 @@ import com.example.buddybloom.ui.weather.WeatherDialogFragment
 
 class StartPagePlantFragment : Fragment() {
 
-    private val plantRepository = PlantRepository()
     private var userPlant: Plant? = null
     private lateinit var binding : FragmentStartPagePlantBinding
+    private lateinit var plantViewModel: PlantViewModel
 
+    @RequiresApi(Build.VERSION_CODES.P)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentStartPagePlantBinding.inflate(inflater, container, false)
 
-        // Get user's plant from Firebase
-        plantRepository.getCurrentUserPlant { plant ->
-            plant?.let {
-                userPlant = it
-                activity?.runOnUiThread {
-                    setupPlantUI()
+        plantViewModel = ViewModelProvider(requireActivity())[PlantViewModel::class.java]
+
+       plantViewModel.selectedPlant.observe(viewLifecycleOwner) { plant ->
+           plant?.let {
+               setupPlantUI()
+           }
                 }
-            }
+
+        if(plantViewModel.selectedPlant.value == null) {
+            plantViewModel.getCurrentUserPlant()
         }
         return binding?.root
     }
@@ -47,12 +51,13 @@ class StartPagePlantFragment : Fragment() {
     @RequiresApi(Build.VERSION_CODES.P)
     private fun setupPlantUI() {
         binding?.apply {
-            userPlant?.let { plant ->
+            plantViewModel.selectedPlant.value?.let { plant ->
                 // Set the plant image
                 imgFlower.setImageResource(plant.getPlantImage())
 
-                btnWater.setOnClickListener {
-                    plant.increaseWaterLevel(10)
+
+                        btnWater.setOnClickListener {
+                    plantViewModel.increaseWaterLevel(10)
                     Toast.makeText(requireContext(),
                         "Your plant increased water level with 10",
                         Toast.LENGTH_SHORT).show()
