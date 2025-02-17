@@ -44,5 +44,8 @@
     <string name="save_button">Save button</string>
     <string name="history">HISTORY</string>
     <string name="daily_notifications">Daily Notifications</string>
+    <string name="about_plant">About Plant</string>
+    <string name="add_plant">ADD PLANT</string>
+    <string name="replace_plant">Are you sure you want to replace your current plant?</string>
 
 </resources>
