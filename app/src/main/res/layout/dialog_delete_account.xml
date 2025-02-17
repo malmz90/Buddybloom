@@ -22,13 +22,13 @@
             android:textAlignment="center"
             android:textSize="20sp"
             android:layout_marginBottom="15dp"
-            app:layout_constraintBottom_toTopOf="@+id/history_gold_line"
+            app:layout_constraintBottom_toTopOf="@+id/gold_line"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <View
-            android:id="@+id/history_gold_line"
+            android:id="@+id/gold_line"
             android:layout_width="match_parent"
             android:layout_height="4dp"
             android:layout_marginTop="50dp"
@@ -47,7 +47,7 @@
             android:textColor="#9DF6F1DE"
             android:text="@string/permanent_answer"
             android:elevation="650dp"
-            app:layout_constraintTop_toBottomOf="@+id/history_gold_line"
+            app:layout_constraintTop_toBottomOf="@+id/gold_line"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
 
