@@ -75,6 +75,18 @@ class StartPagePlantFragment : Fragment() {
                     Toast.makeText(requireContext(),
                         "Your plant increased nutrition with 10",
                         Toast.LENGTH_SHORT).show()
+
+                    val drawable: Drawable? = ContextCompat.getDrawable(requireContext(), R.drawable.gif_nutrition)
+                    if (drawable is AnimatedImageDrawable) {
+                        binding.ivAnimationWateringCan.visibility = View.VISIBLE
+                        binding.ivAnimationWateringCan.setImageDrawable(drawable)
+                        drawable.start()
+
+                        // Hide the animation after 3 seconds.
+                        Handler(Looper.getMainLooper()).postDelayed({
+                            binding.ivAnimationWateringCan.visibility = View.INVISIBLE
+                        }, 3000)
+                    }
                 }
 
                 var isBlindsVisible = false // Boolean for blinds toggle button.
