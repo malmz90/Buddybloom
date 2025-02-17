@@ -31,12 +31,16 @@ class AccountViewModel : ViewModel() {
     }
 
     fun sendPasswordResetEmail(email: String){
-        if(email.isEmpty()){
+        if(email.isBlank()){
             _resetPasswordResult.value =false
             return
         }
         accountRepository.sendPasswordResetEmail(email).addOnCompleteListener { task ->
             _resetPasswordResult.value = task.isSuccessful
         }
+    }
+
+    fun deleteAccount(onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
+        accountRepository.deleteAccount(onSuccess, onFailure)
     }
 }

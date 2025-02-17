@@ -57,8 +57,6 @@
             android:inputType="textEmailAddress" />
     </com.google.android.material.textfield.TextInputLayout>
 
-
-
     <androidx.cardview.widget.CardView
         android:id="@+id/dailyNotificationsCard"
         app:layout_constraintTop_toBottomOf="@id/et_username"
@@ -84,7 +82,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Daily Notifications"
+                android:text="@string/daily_notifications"
                 android:textSize="16sp"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="32dp"
@@ -104,7 +102,6 @@
                 tools:ignore="UseSwitchCompatOrMaterialXml" />
         </LinearLayout>
 
-
     </androidx.cardview.widget.CardView>
 
     <Button
@@ -113,14 +110,13 @@
         android:layout_height="wrap_content"
         android:backgroundTint="@color/eggwhite"
         android:layout_marginStart="50dp"
-        android:layout_marginTop="370dp"
+        android:layout_marginTop="300dp"
         android:layout_marginEnd="50dp"
-        android:text="HISTORY"
+        android:text="@string/history"
         android:textColor="#36B680"
-
         android:layout_gravity="center_horizontal"
         android:layout_marginBottom="16dp"
-        android:drawableRight="@drawable/icon_history"
+        android:drawableEnd="@drawable/icon_history"
         android:elevation="5dp"
         android:translationZ="1dp"
         android:stateListAnimator="@null"
@@ -131,9 +127,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="50dp"
-        android:layout_marginTop="160dp"
+        android:layout_marginTop="110dp"
         android:layout_marginEnd="50dp"
-        android:text="Delete Your Account?"
+        android:text="@string/delete_your_account"
         android:textColor="@android:color/white"
         android:textSize="16sp"
         android:layout_gravity="center"
@@ -144,19 +140,17 @@
     <ImageButton
         android:id="@+id/saveButton"
         android:layout_marginStart="50dp"
-        android:layout_marginTop="550dp"
+        android:layout_marginTop="500dp"
         android:layout_marginEnd="50dp"
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:src="@drawable/icon_save"
-        android:contentDescription="Save button"
+        android:contentDescription="@string/save_button"
         android:layout_gravity="center_horizontal"
         android:scaleType="centerCrop"
         android:adjustViewBounds="true"
         android:background="@drawable/border_circlewhite"
         android:padding="16dp" />
-
-
 
 
 </FrameLayout>

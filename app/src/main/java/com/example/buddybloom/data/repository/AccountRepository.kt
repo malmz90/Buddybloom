@@ -15,8 +15,6 @@ class AccountRepository {
     private val auth = FirebaseAuth.getInstance()
     private val userId = auth.currentUser?.uid
 
-
-
     fun loginUser(email: String, password: String, callback: (Boolean) -> Unit) {
         auth.signInWithEmailAndPassword(email, password).addOnCompleteListener { task ->
                 if (task.isSuccessful) {
@@ -45,8 +43,6 @@ class AccountRepository {
                 }
             }
     }
-
-
 
     private fun saveUser(user: User, callback: (Boolean) -> Unit) {
         val userId = auth.currentUser?.uid ?: return
@@ -102,13 +98,24 @@ class AccountRepository {
         }
     }
 
+    fun deleteAccount(onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
+        userId?.let { uid ->
+            db.collection("users").document(uid).delete()
+                .addOnSuccessListener {
+                    Log.d("DB", "User deleted from Firestore")
 
-
-
-
-
-
-
+                    auth.currentUser?.delete()?.addOnSuccessListener {
+                        Log.d("Auth", "User deleted from Firebase Auth")
+                        onSuccess()
+                    }?.addOnFailureListener{ exception ->
+                        Log.e("Auth", "Failed to delete from Firebase Auth ${exception.message}")
+                        onFailure(exception)
+                    }
+                }
+                .addOnFailureListener { exception ->
+                    Log.e("DB", "Failed to delete from Firestore ${exception.message}")
+                    onFailure(exception)
+                }
+        } ?:onFailure(Exception("User ID is null"))
+    }
 }
-
-
