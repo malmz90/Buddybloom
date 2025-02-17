@@ -1,11 +1,19 @@
 package com.example.buddybloom.ui.game
 
+import android.graphics.drawable.AnimatedImageDrawable
+import android.graphics.drawable.Drawable
+import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
+import com.example.buddybloom.R
 import com.example.buddybloom.data.model.Plant
 import com.example.buddybloom.data.repository.PlantRepository
 import com.example.buddybloom.databinding.FragmentStartPagePlantBinding
@@ -36,18 +44,31 @@ class StartPagePlantFragment : Fragment() {
         return binding?.root
     }
 
+    @RequiresApi(Build.VERSION_CODES.P)
     private fun setupPlantUI() {
         binding?.apply {
             userPlant?.let { plant ->
                 // Set the plant image
                 imgFlower.setImageResource(plant.getPlantImage())
 
-
-                        btnWater.setOnClickListener {
+                btnWater.setOnClickListener {
                     plant.increaseWaterLevel(10)
                     Toast.makeText(requireContext(),
                         "Your plant increased water level with 10",
                         Toast.LENGTH_SHORT).show()
+
+                    // Show the animation of watering can.
+                    val drawable: Drawable? = ContextCompat.getDrawable(requireContext(), R.drawable.gif_water)
+                    if (drawable is AnimatedImageDrawable) {
+                        binding.ivAnimationWateringCan.visibility = View.VISIBLE
+                        binding.ivAnimationWateringCan.setImageDrawable(drawable)
+                        drawable.start()
+
+                        // Hide the animation after 3 seconds.
+                        Handler(Looper.getMainLooper()).postDelayed({
+                            binding.ivAnimationWateringCan.visibility = View.INVISIBLE
+                        }, 3000)
+                    }
                 }
 
                 btnFertilize.setOnClickListener {
@@ -56,10 +77,26 @@ class StartPagePlantFragment : Fragment() {
                         Toast.LENGTH_SHORT).show()
                 }
 
+                var isBlindsVisible = false // Boolean for blinds toggle button.
                 switchBlinds.setOnClickListener {
-                    Toast.makeText(requireContext(),
-                        "You've successfully protected your plant!",
-                        Toast.LENGTH_SHORT).show()
+                    // Toggling between visible/invisible on the blinds.
+                    isBlindsVisible = !isBlindsVisible
+                    binding.ivBlinds.setImageResource(R.drawable.iconimg_blinds)
+                    if(isBlindsVisible) {
+                        binding.ivBlinds.visibility = View.VISIBLE
+                        Toast.makeText(
+                            requireContext(),
+                            "You've successfully protected your plant!",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    } else {
+                        binding.ivBlinds.visibility = View.INVISIBLE
+                        Toast.makeText(
+                            requireContext(),
+                            "You've removed your protection from your plant!",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
                 }
 
                 binding.btnWeather.setOnClickListener {
