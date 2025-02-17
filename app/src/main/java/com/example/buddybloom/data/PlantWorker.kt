@@ -39,12 +39,7 @@ class PlantWorker(appContext: Context, workerParams: WorkerParameters) :
                 Log.e("PlantWorker", "No plant found to update.")
             }
         }
-        return Result.success()
-    }
-
-
         updateWeather()
-
         return Result.success()
     }
 

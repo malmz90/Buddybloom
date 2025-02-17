@@ -16,12 +16,10 @@ import androidx.work.Constraints
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.NetworkType
 import androidx.work.PeriodicWorkRequestBuilder
+import com.example.buddybloom.R
 import com.example.buddybloom.data.PlantWorker
 import com.example.buddybloom.databinding.ActivityGameBinding
 import com.example.buddybloom.ui.authentication.AuthenticationActivity
-import com.example.buddybloom.ui.game.ChoosePlantFragment
-import com.example.buddybloom.ui.game.ProfileFragment
-import com.example.buddybloom.ui.game.StartPagePlantFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import java.util.concurrent.TimeUnit

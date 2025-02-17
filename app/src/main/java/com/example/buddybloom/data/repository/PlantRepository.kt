@@ -11,7 +11,6 @@ class PlantRepository {
 
     private val db = Firebase.firestore
     private val auth = FirebaseAuth.getInstance()
-    private val userId = auth.currentUser?.uid
 
     fun getCurrentUserPlant(callback: (Plant?) -> Unit) {
         val userId = auth.currentUser?.uid ?: return
