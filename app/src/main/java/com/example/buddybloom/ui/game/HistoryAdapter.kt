@@ -8,7 +8,7 @@ import com.example.buddybloom.R
 import com.example.buddybloom.data.model.PlantHistory
 import com.google.android.material.textview.MaterialTextView
 
-class HistoryAdapter(private val historyItems: MutableList<PlantHistory>) :
+class HistoryAdapter(private var historyItems: MutableList<PlantHistory>) :
     RecyclerView.Adapter<HistoryAdapter.HistoryViewHolder>() {
     inner class HistoryViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val textView: MaterialTextView = itemView.findViewById(R.id.tv_history_text)
@@ -30,9 +30,8 @@ class HistoryAdapter(private val historyItems: MutableList<PlantHistory>) :
         holder.textView.text = textString
     }
 
-    fun update(newItems: List<PlantHistory>) {
-        historyItems.clear()
-        historyItems.addAll(newItems)
+    fun update(newItems: MutableList<PlantHistory>) {
+        historyItems = newItems
         notifyDataSetChanged()
     }
 }

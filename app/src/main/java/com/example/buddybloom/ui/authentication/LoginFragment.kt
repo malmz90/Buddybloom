@@ -44,6 +44,8 @@ class LoginFragment : Fragment() {
             (activity as? AuthenticationActivity)?.hideKeyboard()
             false
         }
+        //TODO remove after testing.
+        //testFunction()
 
         binding.tvForgot.setOnClickListener {
             forgotPassword()
@@ -68,6 +70,11 @@ class LoginFragment : Fragment() {
                 Toast.makeText(requireContext(), "Invalid Email", Toast.LENGTH_SHORT).show()
             }
         }
+    }
+
+    private fun testFunction() {
+        binding.etEmail.setText("mag3@test.com")
+        binding.etPass.setText("!Magnus1")
     }
 
     private fun loginUser() {

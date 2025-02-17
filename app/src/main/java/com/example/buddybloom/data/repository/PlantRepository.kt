@@ -49,29 +49,35 @@ class PlantRepository {
     }
 
     fun savePlantHistory(plant: Plant, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
-        val userId = auth.currentUser?.uid ?: return
-        val docRef = db.collection("users").document(userId).collection("history").document()
-        docRef.set(PlantHistory(name = plant.name, streakCount = plant.streakDays)).addOnSuccessListener {
-            onSuccess()
+        val userId = auth.currentUser?.uid
+        if (userId == null) {
+            onFailure(Exception("Firebase error: Could not find logged in user's id."))
+            return
         }
-            .addOnFailureListener {
+        val docRef = db.collection("users").document(userId).collection("history").document()
+        docRef.set(PlantHistory(name = plant.name, streakCount = plant.streakDays))
+            .addOnSuccessListener {
+                onSuccess()
+            }.addOnFailureListener {
                 onFailure(it)
             }
     }
 
     fun getPlantHistoryLiveData(): LiveData<List<PlantHistory>> {
         val liveData = MutableLiveData<List<PlantHistory>>()
-        val userId = auth.currentUser?.uid ?: return liveData
-        db.collection("users").document(userId).collection("history")
-            .addSnapshotListener { snapshot, error ->
-                if (error != null) {
-                    Log.i("PlantRepository", "Error fetching history from Firebase")
-                    return@addSnapshotListener
-                } else {
-                    val historyItems = snapshot?.toObjects<PlantHistory>().orEmpty().sortedBy { it.timestamp }
+        val userId = auth.currentUser?.uid
+        userId?.let {
+            db.collection("users").document(it).collection("history")
+                .addSnapshotListener { snapshot, error ->
+                    if (error != null) {
+                        Log.i("PlantRepository", "Error fetching history from Firebase")
+                        return@addSnapshotListener
+                    }
+                    val historyItems = snapshot?.toObjects<PlantHistory>().orEmpty()
+                        .sortedBy { item -> item.timestamp }
                     liveData.postValue(historyItems)
                 }
-            }
+        }
         return liveData
     }
 }

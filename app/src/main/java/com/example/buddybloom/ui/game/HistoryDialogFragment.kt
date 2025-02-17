@@ -1,6 +1,9 @@
 package com.example.buddybloom.ui.game
 
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
@@ -19,9 +22,14 @@ class HistoryDialogFragment : DialogFragment(R.layout.dialog_history) {
     private lateinit var viewModel: HistoryViewModel
     private lateinit var closeButton: MaterialButton
 
-    init {
-        createMockData()
+    override fun onStart() {
+        super.onStart()
+        dialog?.window?.apply {
+        setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        }
     }
+
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -41,12 +49,15 @@ class HistoryDialogFragment : DialogFragment(R.layout.dialog_history) {
             } else {
                 placeHolderTextView.visibility = View.GONE
                 recyclerView.visibility = View.VISIBLE
-                adapter.update(it)
+                adapter.update(it.toMutableList())
             }
         }
         closeButton.setOnClickListener { dismiss() }
+         //   createMockData()
+
     }
 
+    //TODO Remove after testing
     private fun createMockData() {
         val plantRepository = PlantRepository()
         plantRepository.savePlantHistory(Plant("Hillibiskus", streakDays = 5), {}, {})
