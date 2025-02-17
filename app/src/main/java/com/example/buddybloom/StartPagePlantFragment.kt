@@ -8,8 +8,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.Observer
+import androidx.work.Constraints
 
 import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkInfo
@@ -29,48 +31,6 @@ class StartPagePlantFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentStartPagePlantBinding.inflate(inflater, container, false)
-
-        // Test if work is doing its job right one time
-//        val workRequest = OneTimeWorkRequestBuilder<PlantWorker>()
-//            .build()
-//
-//        WorkManager.getInstance(requireContext()).enqueue(workRequest)
-        val workRequest = PeriodicWorkRequestBuilder<PlantWorker>(1, TimeUnit.HOURS)
-            .build()
-
-        WorkManager.getInstance(requireContext()).enqueueUniquePeriodicWork(
-            "PlantWateringWork",
-            ExistingPeriodicWorkPolicy.UPDATE,
-            workRequest
-
-        )
-
-        // shall check if workManager is running while app i closed, do not work yet
-        val workManager = WorkManager.getInstance(requireContext())
-        val workInfoLiveData = workManager.getWorkInfosByTagLiveData("myPlantTag")
-
-        workInfoLiveData.observe(viewLifecycleOwner, Observer { workInfos ->
-
-            workInfos?.forEach { workInfo ->
-                when (workInfo.state) {
-                    WorkInfo.State.SUCCEEDED -> {
-                        Toast.makeText(requireContext(),
-                            "Your plant lost water with 10 amounts",
-                            Toast.LENGTH_SHORT).show()
-                        Log.d("PlantWorker", "Work success!")
-                    }
-                    WorkInfo.State.FAILED -> {
-
-                        Log.d("PlantWorker", "Work Faild!")
-                    }
-
-                    else -> {
-
-                        Log.d("PlantWorker", "Work is going on!")
-                    }
-                }
-            }
-        })
 
         // Get user's plant from Firebase
         firebaseManager.getCurrentUserPlant { plant ->

@@ -14,7 +14,7 @@ class PlantWorker(appContext: Context, workerParams: WorkerParameters):
         firebaseManager.getCurrentUserPlant { plant ->
             if (plant != null) {
                 plant.decreaseWaterLevel(10)
-                    plant.isThirsty()
+                plant.isThirsty()
                 firebaseManager.saveUserPlant(plant) { success ->
                     if (success) {
                         Log.d("PlantWorker", "Plant data updated successfully!")
@@ -26,8 +26,7 @@ class PlantWorker(appContext: Context, workerParams: WorkerParameters):
                 Log.e("PlantWorker", "No plant found to update.")
             }
         }
+        return Result.success()
+    }
 
-
-    return Result.success()
-}
 }
