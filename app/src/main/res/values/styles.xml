@@ -5,5 +5,13 @@
         <item name="android:background">@drawable/border_shadow</item>
         <item name="android:textColor">@color/darkgreen</item>
     </style>
+    <style name="BottomNavTextActive">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/darkgreen</item>
+    </style>
+    <style name="BottomNavTextInactive">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/lightgrey</item>
+    </style>
     
 </resources>

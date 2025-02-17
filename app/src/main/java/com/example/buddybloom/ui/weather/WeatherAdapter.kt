@@ -1,4 +1,4 @@
-package com.example.buddybloom
+package com.example.buddybloom.ui.weather
 
 import android.content.res.ColorStateList
 import android.graphics.drawable.GradientDrawable
@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.buddybloom.R
 import com.example.buddybloom.data.model.WeatherReport
 import com.google.android.material.textview.MaterialTextView
 
