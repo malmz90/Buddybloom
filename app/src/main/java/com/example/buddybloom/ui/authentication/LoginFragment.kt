@@ -1,4 +1,4 @@
-package com.example.buddybloom
+package com.example.buddybloom.ui.authentication
 
 import android.content.Intent
 import android.graphics.Color
@@ -13,8 +13,9 @@ import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import com.example.buddybloom.databinding.FragmentLoginBinding
 import android.widget.Button
-import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
+import com.example.buddybloom.ui.game.GameActivity
+import com.example.buddybloom.R
 import com.google.android.material.textfield.TextInputLayout
 
 class LoginFragment : Fragment() {
@@ -36,11 +37,11 @@ class LoginFragment : Fragment() {
 
         avm = ViewModelProvider(this)[AccountViewModel::class.java]
 
-        val activity = requireActivity() as? HomeActivity
+        val activity = requireActivity() as? AuthenticationActivity
         activity?.binding?.btnBack?.visibility = View.VISIBLE
 
         view.setOnTouchListener { _, _ ->
-            (activity as? HomeActivity)?.hideKeyboard()
+            (activity as? AuthenticationActivity)?.hideKeyboard()
             false
         }
 

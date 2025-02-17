@@ -1,4 +1,4 @@
-package com.example.buddybloom
+package com.example.buddybloom.ui.game
 
 import android.content.Intent
 import android.os.Bundle
@@ -7,12 +7,15 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
+import com.example.buddybloom.R
+import com.example.buddybloom.data.repository.PlantRepository
 import com.example.buddybloom.databinding.ActivityGameBinding
+import com.example.buddybloom.ui.authentication.AuthenticationActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 
 class GameActivity : AppCompatActivity() {
-    private val firebaseManager = FirebaseManager()
+    private val plantRepository = PlantRepository()
     lateinit var binding : ActivityGameBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,7 +33,7 @@ class GameActivity : AppCompatActivity() {
 
         // Temporary logout-button to return to HomeActivity.
         binding.btnLogout.setOnClickListener{
-            val logoutIntent = Intent(this, HomeActivity::class.java)
+            val logoutIntent = Intent(this, AuthenticationActivity::class.java)
             startActivity(logoutIntent)
         }
 
@@ -42,8 +45,7 @@ class GameActivity : AppCompatActivity() {
         bottomNavigationView.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.nav_profile -> {
-//                    replaceFragmentForNavbar(ProfileFragment())
-//                    true
+                    replaceFragmentForNavbar(ProfileFragment())
                     true
                 }
                 R.id.nav_plant -> {
@@ -83,7 +85,7 @@ class GameActivity : AppCompatActivity() {
             return
         }
 
-        firebaseManager.getCurrentUserPlant { plant ->
+        plantRepository.getCurrentUserPlant { plant ->
             if (plant == null) {
                 showChoosePlantFragment()
             } else {

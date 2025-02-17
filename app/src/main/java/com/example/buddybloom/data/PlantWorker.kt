@@ -1,10 +1,13 @@
-package com.example.buddybloom
+package com.example.buddybloom.data
 
 import android.content.Context
 import android.util.Log
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.example.buddybloom.data.model.WeatherReport
+import com.example.buddybloom.data.repository.AccountRepository
+import com.example.buddybloom.data.repository.PlantRepository
+import com.example.buddybloom.data.repository.WeatherRepository
 import com.google.firebase.Timestamp
 import java.util.Calendar
 import java.util.Locale
@@ -12,16 +15,20 @@ import java.util.concurrent.TimeUnit
 
 class PlantWorker(appContext: Context, workerParams: WorkerParameters) :
     Worker(appContext, workerParams) {
-    private lateinit var firebaseManager: FirebaseManager
+    private lateinit var weatherRepository: WeatherRepository
+    private lateinit var plantRepository: PlantRepository
+    private lateinit var accountRepository: AccountRepository
     override fun doWork(): Result {
 
-        firebaseManager = FirebaseManager()
+        weatherRepository = WeatherRepository()
+        plantRepository = PlantRepository()
+        accountRepository = AccountRepository()
 
-        firebaseManager.getCurrentUserPlant { plant ->
+       plantRepository.getCurrentUserPlant { plant ->
             if (plant != null) {
                 plant.decreaseWaterLevel(10)
                 plant.isThirsty()
-                firebaseManager.saveUserPlant(plant) { success ->
+                plantRepository.saveUserPlant(plant) { success ->
                     if (success) {
                         Log.d("PlantWorker", "Plant data updated successfully!")
                     } else {
@@ -44,9 +51,9 @@ class PlantWorker(appContext: Context, workerParams: WorkerParameters) :
      *
      */
     private fun updateWeather() {
-        firebaseManager.getUserCreationDate { creationDate ->
-            firebaseManager.getLastUpdated { lastUpdated ->
-                firebaseManager.getCurrentWeatherReport { currentWeeklyReport ->
+        accountRepository.getUserCreationDate { creationDate ->
+            accountRepository.getLastUpdated { lastUpdated ->
+                weatherRepository.getCurrentWeatherReport { currentWeeklyReport ->
                     if (lastUpdated == null || currentWeeklyReport == null || creationDate == null) {
                         Log.e(
                             "PlantWorker",
@@ -74,7 +81,7 @@ class PlantWorker(appContext: Context, workerParams: WorkerParameters) :
                         val totalDaysSinceCreation = TimeUnit.MILLISECONDS.toDays(currentTime)
                             .toInt() - TimeUnit.SECONDS.toDays(creationDate.seconds).toInt()
                         var newStartingWeatherReport =
-                            firebaseManager.generateStartingSunnyWeeklyReport(
+                            weatherRepository.generateStartingSunnyWeeklyReport(
                                 Calendar.getInstance().apply {
                                     time = creationDate.toDate()
                                 }
@@ -85,8 +92,8 @@ class PlantWorker(appContext: Context, workerParams: WorkerParameters) :
                         updatedReport = newStartingWeatherReport
                         Log.i("PlantWorker", "Weather rebuilt.")
                     }
-                    firebaseManager.updateLastUpdated(Timestamp.now())
-                    firebaseManager.updateWeatherReport(updatedReport)
+                    accountRepository.updateLastUpdated(Timestamp.now())
+                    weatherRepository.updateWeatherReport(updatedReport)
                 }
             }
         }

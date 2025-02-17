@@ -1,6 +1,5 @@
-package com.example.buddybloom
+package com.example.buddybloom.data.model
 
-import com.example.buddybloom.data.model.WeatherReport
 import com.google.firebase.Timestamp
 
 data class User(

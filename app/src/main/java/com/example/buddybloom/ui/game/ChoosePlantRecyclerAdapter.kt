@@ -1,10 +1,12 @@
-package com.example.buddybloom
+package com.example.buddybloom.ui.game
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.buddybloom.R
+import com.example.buddybloom.data.model.Plant
 
 class ChoosePlantRecyclerAdapter(val plants : MutableList<Plant>, val onPlantClicked : (Plant) -> Unit) : RecyclerView.Adapter<ChoosePlantRecyclerAdapter.ViewHolder>() {
 
@@ -12,12 +14,12 @@ class ChoosePlantRecyclerAdapter(val plants : MutableList<Plant>, val onPlantCli
         val ivChoosePlant = itemView.findViewById<ImageView>(R.id.iv_choose_plant)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChoosePlantRecyclerAdapter.ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.list_item_choose_plant, parent, false)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_choose_plant, parent, false)
         return ViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: ChoosePlantRecyclerAdapter.ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val chosenPlant = plants[position]
         val imageResource = when(chosenPlant.name) {
             "Elephant" -> R.drawable.flower_elefant4

@@ -1,4 +1,4 @@
-package com.example.buddybloom
+package com.example.buddybloom.ui
 
 
 import android.content.Intent
@@ -9,13 +9,15 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.bumptech.glide.Glide
+import com.example.buddybloom.R
+import com.example.buddybloom.ui.authentication.AuthenticationActivity
 
-class StartActivity : AppCompatActivity() {
+class IntroActivity : AppCompatActivity() {
     private lateinit var imageView: ImageView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.activity_start)
+        setContentView(R.layout.activity_intro)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
@@ -24,7 +26,7 @@ class StartActivity : AppCompatActivity() {
         imageView = findViewById(R.id.iv_logo_animated)
         Glide.with(this).load(R.raw.icon_animated).into(imageView)
         imageView.postDelayed({
-            startActivity(Intent(this, HomeActivity::class.java))
+            startActivity(Intent(this, AuthenticationActivity::class.java))
         }, 3000)
     }
 }
