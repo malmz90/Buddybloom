@@ -1,5 +1,6 @@
 package com.example.buddybloom.ui.game
 
+import AddPlantDialogFragment
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -62,7 +63,7 @@ class GameActivity : AppCompatActivity() {
                     true
                 }
                 R.id.nav_home -> {
-                    replaceFragmentForNavbar(ChoosePlantFragment())
+                    showAddPlantDialog()
                     true
                 }
                 else -> false
@@ -70,6 +71,16 @@ class GameActivity : AppCompatActivity() {
         }
         replaceFragmentForNavbar(StartPagePlantFragment())
         binding.navbarMenu.selectedItemId = R.id.nav_plant
+    }
+
+    private fun showAddPlantDialog() {
+        AddPlantDialogFragment().show(supportFragmentManager, "AddPlantDialogFragment")
+    }
+
+    fun replaceFragment(fragment: Fragment) {
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fvc_game_activity, fragment)
+            .commit()
     }
 
     private fun replaceFragmentForNavbar(fragment: Fragment) {
