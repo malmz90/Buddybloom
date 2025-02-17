@@ -16,13 +16,14 @@ sealed class WeatherReport {
         val sunshineDuration: Int = 0,
         val temperature: Int = 0,
         val condition: Condition? = null,
-        val hourlyReports: MutableList<Hourly> = mutableListOf(),
+        val hourlyReports: List<Hourly> = listOf(),
         val timestamp: Timestamp = Timestamp.now(),
         val weekDay: String? = null
     ) : WeatherReport()
 
     data class Weekly(
-        val dailyReports: MutableList<Daily> = mutableListOf()
+        val dailyReports: List<Daily> = listOf(),
+        val lastUpdated: Timestamp = Timestamp.now()
     ) : WeatherReport()
 
     enum class Condition {
