@@ -48,26 +48,9 @@ data class Plant(val name : String, var waterLevel: Int, var createdAt: Long = S
     val plantRepository = PlantRepository()
 
     fun decreaseWaterLevel(amount: Int) {
-        plantRepository.getCurrentUserPlant { plant ->
-            if (plant != null) {
-                plant.waterLevel -= amount
-                if (waterLevel < 0) waterLevel = 0
-                Log.d("PlantStatus", "Your plant got Thirsty!")
-                if (plant.waterLevel > 100) plant.waterLevel = 100
-
-                plantRepository.saveUserPlant(plant) { success ->
-                    if (success) {
-                        Log.d("PlantStatus", "Water level updated successfully in Firebase!")
-                    } else {
-                        Log.e("PlantStatus", "Failed to update water level in Firebase.")
-                    }
-                }
-            } else {
-                Log.e("PlantStatus", "No plant found to update.")
-            }
-        }
-
         if (waterLevel < 0) waterLevel = 0
+        waterLevel -= amount
+        Log.d("PlantStatus", "Your Plant lost water by amount of 10!")
     }
 
     fun increaseWaterLevel(amount: Int) {

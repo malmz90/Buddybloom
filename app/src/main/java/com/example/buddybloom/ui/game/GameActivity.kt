@@ -2,17 +2,29 @@ package com.example.buddybloom.ui.game
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
-import com.example.buddybloom.R
+import androidx.lifecycle.Observer
+import androidx.work.WorkInfo
+import androidx.work.WorkManager
 import com.example.buddybloom.data.repository.PlantRepository
+import androidx.work.Constraints
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.NetworkType
+import androidx.work.PeriodicWorkRequestBuilder
+import com.example.buddybloom.data.PlantWorker
 import com.example.buddybloom.databinding.ActivityGameBinding
 import com.example.buddybloom.ui.authentication.AuthenticationActivity
+import com.example.buddybloom.ui.game.ChoosePlantFragment
+import com.example.buddybloom.ui.game.ProfileFragment
+import com.example.buddybloom.ui.game.StartPagePlantFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
+import java.util.concurrent.TimeUnit
 
 class GameActivity : AppCompatActivity() {
     private val plantRepository = PlantRepository()
@@ -21,10 +33,9 @@ class GameActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-
         binding = ActivityGameBinding.inflate(layoutInflater)
-
         setContentView(binding.root)
+        plantWorksSchedule() // Begin schedule
         ViewCompat.setOnApplyWindowInsetsListener(binding.main) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
@@ -100,5 +111,39 @@ class GameActivity : AppCompatActivity() {
         supportFragmentManager.beginTransaction()
             .replace(R.id.fvc_game_activity, choosePlantFragment)
             .commit()
+    }
+        /*
+    Sets up a Schedule for plants works that should run in background and
+     updates firestore, functions that runs is placed in Plant-class and PlantWorker-class.
+     */
+    private fun plantWorksSchedule() {
+        val workManager = WorkManager.getInstance(this)
+
+        workManager.getWorkInfosForUniqueWorkLiveData("PlantWateringWork")
+            .observe(this, Observer { workInfos ->
+                val isJobRunning = workInfos.any {
+                    it.state == WorkInfo.State.ENQUEUED || it.state == WorkInfo.State.RUNNING
+                }
+
+                if (!isJobRunning) {
+                    val workRequest = PeriodicWorkRequestBuilder<PlantWorker>(
+                        1, TimeUnit.HOURS
+                    ).setConstraints(
+                        Constraints.Builder()
+                            .setRequiredNetworkType(NetworkType.CONNECTED) //Drives only with InternetService
+                            .build()
+                    ).build()
+
+                    workManager.enqueueUniquePeriodicWork(
+                        "PlantWateringWork",
+                        ExistingPeriodicWorkPolicy.UPDATE,
+                        workRequest
+                    )
+
+                    Log.d("WorkManager", "WorkManager schemalagd!")
+                } else {
+                    Log.d("WorkManager", "Jobb är redan schemalagt och körs.")
+                }
+            })
     }
 }
