@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.buddybloom.data.model.Plant
 import com.example.buddybloom.data.repository.PlantRepository
 import com.example.buddybloom.databinding.FragmentChoosePlantBinding
+import com.google.firebase.auth.FirebaseAuth
 
 
 class ChoosePlantFragment : Fragment() {
@@ -47,7 +48,12 @@ class ChoosePlantFragment : Fragment() {
     }
 
     private fun savePlant(plant: Plant) {
-        plantRepository.saveUserPlant(plant) { success ->
+        val userId = FirebaseAuth.getInstance().currentUser?.uid
+        if (userId == null) {
+            Toast.makeText(context, "No user logged in", Toast.LENGTH_SHORT).show()
+            return
+        }
+        plantRepository.saveUserPlant(userId, plant) { success ->
             if (success) {
                 activity?.runOnUiThread {
                     Toast.makeText(context, "Plant saved successfully!", Toast.LENGTH_SHORT).show()

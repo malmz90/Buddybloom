@@ -103,7 +103,6 @@ class GameActivity : AppCompatActivity() {
         }
     }
 
-
     private fun showChoosePlantFragment() {
         val choosePlantFragment = ChoosePlantFragment()
         supportFragmentManager.beginTransaction()

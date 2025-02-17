@@ -7,37 +7,51 @@ import androidx.work.WorkerParameters
 import com.example.buddybloom.data.model.WeatherReport
 import com.example.buddybloom.data.repository.PlantRepository
 import com.example.buddybloom.data.repository.WeatherRepository
+import com.google.firebase.Timestamp
+import com.google.firebase.auth.FirebaseAuth
 import java.util.Calendar
 import java.util.Locale
 import java.util.concurrent.TimeUnit
 
 class PlantWorker(appContext: Context, workerParams: WorkerParameters) :
     Worker(appContext, workerParams) {
+
     private lateinit var weatherRepository: WeatherRepository
     private lateinit var plantRepository: PlantRepository
+
     override fun doWork(): Result {
 
         weatherRepository = WeatherRepository()
         plantRepository = PlantRepository()
 
 
-        plantRepository.getCurrentUserPlant { plant ->
-            if (plant != null) {
-                plant.decreaseWaterLevel(10)
-                plant.isThirsty()
-                plantRepository.saveUserPlant(plant) { success ->
-                    if (success) {
-                        Log.d("PlantWorker", "Plant data updated successfully!")
-                    } else {
-                        Log.e("PlantWorker", "Failed to update plant data.")
-                    }
-                }
-            } else {
-                Log.e("PlantWorker", "No plant found to update.")
-            }
-        }
+        decreaseWaterLevelForCurrentPlant()
         updateWeather()
         return Result.success()
+    }
+
+    private fun decreaseWaterLevelForCurrentPlant() {
+        val userId = FirebaseAuth.getInstance().currentUser?.uid
+        if (userId == null) {
+            Log.e("PlantWorker", "No user logged in, cannot update plant.")
+            return
+        }
+        plantRepository.getCurrentUserPlant { plant ->
+            if (plant != null) {
+            plant.decreaseWaterLevel(10)
+            plant.isThirsty()
+
+            plantRepository.saveUserPlant(userId, plant) { success ->
+                if (success) {
+                    Log.d("PlantWorker", "Plant data updated successfully!")
+                } else {
+                    Log.e("PlantWorker", "Failed to update plant data.")
+                }
+            }
+        } else {
+            Log.e("PlantWorker", "No plant found to update.")
+            }
+        }
     }
 
     /**
@@ -71,6 +85,4 @@ class PlantWorker(appContext: Context, workerParams: WorkerParameters) :
             weatherRepository.updateWeatherReport(updatedReport)
         }
     }
-
-
 }
