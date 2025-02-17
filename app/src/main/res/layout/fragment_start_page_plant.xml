@@ -9,8 +9,8 @@
 
     <androidx.cardview.widget.CardView
             android:id="@+id/cv_plant"
-            android:layout_width="200dp"
-            android:layout_height="200dp"
+            android:layout_width="250dp"
+            android:layout_height="250dp"
             android:rotationX="-2"
             app:cardBackgroundColor="@color/white"
             app:cardCornerRadius="200dp"
@@ -34,9 +34,9 @@
                 />
 
         <ImageView
-            android:id="@+id/imageView2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:id="@+id/daystreak"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:src="@drawable/icon_day_count" />
     </androidx.cardview.widget.CardView>
 
