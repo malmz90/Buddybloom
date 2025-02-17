@@ -26,13 +26,13 @@
             android:textColor="@color/eggwhite"
             android:textSize="20sp"
             android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@+id/gold_line"
+            app:layout_constraintBottom_toTopOf="@+id/history_gold_line"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <View
-            android:id="@+id/gold_line"
+            android:id="@+id/history_gold_line"
             android:layout_width="match_parent"
             android:layout_height="4dp"
             android:layout_marginTop="30dp"
@@ -50,12 +50,12 @@
             android:padding="10dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/gold_line"
+            app:layout_constraintTop_toBottomOf="@id/history_gold_line"
             tools:layout_editor_absoluteY="20dp"
             tools:listitem="@layout/item_weather" />
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_close"
+            android:id="@+id/btn_history_close"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"

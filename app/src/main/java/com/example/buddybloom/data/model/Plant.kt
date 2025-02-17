@@ -6,8 +6,8 @@ import com.example.buddybloom.data.repository.PlantRepository
 
 
 data class Plant(
-    val name: String,
-    var waterLevel: Int,
+    val name: String = "",
+    var waterLevel: Int = 100,
     var createdAt: Long = System.currentTimeMillis(),
     val streakDays: Int = 0
 ) {

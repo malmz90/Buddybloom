@@ -4,10 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/dialog_daily_goals">
+    android:id="@+id/dialog_history">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/dialog_daily_box"
+        android:id="@+id/dialog_history_box"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/border_lightgreen"
@@ -15,7 +15,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/tv_plant_needs"
+            android:id="@+id/tv_history_title"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginBottom="15dp"
@@ -23,13 +23,13 @@
             android:gravity="center"
             android:text="Your plant needs"
             android:textSize="20sp"
-            app:layout_constraintBottom_toTopOf="@+id/gold_line"
+            app:layout_constraintBottom_toTopOf="@+id/history_gold_line"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <View
-            android:id="@+id/gold_line"
+            android:id="@+id/history_gold_line"
             android:layout_width="match_parent"
             android:layout_height="4dp"
             android:layout_marginTop="30dp"
@@ -49,7 +49,7 @@
             android:text="Water Level: "
             android:textSize="16sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/gold_line" />
+            app:layout_constraintTop_toBottomOf="@+id/history_gold_line" />
 
         <TextView
             android:id="@+id/tv_water_count"
@@ -111,13 +111,13 @@
             android:layout_height="wrap_content"
             android:text="Your plant is in need of water!"
             android:textSize="16sp"
-            app:layout_constraintBottom_toTopOf="@+id/btn_close"
+            app:layout_constraintBottom_toTopOf="@+id/btn_history_close"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_sun_level" />
 
         <Button
-            android:id="@+id/btn_close"
+            android:id="@+id/btn_history_close"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:backgroundTint="@color/darkgreen"
@@ -135,7 +135,7 @@
             android:layout_height="35dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/btn_close">
+            app:layout_constraintStart_toEndOf="@+id/btn_history_close">
 
             <ImageView
                 android:layout_width="match_parent"
