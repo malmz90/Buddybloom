@@ -77,10 +77,26 @@ class StartPagePlantFragment : Fragment() {
                         Toast.LENGTH_SHORT).show()
                 }
 
+                var isBlindsVisible = false // Boolean for blinds toggle button.
                 switchBlinds.setOnClickListener {
-                    Toast.makeText(requireContext(),
-                        "You've successfully protected your plant!",
-                        Toast.LENGTH_SHORT).show()
+                    // Toggling between visible/invisible on the blinds.
+                    isBlindsVisible = !isBlindsVisible
+                    binding.ivBlinds.setImageResource(R.drawable.iconimg_blinds)
+                    if(isBlindsVisible) {
+                        binding.ivBlinds.visibility = View.VISIBLE
+                        Toast.makeText(
+                            requireContext(),
+                            "You've successfully protected your plant!",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    } else {
+                        binding.ivBlinds.visibility = View.INVISIBLE
+                        Toast.makeText(
+                            requireContext(),
+                            "You've removed your protection from your plant!",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
                 }
 
                 binding.btnWeather.setOnClickListener {

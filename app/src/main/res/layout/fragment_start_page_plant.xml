@@ -8,30 +8,36 @@
     tools:context=".ui.game.StartPagePlantFragment">
 
     <androidx.cardview.widget.CardView
-            android:id="@+id/cv_plant"
+        android:id="@+id/cv_plant"
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        android:rotationX="-2"
+        app:cardBackgroundColor="@color/white"
+        app:cardCornerRadius="200dp"
+        app:cardElevation="9dp"
+        android:layout_marginTop="3dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        >
+
+        <ImageView
+            android:id="@+id/img_flower"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="5dp"
+            android:background="@drawable/border_circle"
+            android:clipToOutline="true"
+            android:paddingBottom="85dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/flower_elefant1"/>
+
+        <ImageView
+            android:id="@+id/iv_blinds"
             android:layout_width="250dp"
             android:layout_height="250dp"
-            android:rotationX="-2"
-            app:cardBackgroundColor="@color/white"
-            app:cardCornerRadius="200dp"
-            app:cardElevation="9dp"
-            android:layout_marginTop="3dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            >
-
-            <ImageView
-                android:id="@+id/img_flower"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_margin="5dp"
-                android:background="@drawable/border_circle"
-                android:clipToOutline="true"
-                android:paddingBottom="85dp"
-                android:scaleType="centerCrop"
-                android:src="@drawable/flower_elefant1"
-                />
+            android:translationZ="10dp"
+            android:visibility="invisible"/>
 
         <ImageView
             android:id="@+id/daystreak"
