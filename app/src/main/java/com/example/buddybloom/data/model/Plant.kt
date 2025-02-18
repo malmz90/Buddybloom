@@ -47,7 +47,7 @@ data class Plant(val name : String, var waterLevel: Int, var createdAt: Long = S
 
     fun decreaseWaterLevel(amount: Int) {
         waterLevel = maxOf(0, waterLevel - amount)
-        waterLevel -= amount
+//        waterLevel -= amount
         Log.d("PlantStatus", "Your Plant lost water by $amount!")
     }
 
