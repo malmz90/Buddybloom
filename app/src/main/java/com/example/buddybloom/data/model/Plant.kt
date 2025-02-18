@@ -66,5 +66,4 @@ data class Plant(
         }
         return isThirsty
     }
-
 }
