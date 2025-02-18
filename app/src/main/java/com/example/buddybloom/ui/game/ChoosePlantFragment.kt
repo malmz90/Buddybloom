@@ -17,15 +17,13 @@ import com.google.firebase.auth.FirebaseAuth
 class ChoosePlantFragment : Fragment() {
 
     private lateinit var binding: FragmentChoosePlantBinding
-    private lateinit var adapter : ChoosePlantRecyclerAdapter
+    private lateinit var adapter: ChoosePlantRecyclerAdapter
     private val plants = mutableListOf<Plant>()
-    private var userPlant : Plant? = null
+    private var userPlant: Plant? = null
     private val plantRepository = PlantRepository()
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         binding = FragmentChoosePlantBinding.inflate(inflater, container, false)
         return binding.root
@@ -34,9 +32,21 @@ class ChoosePlantFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val plantElephant = Plant("Elephant", 100, getString(R.string.desc_elephant), difficulty = "Medium")
-        val plantHibiscus = Plant("Hibiscus", 100, getString(R.string.desc_hibiscus), difficulty = "Hard")
-        val plantZebra = Plant("Zebra", 100, getString(R.string.desc_zebra), difficulty = "Hard")
+        val plantElephant = Plant(
+            name = "Elephant",
+            info = getString(R.string.desc_elephant),
+            difficulty = "Medium"
+        )
+        val plantHibiscus = Plant(
+            name = "Hibiscus",
+            info = getString(R.string.desc_hibiscus),
+            difficulty = "Hard"
+        )
+        val plantZebra = Plant(
+            name = "Zebra",
+            info = getString(R.string.desc_zebra),
+            difficulty = "Hard"
+        )
         plants.add(plantElephant)
         plants.add(plantHibiscus)
         plants.add(plantZebra)

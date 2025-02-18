@@ -10,13 +10,11 @@ data class Plant(
     var waterLevel: Int = 100,
     var sunLevel: Int = 100,
     var fertilizerLevel: Int = 100,
-    val info: String ="",
+    val info: String = "",
     var createdAt: Long = System.currentTimeMillis(),
     val streakDays: Int = 0,
     val difficulty: String = "Easy"
 ) {
-
-
 
     fun getPlantImage(): Int {
         val daysOld = (System.currentTimeMillis() - createdAt) / (1000 * 60 * 60 * 24)
