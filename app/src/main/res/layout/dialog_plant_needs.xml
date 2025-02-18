@@ -4,10 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/dialog_daily_goals">
+    android:id="@+id/dialog_plant_needs">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/dialog_daily_box"
+        android:id="@+id/dialog_box"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/border_lightgreen"
@@ -15,7 +15,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/tv_plant_needs"
+            android:id="@+id/tv_title"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginBottom="15dp"
