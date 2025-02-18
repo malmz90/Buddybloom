@@ -78,4 +78,8 @@ class AccountRepository {
                 }
         } ?:onFailure(Exception("User ID is null"))
     }
+    fun signOut(callback: (Boolean) -> Unit){
+        auth.signOut()
+        callback(true)
+    }
 }

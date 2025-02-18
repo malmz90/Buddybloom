@@ -43,4 +43,10 @@ class AccountViewModel : ViewModel() {
     fun deleteAccount(onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
         accountRepository.deleteAccount(onSuccess, onFailure)
     }
+
+    fun signOutUser(callback: (Boolean) -> Unit){
+        accountRepository.signOut{success->
+            callback(success)
+        }
+    }
 }
