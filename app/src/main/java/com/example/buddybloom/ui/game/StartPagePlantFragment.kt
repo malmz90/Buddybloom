@@ -137,6 +137,9 @@ class StartPagePlantFragment : Fragment() {
                         "You've successfully saved your plant from bugs!",
                         Toast.LENGTH_SHORT).show()
                 }
+
+                val streakDaysString = plant.streakDays.toString()
+                tvDaystreak.text = streakDaysString
             }
         }
     }
