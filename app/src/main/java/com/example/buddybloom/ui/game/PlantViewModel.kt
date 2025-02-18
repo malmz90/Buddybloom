@@ -12,6 +12,7 @@ class PlantViewModel : ViewModel() {
     private val plantRepository = PlantRepository()
     private val _selectedPlant = MutableLiveData<Plant?>()
     val selectedPlant: LiveData<Plant?> get() = _selectedPlant
+    var isFirstTimeChoosingPlant = false
 
     fun setSelectedPlant(plant: Plant) {
         _selectedPlant.value = plant

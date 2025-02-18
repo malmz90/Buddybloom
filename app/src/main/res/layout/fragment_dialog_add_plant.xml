@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:gravity="center"
-        android:text="@string/add_plant"
+        android:text="@string/about_plant"
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
@@ -32,13 +32,13 @@
         app:layout_constraintTop_toBottomOf="@+id/tv_daily_goals" />
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/tv_plant_info"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:gravity="center"
-        android:text="@string/add_plant_info"
-        android:textColor="@color/eggwhite"
+        android:text="@string/flower"
+        android:textColor="@color/darkbrown"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -52,25 +52,29 @@
         android:gravity="center"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView">
+        app:layout_constraintTop_toBottomOf="@+id/tv_plant_info">
 
         <Button
-            android:id="@+id/btn_yes"
-            android:layout_width="100dp"
+            android:id="@+id/btn_add_plant"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="32dp"
             android:backgroundTint="@color/darkgreen"
-            android:text="Yes"
-            android:textColor="@color/eggwhite" />
+            android:drawableEnd="@drawable/icon_flower"
+            android:text="Add Plant"
+            android:textColor="@color/eggwhite"
+            app:strokeColor="@color/darkbrown"
+            app:strokeWidth="1dp" />
 
         <Button
-            android:id="@+id/btn_no"
-            android:layout_width="100dp"
+            android:id="@+id/btn_cancel"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:backgroundTint="@color/darkgreen"
-            android:text="No"
+            android:text="@string/cancel"
             android:textColor="@color/eggwhite"
- />
+            app:strokeColor="@color/darkbrown"
+            app:strokeWidth="1dp" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

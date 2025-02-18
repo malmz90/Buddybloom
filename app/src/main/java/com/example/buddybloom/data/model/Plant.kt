@@ -10,10 +10,13 @@ data class Plant(
     var waterLevel: Int = 100,
     var sunLevel: Int = 100,
     var fertilizerLevel: Int = 100,
+    val info: String ="",
     var createdAt: Long = System.currentTimeMillis(),
-    val streakDays: Int = 0
+    val streakDays: Int = 0,
+    val difficulty: String = "Easy"
 ) {
-    constructor() : this("", 100, 100, 100, System.currentTimeMillis())
+
+
 
     fun getPlantImage(): Int {
         val daysOld = (System.currentTimeMillis() - createdAt) / (1000 * 60 * 60 * 24)
@@ -57,7 +60,7 @@ data class Plant(
 
     fun decreaseWaterLevel(amount: Int) {
         waterLevel = maxOf(0, waterLevel - amount)
-//        waterLevel -= amount
+        waterLevel -= amount
         Log.d("PlantStatus", "Your Plant lost water by $amount!")
     }
 
