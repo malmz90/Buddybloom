@@ -121,9 +121,11 @@ class StartPagePlantFragment : Fragment() {
                     weatherDialog.show(parentFragmentManager, "WeatherDialogFragment")
                 }
 
-                binding.btnDailyCheck.setOnClickListener {
-                    val dailyChecksDialog = PlantNeedsDialogFragment()
-                    dailyChecksDialog.show(parentFragmentManager, "DailyChecksDialogFragment")
+                binding.btnPlantNeeds.setOnClickListener {
+                    plantViewModel.selectedPlant.value?.let { plant ->
+                        val plantNeedsDialog = PlantNeedsDialogFragment.newInstance(plant)
+                        plantNeedsDialog.show(parentFragmentManager, "PlantNeedsDialogFragment")
+                    }
                 }
 
                 imgBtnWaterspray.setOnClickListener {

@@ -10,6 +10,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import com.example.buddybloom.data.repository.PlantRepository
@@ -28,6 +29,7 @@ import java.util.concurrent.TimeUnit
 class GameActivity : AppCompatActivity() {
     private val plantRepository = PlantRepository()
     lateinit var binding : ActivityGameBinding
+    private lateinit var plantViewModel : PlantViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,6 +42,7 @@ class GameActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+        plantViewModel = ViewModelProvider(this)[PlantViewModel::class.java]
 
         // Temporary logout-button to return to HomeActivity.
         binding.btnLogout.setOnClickListener{
@@ -63,7 +66,7 @@ class GameActivity : AppCompatActivity() {
                     true
                 }
                 R.id.nav_home -> {
-                    showAddPlantDialog()
+                    replaceFragmentForNavbar(ChoosePlantFragment())
                     true
                 }
                 else -> false
@@ -71,10 +74,6 @@ class GameActivity : AppCompatActivity() {
         }
         replaceFragmentForNavbar(StartPagePlantFragment())
         binding.navbarMenu.selectedItemId = R.id.nav_plant
-    }
-
-    private fun showAddPlantDialog() {
-        AddPlantDialogFragment().show(supportFragmentManager, "AddPlantDialogFragment")
     }
 
     fun replaceFragment(fragment: Fragment) {
@@ -107,8 +106,11 @@ class GameActivity : AppCompatActivity() {
 
         plantRepository.getCurrentUserPlant { plant ->
             if (plant == null) {
+                plantViewModel.isFirstTimeChoosingPlant = true
+                Log.d("GameAct", "First time choosing plant ${plantViewModel.isFirstTimeChoosingPlant}")
                 showChoosePlantFragment()
             } else {
+                Log.d("GameAct", "User already has a plant")
                 showStartPagePlantFragment()
             }
         }

@@ -99,7 +99,7 @@
             android:layout_marginBottom="30dp"/>
 
         <Button
-            android:id="@+id/btn_daily_check"
+            android:id="@+id/btn_plant_needs"
             android:layout_width="79dp"
             android:layout_height="57dp"
             android:layout_marginEnd="32dp"
