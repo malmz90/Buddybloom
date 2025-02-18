@@ -19,7 +19,7 @@ class PlantNeedsDialogFragment : DialogFragment() {
 
         builder.setView(view)
 
-        val closeButton : MaterialButton = view.findViewById(R.id.btn_close)
+        val closeButton : MaterialButton = view.findViewById(R.id.btn_history_close)
 
         closeButton.setOnClickListener {
             dismiss()

@@ -42,5 +42,9 @@ class ProfileFragment : Fragment() {
             }
 
         }
+
+        binding.btnHistoryCheck.setOnClickListener {
+            HistoryDialogFragment().show(parentFragmentManager, null)
+        }
     }
 }
