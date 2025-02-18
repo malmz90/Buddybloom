@@ -22,7 +22,6 @@ import com.google.firebase.auth.FirebaseAuth
 
 class ReplacePlantDialogFragment(private val plant: Plant) : DialogFragment(R.layout.dialog_replace_plant) {
 
-    private val plantRepository = PlantRepository()
     private lateinit var plantViewModel: PlantViewModel
     private lateinit var auth : FirebaseAuth
 

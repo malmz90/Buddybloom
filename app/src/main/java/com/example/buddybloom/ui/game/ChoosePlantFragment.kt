@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.buddybloom.R
 import com.example.buddybloom.data.model.Plant
 import com.example.buddybloom.data.repository.PlantRepository
 import com.example.buddybloom.databinding.FragmentChoosePlantBinding
@@ -33,9 +34,9 @@ class ChoosePlantFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val plantElephant = Plant("Elephant", 100)
-        val plantHibiscus = Plant("Hibiscus", 100)
-        val plantZebra = Plant("Zebra", 100)
+        val plantElephant = Plant("Elephant", 100, getString(R.string.desc_elephant), difficulty = "Medium")
+        val plantHibiscus = Plant("Hibiscus", 100, getString(R.string.desc_hibiscus), difficulty = "Hard")
+        val plantZebra = Plant("Zebra", 100, getString(R.string.desc_zebra), difficulty = "Hard")
         plants.add(plantElephant)
         plants.add(plantHibiscus)
         plants.add(plantZebra)

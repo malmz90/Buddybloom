@@ -1,5 +1,6 @@
 package com.example.buddybloom.ui.game
 
+import AddPlantDialogFragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -30,7 +31,7 @@ class ChoosePlantRecyclerAdapter(val plants : MutableList<Plant>, val onPlantCli
         }
         holder.ivChoosePlant.setImageResource(imageResource)
         holder.itemView.setOnClickListener {
-            val dialog = PlantInfoDialogFragment(chosenPlant)
+            val dialog = AddPlantDialogFragment(chosenPlant)
             dialog.show((holder.itemView.context as AppCompatActivity).supportFragmentManager, "PlantInfoDialog")
 //            onPlantClicked(chosenPlant)
         }

@@ -35,7 +35,9 @@ class PlantRepository {
             "name" to plant.name,
             "waterLevel" to plant.waterLevel,
             "createdAt" to plant.createdAt,
-            "streakDays" to plant.streakDays
+            "streakDays" to plant.streakDays,
+            "info" to plant.info,
+            "difficulty" to plant.difficulty
         )
 
         db.collection("users").document(userId).update("userPlants", listOf(plantToSave))

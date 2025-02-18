@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import com.example.buddybloom.databinding.FragmentProfileBinding
+import com.example.buddybloom.ui.AboutInfoFragment
 import com.example.buddybloom.ui.authentication.AccountViewModel
 import com.example.buddybloom.ui.authentication.DeleteAccountDialogFragment
 
@@ -40,7 +41,11 @@ class ProfileFragment : Fragment() {
             else{
                 Toast.makeText(requireContext(),"Notifications OFF!",Toast.LENGTH_SHORT).show()
             }
+        }
 
+        binding.ibInfo.setOnClickListener {
+            val aboutInfoFragment = AboutInfoFragment()
+            aboutInfoFragment.show(requireActivity().supportFragmentManager, "AboutInfoFragmentTag")
         }
 
         binding.btnHistoryCheck.setOnClickListener {
