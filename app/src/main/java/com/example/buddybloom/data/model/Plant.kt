@@ -8,10 +8,12 @@ import com.example.buddybloom.data.repository.PlantRepository
 data class Plant(
     val name: String = "",
     var waterLevel: Int = 100,
+    var sunLevel: Int = 100,
+    var fertilizerLevel: Int = 100,
     var createdAt: Long = System.currentTimeMillis(),
     val streakDays: Int = 0
 ) {
-    constructor() : this("", 100, System.currentTimeMillis())
+    constructor() : this("", 100, 100, 100, System.currentTimeMillis())
 
     fun getPlantImage(): Int {
         val daysOld = (System.currentTimeMillis() - createdAt) / (1000 * 60 * 60 * 24)

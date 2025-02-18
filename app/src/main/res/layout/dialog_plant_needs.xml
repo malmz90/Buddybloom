@@ -78,7 +78,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="17dp"
-            android:text="100/100"
+            android:text="77/100"
             app:layout_constraintBottom_toBottomOf="@+id/tv_fertilize_level"
             app:layout_constraintStart_toEndOf="@+id/tv_fertilize_level"
             app:layout_constraintTop_toTopOf="@+id/tv_fertilize_level" />

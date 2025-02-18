@@ -45,7 +45,7 @@ class LoginFragment : Fragment() {
             false
         }
         //TODO remove after testing.
-        //testFunction()
+        testFunction()
 
         binding.tvForgot.setOnClickListener {
             forgotPassword()
