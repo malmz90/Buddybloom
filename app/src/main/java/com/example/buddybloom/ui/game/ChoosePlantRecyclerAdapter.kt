@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.example.buddybloom.R
 import com.example.buddybloom.data.model.Plant
@@ -29,7 +30,9 @@ class ChoosePlantRecyclerAdapter(val plants : MutableList<Plant>, val onPlantCli
         }
         holder.ivChoosePlant.setImageResource(imageResource)
         holder.itemView.setOnClickListener {
-            onPlantClicked(chosenPlant)
+            val dialog = PlantInfoDialogFragment(chosenPlant)
+            dialog.show((holder.itemView.context as AppCompatActivity).supportFragmentManager, "PlantInfoDialog")
+//            onPlantClicked(chosenPlant)
         }
     }
 
