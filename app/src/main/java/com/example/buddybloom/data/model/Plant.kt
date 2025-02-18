@@ -58,5 +58,4 @@ data class Plant(val name : String, var waterLevel: Int, var createdAt: Long = S
         }
         return isThirsty
     }
-
 }
