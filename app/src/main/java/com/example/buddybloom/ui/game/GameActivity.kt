@@ -41,12 +41,6 @@ class GameActivity : AppCompatActivity() {
             insets
         }
 
-        // Temporary logout-button to return to HomeActivity.
-        binding.btnLogout.setOnClickListener{
-            val logoutIntent = Intent(this, AuthenticationActivity::class.java)
-            startActivity(logoutIntent)
-        }
-
         // Add this line to check for plant when activity starts
         checkUserPlant()
 
@@ -135,7 +129,7 @@ class GameActivity : AppCompatActivity() {
 
                 if (!isJobRunning) {
                     val workRequest = PeriodicWorkRequestBuilder<PlantWorker>(
-                        1, TimeUnit.HOURS
+                        15, TimeUnit.MINUTES
                     ).setConstraints(
                         Constraints.Builder()
                             .setRequiredNetworkType(NetworkType.CONNECTED) //Drives only with InternetService

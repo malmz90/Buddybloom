@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="#A0CFB0"
+    android:background="@drawable/border_lightgreen"
+    android:padding="16dp"
     tools:context=".ui.game.ProfileFragment">
 
 
@@ -152,5 +153,12 @@
         android:background="@drawable/border_circlewhite"
         android:padding="16dp" />
 
+    <ImageView
+        android:id="@+id/btn_signOut"
+        android:layout_width="46dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="320dp"
+        android:layout_marginTop="20dp"
+        android:src="@drawable/icon_signout" />
 
 </FrameLayout>
