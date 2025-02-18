@@ -58,11 +58,11 @@ class HistoryDialogFragment : DialogFragment(R.layout.dialog_history) {
     }
 
     //TODO Remove after testing
-    private fun createMockData() {
-        val plantRepository = PlantRepository()
-        plantRepository.savePlantHistory(Plant("Hillibiskus", streakDays = 5), {}, {})
-        plantRepository.savePlantHistory(Plant("Elefantianus", streakDays = 112), {}, {})
-        plantRepository.savePlantHistory(Plant("Zebraskopus", streakDays = 19), {}, {})
-    }
+//    private fun createMockData() {
+//        val plantRepository = PlantRepository()
+//        plantRepository.savePlantHistory(Plant("Hillibiskus", streakDays = 5), {}, {})
+//        plantRepository.savePlantHistory(Plant("Elefantianus", streakDays = 112), {}, {})
+//        plantRepository.savePlantHistory(Plant("Zebraskopus", streakDays = 19), {}, {})
+//    }
 
 }
