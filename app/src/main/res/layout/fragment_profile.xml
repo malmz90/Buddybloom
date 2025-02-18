@@ -4,9 +4,34 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="#A0CFB0"
+    android:background="@drawable/border_lightgreen"
     tools:context=".ui.game.ProfileFragment">
 
+    <ImageButton
+        android:id="@+id/ib_info"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:src="@drawable/icon_info"
+        android:layout_gravity="start"
+        android:padding="0dp"
+        android:scaleType="fitCenter"
+        android:adjustViewBounds="true"
+        android:backgroundTint="@color/lightgreen"
+        android:layout_marginTop="30dp"
+        android:layout_marginLeft="20dp"/>
+
+    <ImageButton
+        android:id="@+id/ib_signout"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:src="@drawable/icon_signout"
+        android:layout_gravity="end"
+        android:padding="0dp"
+        android:scaleType="fitCenter"
+        android:adjustViewBounds="true"
+        android:backgroundTint="@color/lightgreen"
+        android:layout_marginTop="30dp"
+        android:layout_marginRight="20dp"/>
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/textinputEmail_et_layout"
@@ -127,13 +152,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="50dp"
-        android:layout_marginTop="110dp"
+        android:layout_marginTop="120dp"
         android:layout_marginEnd="50dp"
         android:text="@string/delete_your_account"
         android:textColor="@android:color/white"
         android:textSize="16sp"
         android:layout_gravity="center"
-        android:padding="16dp"
         android:clickable="true"
         android:focusable="true" />
 
