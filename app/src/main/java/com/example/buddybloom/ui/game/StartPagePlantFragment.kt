@@ -170,6 +170,16 @@ class StartPagePlantFragment : Fragment() {
 
     private fun getPlantImage(plant: Plant?): Int {
         if (plant == null) return R.drawable.icon_obs
+
+        if (plant.waterLevel < 30) {
+            return when (plant.name.lowercase()) {
+                "elephant" -> R.drawable.flower_elefant5
+                "hibiscus" -> R.drawable.flower_hibiscus5
+                "zebra" -> R.drawable.flower_zebra7
+                else -> R.drawable.flower_elefant5
+            }
+        }
+
         val daysOld = (System.currentTimeMillis() - plant.createdAt) / (1000 * 60 * 60 * 24)
 
         val stage = when {

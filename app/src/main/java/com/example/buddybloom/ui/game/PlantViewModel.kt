@@ -5,10 +5,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.buddybloom.data.model.Plant
+import com.example.buddybloom.data.model.PlantManager
 import com.example.buddybloom.data.repository.PlantRepository
 
 class PlantViewModel : ViewModel() {
     private val plantRepository = PlantRepository()
+
+    private val plantManager = PlantManager()
 
     private val _selectedPlant = MutableLiveData<Plant?>()
     val selectedPlant: LiveData<Plant?> get() = _selectedPlant
@@ -25,7 +28,7 @@ class PlantViewModel : ViewModel() {
     }
    fun checkAndUpdateWaterLevel() {
         _currentPlant.value?.let { plant ->
-            plant.updateWaterBasedOnTimePassed()
+            plantManager.updateWaterBasedOnTimePassed(plant)
             plantRepository.saveUserPlant(plant) { success ->
                 if (success) {
                     Log.d("PlantVM", "Plant saved with updated water level")
