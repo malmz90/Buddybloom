@@ -31,16 +31,7 @@ class PlantRepository {
     fun saveUserPlant(userId: String, plant: Plant, callback: (Boolean) -> Unit) {
 //        val userId = auth.currentUser?.uid ?: return
 
-        val plantToSave = mapOf(
-            "name" to plant.name,
-            "waterLevel" to plant.waterLevel,
-            "createdAt" to plant.createdAt,
-            "streakDays" to plant.streakDays,
-            "info" to plant.info,
-            "difficulty" to plant.difficulty
-        )
-
-        db.collection("users").document(userId).update("userPlants", listOf(plantToSave))
+        db.collection("users").document(userId).update("userPlants", listOf(plant))
             .addOnSuccessListener {
                 Log.d("Firebase", "Plant saved successfully")
                 callback(true)

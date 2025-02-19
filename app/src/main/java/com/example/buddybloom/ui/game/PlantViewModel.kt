@@ -19,6 +19,7 @@ class PlantViewModel : ViewModel() {
     }
 
     fun getCurrentUserPlant() {
+        Log.i("getCurrentUserPlant()", "Triggered")
         plantRepository.getCurrentUserPlant { plant ->
             if (plant != null) {
                 _selectedPlant.postValue(plant)
