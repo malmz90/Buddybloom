@@ -16,16 +16,16 @@ class PlantViewModel : ViewModel() {
     private val _currentPlant = MutableLiveData<Plant?>()
     val currentPlant: LiveData<Plant?> get() = _currentPlant
 
+    private var isUpdating = false
+
     init {
         plantRepository.snapshotOfCurrentUserPlant { plant ->
             _currentPlant.value = plant
-            checkAndUpdateWaterLevel()
         }
     }
-   private fun checkAndUpdateWaterLevel() {
+   fun checkAndUpdateWaterLevel() {
         _currentPlant.value?.let { plant ->
-            plant.updateWaterBasedOnTime()
-            // Save updated plant to Firebase
+            plant.updateWaterBasedOnTimePassed()
             plantRepository.saveUserPlant(plant) { success ->
                 if (success) {
                     Log.d("PlantVM", "Plant saved with updated water level")
@@ -51,12 +51,15 @@ class PlantViewModel : ViewModel() {
     }
 
     fun increaseWaterLevel(amount: Int) {
-        _selectedPlant.value?.let { plant ->
+        _currentPlant.value?.let { plant ->
             plant.waterLevel = minOf(100, plant.waterLevel + amount)
-            _selectedPlant.postValue(plant)
-            // savePlantForCurrentUser()
-            Log.d("PlantVM", "Water level increased by $amount")
-        } ?: Log.e("PlantVM", "No plant selected to update water level")
+            plant.lastWaterUpdate = System.currentTimeMillis()
+            plantRepository.saveUserPlant(plant) { success ->
+                if (success) {
+                    Log.d("PlantVM", "Water level increased by $amount")
+                }
+            }
+        }
     }
 }
     

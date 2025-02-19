@@ -21,16 +21,19 @@ data class Plant(
         val UPDATE_INTERVAL = TimeInterval.MINUTE
     }
 
-    fun updateWaterBasedOnTime() {
+    fun updateWaterBasedOnTimePassed() {
         val currentTime = System.currentTimeMillis()
         val timeSinceLastUpdate = currentTime - lastWaterUpdate
         val intervalsPassed = timeSinceLastUpdate / UPDATE_INTERVAL.milliseconds
 
         if (intervalsPassed >= 1) {
             val totalDecrease = (intervalsPassed * WATER_DECREASE_AMOUNT).toInt()
+
             waterLevel = maxOf(0, waterLevel - totalDecrease)
+
             lastWaterUpdate = currentTime
-            Log.d("PlantStatus", "Water decreased by $totalDecrease after $intervalsPassed intervals")
+
+            Log.d("PlantStatus", "Water level now: $waterLevel after $intervalsPassed intervals")
         }
     }
 

@@ -40,6 +40,11 @@ class StartPagePlantFragment : Fragment() {
         // Boolean for blinds toggle button.
         var isBlindsVisible = false
         plantViewModel.currentPlant.observe(viewLifecycleOwner) { plant ->
+            plant?.let{
+                binding.tvWaterLevel.text = "${maxOf(0, it.waterLevel)}%"
+                binding.progressWater.progress = maxOf(0, it.waterLevel)
+            }
+
             binding.imgFlower.setImageResource(getPlantImage(plant))
             binding.tvDaystreak.text = String.format(getDayStreak(plant).toString())
             binding.btnPlantNeeds.setOnClickListener {
@@ -50,6 +55,21 @@ class StartPagePlantFragment : Fragment() {
             }
         }
         binding.apply {
+            binding.btnRefresh.setOnClickListener {
+                plantViewModel.checkAndUpdateWaterLevel()
+
+                binding.btnRefresh.animate()
+                    .rotationBy(360f)
+                    .setDuration(1000)
+                    .start()
+
+                Toast.makeText(
+                    requireContext(),
+                    "Updating plant status...",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+
             btnWater.setOnClickListener {
                 plantViewModel.increaseWaterLevel(10)
                 Toast.makeText(
