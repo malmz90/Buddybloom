@@ -81,7 +81,7 @@ class StartPagePlantFragment : Fragment() {
                 ).show()
 
                 val drawable: Drawable? =
-                    ContextCompat.getDrawable(requireContext(), R.drawable.gif_nutrition)
+                    ContextCompat.getDrawable(requireContext(), R.drawable.gif_fertilize)
                 if (drawable is AnimatedImageDrawable) {
                     binding.ivAnimationWateringCan.visibility = View.VISIBLE
                     binding.ivAnimationWateringCan.setImageDrawable(drawable)
@@ -127,6 +127,19 @@ class StartPagePlantFragment : Fragment() {
                     "You've successfully sprayed water on your plant!",
                     Toast.LENGTH_SHORT
                 ).show()
+
+                val drawable: Drawable? =
+                    ContextCompat.getDrawable(requireContext(), R.drawable.gif_waterspray)
+                if (drawable is AnimatedImageDrawable) {
+                    binding.ivAnimationWateringCan.visibility = View.VISIBLE
+                    binding.ivAnimationWateringCan.setImageDrawable(drawable)
+                    drawable.start()
+
+                    // Hide the animation after 3 seconds.
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        binding.ivAnimationWateringCan.visibility = View.INVISIBLE
+                    }, 3000)
+                }
             }
 
             imgBtnBugspray.setOnClickListener {
@@ -135,6 +148,19 @@ class StartPagePlantFragment : Fragment() {
                     "You've successfully saved your plant from bugs!",
                     Toast.LENGTH_SHORT
                 ).show()
+
+                val drawable: Drawable? =
+                    ContextCompat.getDrawable(requireContext(), R.drawable.gif_bugspray)
+                if (drawable is AnimatedImageDrawable) {
+                    binding.ivAnimationWateringCan.visibility = View.VISIBLE
+                    binding.ivAnimationWateringCan.setImageDrawable(drawable)
+                    drawable.start()
+
+                    // Hide the animation after 3 seconds.
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        binding.ivAnimationWateringCan.visibility = View.INVISIBLE
+                    }, 3000)
+                }
             }
         }
     }
@@ -185,6 +211,6 @@ class StartPagePlantFragment : Fragment() {
             }
 
             else -> R.drawable.flower_elefant1
+            }
         }
     }
-}
