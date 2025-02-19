@@ -3,12 +3,14 @@ package com.example.buddybloom.ui.game
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
+import com.example.buddybloom.R
 import com.example.buddybloom.databinding.FragmentProfileBinding
 import com.example.buddybloom.ui.AboutInfoFragment
 import com.example.buddybloom.ui.authentication.AccountViewModel
@@ -66,6 +68,24 @@ class ProfileFragment : Fragment() {
 
         binding.btnHistoryCheck.setOnClickListener {
             HistoryDialogFragment().show(parentFragmentManager, null)
+        }
+        accountViewModel.updateStatus.observe(viewLifecycleOwner) { result ->
+            result.onSuccess {
+                Toast.makeText(requireContext(), "Update Success! Verfify before signing in!!.", Toast.LENGTH_LONG).show()
+
+                //Navigates to Login page
+                val intent = Intent(requireContext(), AuthenticationActivity::class.java)
+                startActivity(intent)
+                requireActivity().finish() // Shuts ProfileFragment, user can`t co back until signing in
+
+            }.onFailure { exception ->
+                Toast.makeText(requireContext(), "Fel: ${exception.message}", Toast.LENGTH_LONG).show()
+            }
+        }
+        binding.saveButton.setOnClickListener {
+            val newMail = binding.etEmail2.text.toString()
+            val newUserName = binding.etUsername.text.toString()
+            accountViewModel.updateUser(newMail, newUserName)
         }
     }
 }

@@ -5,7 +5,9 @@ import com.example.buddybloom.data.model.User
 import com.google.android.gms.tasks.Task
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.firestore.firestore
+import kotlinx.coroutines.tasks.await
 
 class AccountRepository {
 
@@ -56,6 +58,40 @@ class AccountRepository {
 
     fun sendPasswordResetEmail(email: String): Task<Void> {
         return auth.sendPasswordResetEmail(email)
+    }
+    suspend fun updateUserInfo(newEmail: String, newUsername: String): Result<Unit> {
+        val user = auth.currentUser ?: return Result.failure(Exception("Ingen användare inloggad"))
+        val userId = user.uid
+
+        return try {
+            // Updates username in Firebase Authentication
+            val profileUpdates = UserProfileChangeRequest.Builder()
+                .setDisplayName(newUsername)
+                .build()
+            user.updateProfile(profileUpdates).await()
+
+            //Updates email in Firebase Authentication
+            // And send email verification to email adress
+            user.verifyBeforeUpdateEmail(newEmail).await()
+            user.sendEmailVerification().await()
+
+            //Updates firestore to whit email and username
+            val userRef = db.collection("users").document(userId)
+            val updates = mapOf(
+                "email" to newEmail,
+                "name" to newUsername
+            )
+            userRef.update(updates).await()
+
+            // User logs out, and needs to sign in again after verification of email
+            auth.signOut()
+
+            Log.d("AccountRespitory", "UserInfo updated. User need to signin again.")
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Log.e("AccountRespitory", "Failed to update userinfo: ${e.message}")
+            Result.failure(e)
+        }
     }
 
     fun deleteAccount(onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {

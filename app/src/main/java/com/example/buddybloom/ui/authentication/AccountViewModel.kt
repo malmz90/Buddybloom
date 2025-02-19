@@ -3,7 +3,9 @@ package com.example.buddybloom.ui.authentication
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.buddybloom.data.repository.AccountRepository
+import kotlinx.coroutines.launch
 
 class AccountViewModel : ViewModel() {
 
@@ -17,6 +19,9 @@ class AccountViewModel : ViewModel() {
 
     private val _resetPasswordResult = MutableLiveData<Boolean>()
     val resetPasswordResult: LiveData<Boolean> get() = _resetPasswordResult
+
+    private val _updateStatus = MutableLiveData<Result<Unit>>()
+    val updateStatus: LiveData<Result<Unit>> get() = _updateStatus
 
     fun registerUser(email : String, password : String, name : String) {
         accountRepository.registerUser(email, password, name) { success ->
@@ -49,4 +54,12 @@ class AccountViewModel : ViewModel() {
             callback(success)
         }
     }
+
+    fun updateUser(newEmail: String, newUsername: String) {
+    viewModelScope.launch {
+        val result = accountRepository.updateUserInfo(newEmail, newUsername)
+        _updateStatus.postValue(result)
+    }
+    }
+
 }
