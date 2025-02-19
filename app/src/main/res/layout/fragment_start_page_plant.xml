@@ -44,31 +44,98 @@
             android:visibility="invisible"
             app:layout_constraintEnd_toEndOf="@+id/cv_plant" />
     </androidx.cardview.widget.CardView>
+        <androidx.cardview.widget.CardView
+            android:id="@+id/water_level_card"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            app:cardBackgroundColor="@color/eggwhite"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="4dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/cv_plant">
 
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:padding="4dp">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Water Level"
+                        android:textColor="@color/darkgreen"
+                        android:textSize="14sp"
+                        android:layout_gravity="center"/>
+
+                    <ProgressBar
+                        android:id="@+id/progress_water"
+                        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                        android:layout_width="200dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:max="100"
+                        android:progress="100"
+                        android:progressTint="@color/darkgreen"
+                        android:background="@color/turquise"/>
+
+                    <TextView
+                        android:id="@+id/tv_water_level"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="100%"
+                        android:textColor="@color/darkgreen"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:layout_gravity="center"/>
+                </LinearLayout>
+
+                <ImageButton
+                    android:id="@+id/btn_refresh"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginStart="8dp"
+                    android:background="@drawable/border_circle"
+                    android:backgroundTint="@color/turquise"
+                    android:src="@drawable/icon_refresh"
+                    android:scaleType="fitCenter"
+                    android:padding="8dp"/>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
         <ImageView
             android:id="@+id/iv_daystreak"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:layout_marginLeft="95dp"
             android:elevation="8dp"
             android:src="@drawable/icon_day_count"
             android:translationZ="10dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent" />
+            app:layout_constraintEnd_toStartOf="@id/cv_plant"
+            app:layout_constraintBottom_toBottomOf="@id/cv_plant"
+            android:layout_marginBottom="20dp"
+            android:layout_marginEnd="-45dp" />
 
         <TextView
             android:id="@+id/tv_daystreak"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="115dp"
-            android:layout_marginTop="7dp"
             android:elevation="12dp"
             android:text="3"
             android:textColor="@color/darkbrown"
             android:textSize="28sp"
             android:textStyle="bold"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/iv_daystreak" />
+            app:layout_constraintStart_toStartOf="@id/iv_daystreak"
+            app:layout_constraintEnd_toEndOf="@id/iv_daystreak"
+            app:layout_constraintTop_toTopOf="@id/iv_daystreak"
+            android:layout_marginTop="7dp" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <ImageView

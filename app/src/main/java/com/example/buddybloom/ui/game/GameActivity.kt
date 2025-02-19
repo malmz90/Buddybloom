@@ -81,6 +81,8 @@ class GameActivity : AppCompatActivity() {
             } else {
                 binding.navbarMenu.selectedItemId = R.id.nav_plant
                 Log.d("GameAct", "User already has a plant")
+                plantViewModel.checkAndUpdateWaterLevel()
+
                 showFragment(StartPagePlantFragment())
             }
         }
