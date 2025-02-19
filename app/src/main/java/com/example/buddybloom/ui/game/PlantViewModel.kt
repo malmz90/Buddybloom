@@ -13,6 +13,7 @@ class PlantViewModel : ViewModel() {
 
     private val plantManager = PlantManager()
 
+
     private val _selectedPlant = MutableLiveData<Plant?>()
     val selectedPlant: LiveData<Plant?> get() = _selectedPlant
 
@@ -65,5 +66,3 @@ class PlantViewModel : ViewModel() {
         }
     }
 }
-    
-
