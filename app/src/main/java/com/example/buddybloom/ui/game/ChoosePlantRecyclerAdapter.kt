@@ -33,7 +33,7 @@ class ChoosePlantRecyclerAdapter(val plants : MutableList<Plant>, val onPlantCli
         holder.itemView.setOnClickListener {
             val dialog = AddPlantDialogFragment(chosenPlant)
             dialog.show((holder.itemView.context as AppCompatActivity).supportFragmentManager, "PlantInfoDialog")
-//            onPlantClicked(chosenPlant)
+           onPlantClicked(chosenPlant)
         }
     }
 

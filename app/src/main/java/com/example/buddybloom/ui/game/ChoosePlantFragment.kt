@@ -1,5 +1,6 @@
 package com.example.buddybloom.ui.game
 
+import AddPlantDialogFragment
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -11,7 +12,6 @@ import com.example.buddybloom.R
 import com.example.buddybloom.data.model.Plant
 import com.example.buddybloom.data.repository.PlantRepository
 import com.example.buddybloom.databinding.FragmentChoosePlantBinding
-import com.google.firebase.auth.FirebaseAuth
 
 
 class ChoosePlantFragment : Fragment() {
@@ -53,28 +53,34 @@ class ChoosePlantFragment : Fragment() {
 
         binding.rvChoosePlant.layoutManager = LinearLayoutManager(requireContext())
         adapter = ChoosePlantRecyclerAdapter(plants) { chosenPlant ->
-            savePlant(chosenPlant)
+            showAddPlantDialogFragment(chosenPlant)
         }
         binding.rvChoosePlant.adapter = adapter
     }
 
-    private fun savePlant(plant: Plant) {
-        val userId = FirebaseAuth.getInstance().currentUser?.uid
-        if (userId == null) {
-            Toast.makeText(context, "No user logged in", Toast.LENGTH_SHORT).show()
-            return
+    private fun showAddPlantDialogFragment(plant: Plant) {
+//        val userId = FirebaseAuth.getInstance().currentUser?.uid
+//        if (userId == null) {
+//            Toast.makeText(context, "No user logged in", Toast.LENGTH_SHORT).show()
+//            return
+//        }
+
+        parentFragmentManager.beginTransaction().apply {
+            show(AddPlantDialogFragment(plant))
+            commit()
         }
-        plantRepository.saveUserPlant(userId, plant) { success ->
-            if (success) {
-                activity?.runOnUiThread {
-                    Toast.makeText(context, "Plant saved successfully!", Toast.LENGTH_SHORT).show()
-                    (activity as? GameActivity)?.showStartPagePlantFragment()
-                }
-            } else {
-                activity?.runOnUiThread {
-                    Toast.makeText(context, "Failed to save plant", Toast.LENGTH_SHORT).show()
-                }
-            }
-        }
+
+//        plantRepository.saveUserPlant(plant) { success ->
+//            if (success) {
+//                activity?.runOnUiThread {
+//                    Toast.makeText(context, "Plant saved successfully!", Toast.LENGTH_SHORT).show()
+//                    (activity as? GameActivity)?.showFragment(StartPagePlantFragment())
+//                }
+//            } else {
+//                activity?.runOnUiThread {
+//                    Toast.makeText(context, "Failed to save plant", Toast.LENGTH_SHORT).show()
+//                }
+//            }
+//        }
     }
 }

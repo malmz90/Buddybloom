@@ -23,11 +23,11 @@ import com.google.firebase.auth.FirebaseAuth
 class ReplacePlantDialogFragment(private val plant: Plant) : DialogFragment(R.layout.dialog_replace_plant) {
 
     private lateinit var plantViewModel: PlantViewModel
-    private lateinit var auth : FirebaseAuth
+    //private lateinit var auth : FirebaseAuth
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         plantViewModel = ViewModelProvider(requireActivity())[PlantViewModel::class.java]
-        auth = FirebaseAuth.getInstance()
+        //auth = FirebaseAuth.getInstance()
 
         val builder = AlertDialog.Builder(requireContext())
         val inflater =  requireActivity().layoutInflater
@@ -42,14 +42,17 @@ class ReplacePlantDialogFragment(private val plant: Plant) : DialogFragment(R.la
             dismiss()
         }
         yesButton.setOnClickListener {
-            plantViewModel.savePlantForCurrentUser()
-            Toast.makeText(requireContext(), "${plant.name} Selected!", Toast.LENGTH_SHORT).show()
+            plantViewModel.savePlantForCurrentUser(plant){
+                activity?.run {
+                    Toast.makeText(requireContext(), "${plant.name} Selected!", Toast.LENGTH_SHORT).show()
+                }
+            }
             dismiss()
 
-            val transaction = parentFragmentManager.beginTransaction()
-            transaction.replace(R.id.fvc_game_activity, StartPagePlantFragment())
-            transaction.addToBackStack(null)
-            transaction.commit()
+//            val transaction = parentFragmentManager.beginTransaction()
+//            transaction.replace(R.id.fvc_game_activity, StartPagePlantFragment())
+//            transaction.addToBackStack(null)
+//            transaction.commit()
         }
 
         val dialog = builder.create()
@@ -60,4 +63,5 @@ class ReplacePlantDialogFragment(private val plant: Plant) : DialogFragment(R.la
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         return dialog
     }
+
 }

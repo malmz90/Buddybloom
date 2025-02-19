@@ -1,19 +1,17 @@
 package com.example.buddybloom.ui.game
 
-import AddPlantDialogFragment
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
-import com.example.buddybloom.data.repository.PlantRepository
 import androidx.work.Constraints
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.NetworkType
@@ -21,15 +19,12 @@ import androidx.work.PeriodicWorkRequestBuilder
 import com.example.buddybloom.R
 import com.example.buddybloom.data.PlantWorker
 import com.example.buddybloom.databinding.ActivityGameBinding
-import com.example.buddybloom.ui.authentication.AuthenticationActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.firebase.auth.FirebaseAuth
 import java.util.concurrent.TimeUnit
 
 class GameActivity : AppCompatActivity() {
-    private val plantRepository = PlantRepository()
-    lateinit var binding : ActivityGameBinding
-    private lateinit var plantViewModel : PlantViewModel
+    private lateinit var binding: ActivityGameBinding
+    private lateinit var plantViewModel: PlantViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,79 +42,54 @@ class GameActivity : AppCompatActivity() {
         // Add this line to check for plant when activity starts
         checkUserPlant()
 
-        val bottomNavigationView : BottomNavigationView = binding.navbarMenu
+        val bottomNavigationView: BottomNavigationView = binding.navbarMenu
 
         bottomNavigationView.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.nav_profile -> {
-                    replaceFragmentForNavbar(ProfileFragment())
+                    showFragment(ProfileFragment())
                     true
                 }
+
                 R.id.nav_plant -> {
-                    replaceFragmentForNavbar(StartPagePlantFragment())
+                    showFragment(StartPagePlantFragment())
                     true
                 }
+
                 R.id.nav_home -> {
-                    replaceFragmentForNavbar(ChoosePlantFragment())
+                    showFragment(ChoosePlantFragment())
                     true
                 }
+
                 else -> false
             }
         }
-        replaceFragmentForNavbar(StartPagePlantFragment())
-        binding.navbarMenu.selectedItemId = R.id.nav_plant
+        showFragment(StartPagePlantFragment())
     }
 
-    fun replaceFragment(fragment: Fragment) {
+    private fun showFragment(fragment: Fragment) {
         supportFragmentManager.beginTransaction()
             .replace(R.id.fvc_game_activity, fragment)
             .commit()
     }
 
-    private fun replaceFragmentForNavbar(fragment: Fragment) {
-        supportFragmentManager.beginTransaction().apply{
-            replace(R.id.fvc_game_activity, fragment)
-            commit()
-        }
-    }
-
-    fun showStartPagePlantFragment() {
-        val startPagePlantFragment = StartPagePlantFragment()
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.fvc_game_activity, startPagePlantFragment)
-            .commit()
-    }
     private fun checkUserPlant() {
-        val auth = FirebaseAuth.getInstance()
-        val currentUser = auth.currentUser
-
-        if (currentUser == null) {
-            showChoosePlantFragment()
-            return
-        }
-
-        plantRepository.getCurrentUserPlant { plant ->
+        plantViewModel.currentPlant.observe(this) { plant ->
             if (plant == null) {
-                plantViewModel.isFirstTimeChoosingPlant = true
-                Log.d("GameAct", "First time choosing plant ${plantViewModel.isFirstTimeChoosingPlant}")
-                showChoosePlantFragment()
+                binding.navbarMenu.selectedItemId = R.id.nav_home
+                showFragment(ChoosePlantFragment())
             } else {
+                binding.navbarMenu.selectedItemId = R.id.nav_plant
                 Log.d("GameAct", "User already has a plant")
-                showStartPagePlantFragment()
+                showFragment(StartPagePlantFragment())
             }
         }
     }
 
-    private fun showChoosePlantFragment() {
-        val choosePlantFragment = ChoosePlantFragment()
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.fvc_game_activity, choosePlantFragment)
-            .commit()
-    }
-        /*
-    Sets up a Schedule for plants works that should run in background and
-     updates firestore, functions that runs is placed in Plant-class and PlantWorker-class.
-     */
+    /**
+Sets up a Schedule for plants works that should run in background and
+ updates firestore, functions that runs is placed in Plant-class and PlantWorker-class.
+ */
     private fun plantWorksSchedule() {
         val workManager = WorkManager.getInstance(this)
 
