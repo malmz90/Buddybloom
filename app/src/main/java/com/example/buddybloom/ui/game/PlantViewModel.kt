@@ -9,7 +9,6 @@ import com.example.buddybloom.data.repository.PlantRepository
 
 class PlantViewModel : ViewModel() {
     private val plantRepository = PlantRepository()
-
     private val _selectedPlant = MutableLiveData<Plant?>()
     val selectedPlant: LiveData<Plant?> get() = _selectedPlant
 
@@ -47,5 +46,3 @@ class PlantViewModel : ViewModel() {
         } ?: Log.e("PlantVM", "No plant selected to update water level")
     }
 }
-    
-
