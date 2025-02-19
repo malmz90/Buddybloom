@@ -52,7 +52,7 @@ class ProfileFragment : Fragment() {
             val aboutInfoFragment = AboutInfoFragment()
             aboutInfoFragment.show(requireActivity().supportFragmentManager, "AboutInfoFragmentTag")
         }
-        binding.btnSignOut.setOnClickListener {
+        binding.ibSignout.setOnClickListener {
             accountViewModel.signOutUser { success ->
                 if(success){
                     Toast.makeText(requireContext(),"Signing out",Toast.LENGTH_SHORT).show()

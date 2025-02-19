@@ -7,7 +7,6 @@ import androidx.work.WorkerParameters
 import com.example.buddybloom.data.model.WeatherReport
 import com.example.buddybloom.data.repository.PlantRepository
 import com.example.buddybloom.data.repository.WeatherRepository
-import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import java.util.Calendar
 import java.util.Locale
@@ -36,12 +35,12 @@ class PlantWorker(appContext: Context, workerParams: WorkerParameters) :
             Log.e("PlantWorker", "No user logged in, cannot update plant.")
             return
         }
-        plantRepository.getCurrentUserPlant { plant ->
+        plantRepository.snapshotOfCurrentUserPlant { plant ->
             if (plant != null) {
             plant.decreaseWaterLevel(10)
-            plant.isThirsty()
+            plant.plantThirsty()
 
-            plantRepository.saveUserPlant(userId, plant) { success ->
+            plantRepository.saveUserPlant(plant) { success ->
                 if (success) {
                     Log.d("PlantWorker", "Plant data updated successfully!")
                 } else {

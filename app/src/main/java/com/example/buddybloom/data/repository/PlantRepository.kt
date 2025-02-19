@@ -5,7 +5,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.buddybloom.data.model.PlantHistory
 import com.example.buddybloom.data.model.Plant
-import com.example.buddybloom.data.model.User
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.firestore
@@ -15,23 +14,46 @@ class PlantRepository {
 
     private val db = Firebase.firestore
     private val auth = FirebaseAuth.getInstance()
+    private val userId = auth.currentUser?.uid
 
-    fun getCurrentUserPlant(callback: (Plant?) -> Unit) {
-        val userId = auth.currentUser?.uid ?: return
-
-        db.collection("users").document(userId).get().addOnSuccessListener { document ->
-            val user = document.toObject(User::class.java)
-            callback(user?.userPlants?.firstOrNull())
-        }.addOnFailureListener { e ->
-            Log.e("Firebase", "Error getting plant: ${e.message}")
-            callback(null)
-        }
+    companion object {
+        const val USERS = "users"
+        const val PLANTS = "plants"
+        const val PLANT_REF = "plantRef"
+        const val HISTORY = "history"
     }
 
-    fun saveUserPlant(userId: String, plant: Plant, callback: (Boolean) -> Unit) {
-//        val userId = auth.currentUser?.uid ?: return
+    fun snapshotOfCurrentUserPlant(callback: (Plant?) -> Unit) {
+        userId ?: return
+        db.collection(USERS).document(userId).collection(PLANTS).document(PLANT_REF)
+            .addSnapshotListener { snapshot, error ->
+                if (error != null) {
+                    callback(null)
+                    return@addSnapshotListener
+                }
+                val plant = snapshot?.toObject(Plant::class.java)
+                callback(plant)
+            }
+    }
 
-        db.collection("users").document(userId).update("userPlants", listOf(plant))
+    fun getCurrentUserPlant(callback: (Plant?) -> Unit) {
+        userId ?: return
+        db.collection(USERS).document(userId).collection(PLANTS).document(PLANT_REF).get()
+            .addOnSuccessListener { document ->
+                val plant = document?.toObject(Plant::class.java)
+                callback(plant)
+            }.addOnFailureListener {
+                //TODO error handling
+                callback(null)
+            }
+    }
+
+
+    fun saveUserPlant(plant: Plant, callback: (Boolean) -> Unit) {
+        userId ?: return
+        // Use if we want to save more than one plant
+        //db.collection(USERS).document(userId).collection(PLANTS).add(plant)
+        db.collection(USERS).document(userId).collection(PLANTS).document(PLANT_REF).set(plant)
             .addOnSuccessListener {
                 Log.d("Firebase", "Plant saved successfully")
                 callback(true)
@@ -42,12 +64,11 @@ class PlantRepository {
     }
 
     fun savePlantHistory(plant: Plant, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
-        val userId = auth.currentUser?.uid
         if (userId == null) {
             onFailure(Exception("Firebase error: Could not find logged in user's id."))
             return
         }
-        val docRef = db.collection("users").document(userId).collection("history").document()
+        val docRef = db.collection(USERS).document(userId).collection(HISTORY).document()
         docRef.set(PlantHistory(name = plant.name, streakCount = plant.streakDays))
             .addOnSuccessListener {
                 onSuccess()
@@ -58,9 +79,8 @@ class PlantRepository {
 
     fun getPlantHistoryLiveData(): LiveData<List<PlantHistory>> {
         val liveData = MutableLiveData<List<PlantHistory>>()
-        val userId = auth.currentUser?.uid
         userId?.let {
-            db.collection("users").document(it).collection("history")
+            db.collection(USERS).document(it).collection(HISTORY)
                 .addSnapshotListener { snapshot, error ->
                     if (error != null) {
                         Log.i("PlantRepository", "Error fetching history from Firebase")

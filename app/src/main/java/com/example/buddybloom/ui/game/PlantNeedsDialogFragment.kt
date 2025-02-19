@@ -70,7 +70,7 @@ class PlantNeedsDialogFragment : DialogFragment() {
 
 
         viewModel = ViewModelProvider(requireActivity())[PlantViewModel::class.java]
-        viewModel.getCurrentUserPlant()
+        //viewModel.getCurrentUserPlant()
         waterLevel = view.findViewById(R.id.tv_water_count)
         fertilizerLevel = view.findViewById(R.id.tv_fertilize_count)
         sunLevel = view.findViewById(R.id.tv_sun_count)

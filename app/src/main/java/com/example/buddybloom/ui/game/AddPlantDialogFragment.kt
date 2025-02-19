@@ -1,24 +1,23 @@
+import android.app.Activity
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import com.example.buddybloom.R
 import com.example.buddybloom.data.model.Plant
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.example.buddybloom.databinding.FragmentDialogAddPlantBinding
-import com.example.buddybloom.ui.game.ChoosePlantFragment
-import com.example.buddybloom.ui.game.GameActivity
 import com.example.buddybloom.ui.game.PlantViewModel
 import com.example.buddybloom.ui.game.ReplacePlantDialogFragment
-import com.example.buddybloom.ui.game.StartPagePlantFragment
+import kotlin.math.log
 
-class AddPlantDialogFragment(private val plant: Plant) : BottomSheetDialogFragment(R.layout.fragment_dialog_add_plant) {
+class AddPlantDialogFragment(private val newPlant: Plant) :
+    BottomSheetDialogFragment(R.layout.fragment_dialog_add_plant) {
 
-    private lateinit var plantViewModel : PlantViewModel
+    private lateinit var plantViewModel: PlantViewModel
     private var _binding: FragmentDialogAddPlantBinding? = null
     private val binding get() = _binding!!
 
@@ -36,28 +35,23 @@ class AddPlantDialogFragment(private val plant: Plant) : BottomSheetDialogFragme
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-         val tvPlantInfo = view.findViewById<TextView>(R.id.tv_plant_info)
+        val tvPlantInfo = view.findViewById<TextView>(R.id.tv_plant_info)
 
-        tvPlantInfo.text = plant.info
+        tvPlantInfo.text = newPlant.info
 
-        // Replace the fragment with ChoosePlantFragment
         binding.btnAddPlant.setOnClickListener {
-            plantViewModel.setSelectedPlant(plant)
+            plantViewModel.getCurrentUserPlant { fetchedPlant ->
+                if (fetchedPlant == null) {
+                    plantViewModel.savePlantForCurrentUser(newPlant) {
+                        dismiss()
+                    }
+                } else {
+                    ReplacePlantDialogFragment(newPlant).show(parentFragmentManager, null)
+                    dismiss()
+                }
 
-            if(plantViewModel.isFirstTimeChoosingPlant) {
-                plantViewModel.savePlantForCurrentUser()
-                plantViewModel.isFirstTimeChoosingPlant = false
-                Log.d("AddPlant", "First plant chosen")
 
-                Toast.makeText(requireContext(), "${plant.name} Selected!", Toast.LENGTH_SHORT).show()
-                requireActivity().supportFragmentManager.beginTransaction()
-                    .replace(R.id.fvc_game_activity, StartPagePlantFragment())
-                    .commit()
-            } else {
-                val replaceDialog = ReplacePlantDialogFragment(plant)
-                replaceDialog.show(parentFragmentManager, "ReplacePlantDialog")
             }
-            dismiss()
         }
 
         // If "No" is pressed, close the dialog

@@ -6,44 +6,35 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.buddybloom.data.model.Plant
 import com.example.buddybloom.data.repository.PlantRepository
-import com.google.firebase.auth.FirebaseAuth
 
 class PlantViewModel : ViewModel() {
     private val plantRepository = PlantRepository()
+
     private val _selectedPlant = MutableLiveData<Plant?>()
     val selectedPlant: LiveData<Plant?> get() = _selectedPlant
-    var isFirstTimeChoosingPlant = false
+
+    private val _currentPlant = MutableLiveData<Plant?>()
+    val currentPlant: LiveData<Plant?> get() = _currentPlant
+
+    init {
+        plantRepository.snapshotOfCurrentUserPlant { plant ->
+            _currentPlant.value = plant
+        }
+    }
 
     fun setSelectedPlant(plant: Plant) {
         _selectedPlant.value = plant
     }
 
-    fun getCurrentUserPlant() {
-        Log.i("getCurrentUserPlant()", "Triggered")
-        plantRepository.getCurrentUserPlant { plant ->
-            if (plant != null) {
-                _selectedPlant.postValue(plant)
-                Log.d("PlantVM", "Plant loaded from Firebase")
-            } else {
-                Log.d("PlantVM", "No plant found")
-            }
+    fun getCurrentUserPlant(onPlantFetched: (Plant?) -> Unit) {
+        plantRepository.getCurrentUserPlant { plant: Plant? ->
+            onPlantFetched(plant)
         }
     }
 
-    fun savePlantForCurrentUser() {
-        val userId = FirebaseAuth.getInstance().currentUser?.uid
-        if (userId != null) {
-            _selectedPlant.value?.let { plant ->
-                plantRepository.saveUserPlant(userId, plant) { success ->
-                    if (success) {
-                        Log.d("PlantVM", "Plant saved for user $userId")
-                    } else {
-                        Log.d("PlantVM", "Failed to save plant")
-                    }
-                }
-            }
-        } else {
-            Log.d("PlantVM", "No user logged in")
+    fun savePlantForCurrentUser(plant: Plant, onPlantSaved: () -> Unit) {
+        plantRepository.saveUserPlant(plant) { saved ->
+            if (saved) onPlantSaved()
         }
     }
 
@@ -51,7 +42,7 @@ class PlantViewModel : ViewModel() {
         _selectedPlant.value?.let { plant ->
             plant.waterLevel = minOf(100, plant.waterLevel + amount)
             _selectedPlant.postValue(plant)
-            savePlantForCurrentUser()
+            // savePlantForCurrentUser()
             Log.d("PlantVM", "Water level increased by $amount")
         } ?: Log.e("PlantVM", "No plant selected to update water level")
     }
