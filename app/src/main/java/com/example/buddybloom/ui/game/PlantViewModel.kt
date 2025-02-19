@@ -19,6 +19,18 @@ class PlantViewModel : ViewModel() {
     init {
         plantRepository.snapshotOfCurrentUserPlant { plant ->
             _currentPlant.value = plant
+            checkAndUpdateWaterLevel()
+        }
+    }
+   private fun checkAndUpdateWaterLevel() {
+        _currentPlant.value?.let { plant ->
+            plant.updateWaterBasedOnTime()
+            // Save updated plant to Firebase
+            plantRepository.saveUserPlant(plant) { success ->
+                if (success) {
+                    Log.d("PlantVM", "Plant saved with updated water level")
+                }
+            }
         }
     }
 

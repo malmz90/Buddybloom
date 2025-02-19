@@ -12,10 +12,27 @@ data class Plant(
     val info: String = "",
     var createdAt: Long = System.currentTimeMillis(),
     val streakDays: Int = 0,
-    val difficulty: String = "Easy"
+    val difficulty: String = "Easy",
+    var lastWaterUpdate: Long = System.currentTimeMillis()
 ) {
 
-    //TODO Move this to the ui.
+    companion object {
+        const val WATER_DECREASE_AMOUNT = 10
+        val UPDATE_INTERVAL = TimeInterval.MINUTE
+    }
+
+    fun updateWaterBasedOnTime() {
+        val currentTime = System.currentTimeMillis()
+        val timeSinceLastUpdate = currentTime - lastWaterUpdate
+        val intervalsPassed = timeSinceLastUpdate / UPDATE_INTERVAL.milliseconds
+
+        if (intervalsPassed >= 1) {
+            val totalDecrease = (intervalsPassed * WATER_DECREASE_AMOUNT).toInt()
+            waterLevel = maxOf(0, waterLevel - totalDecrease)
+            lastWaterUpdate = currentTime
+            Log.d("PlantStatus", "Water decreased by $totalDecrease after $intervalsPassed intervals")
+        }
+    }
 
 
     fun decreaseWaterLevel(amount: Int) {
