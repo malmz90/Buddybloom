@@ -32,12 +32,19 @@ class PlantViewModel : ViewModel() {
         }
     }
 
-
-
     fun savePlantForCurrentUser(plant: Plant, onPlantSaved: () -> Unit) {
         plantRepository.saveUserPlant(plant) { saved ->
             if (saved) onPlantSaved()
         }
+    }
+
+    /**
+     * Takes currentPlant and if waterLevel is under 10 a toast will appear for user
+     */
+    fun isPlantThirsty():Boolean{
+        return _currentPlant.value?.let{ plant->
+            plant.waterLevel < 10
+        }?:false
     }
 
     /**
@@ -60,6 +67,9 @@ class PlantViewModel : ViewModel() {
         }
 
     }
+    /**
+     * Checks difficulty on current Plant and decrease FertilizerLevel level by different of difficulty
+     */
     fun checkDifficultyFertilizeDecrease(){
         _currentPlant.value?.let{plant->
             if (plant.difficulty == "Easy"){
@@ -76,6 +86,11 @@ class PlantViewModel : ViewModel() {
             }
         }
     }
+
+    /**
+     * Takes userplant and increases fertilizerLevel, amount sets in StartPagePlantFragment
+     * and drives when user presses the fertilize button
+     */
     fun increaseFertilizeLevel(amount: Int) {
         _currentPlant.value?.let { plant ->
             plant.fertilizerLevel = minOf(100, plant.waterLevel + amount)
@@ -83,7 +98,10 @@ class PlantViewModel : ViewModel() {
             Log.d("PlantStatus", "Your Plant increased Nutrition by $amount!")
         }
     }
-
+    /**
+     * Takes userplant and increases WaterLevel, amount sets in StartPagePlantFragment
+     * and drives when user presses the Water button
+     */
     fun increaseWaterLevel(amount: Int) {
         _selectedPlant.value?.let { plant ->
             plant.waterLevel = minOf(100, plant.waterLevel + amount)

@@ -12,21 +12,4 @@ data class Plant(
     var createdAt: Long = System.currentTimeMillis(),
     val streakDays: Int = 0,
     val difficulty: String = "Easy"
-) {
-
-    //TODO Move this to the ui.
-
-    fun decreaseWaterLevel(amount: Int) {
-        waterLevel = maxOf(0, waterLevel - amount)
-        waterLevel -= amount
-        Log.d("PlantStatus", "Your Plant lost water by $amount!")
-    }
-
-    fun plantThirsty(): Boolean {
-        val isThirsty = waterLevel < 30
-        if (isThirsty) {
-            Log.d("PlantStatus", "Your plant is thirsty!")
-        }
-        return isThirsty
-    }
-}
+)

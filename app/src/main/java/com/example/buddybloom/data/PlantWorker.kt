@@ -40,7 +40,6 @@ class PlantWorker(appContext: Context, workerParams: WorkerParameters) :
            plantRepository.decreaseWaterLevel(plant,10)
                 plantViewModel.checkDifficultyFertilizeDecrease()
 
-
             plantRepository.saveUserPlant(plant) { success ->
                 if (success) {
                     Log.d("PlantWorker", "Plant data updated successfully!")

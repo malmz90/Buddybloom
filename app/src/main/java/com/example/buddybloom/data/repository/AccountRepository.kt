@@ -66,11 +66,16 @@ class AccountRepository {
         }
     }
 
-    //Send emaillink to reset password
+    //Send email link to reset password
     fun sendPasswordResetEmail(email: String): Task<Void> {
         return auth.sendPasswordResetEmail(email)
     }
 
+    /**
+     * Function that updates when user presses save button in profile fragment
+     * and user needs to verify email address to change email, User automatically sign out
+     * and comes to login page. User needs to sign in again.
+     */
     suspend fun updateUserInfo(newEmail: String, newUsername: String): Result<Unit> {
         val user = auth.currentUser ?: return Result.failure(Exception("Ingen användare inloggad"))
         val userId = user.uid
@@ -83,7 +88,7 @@ class AccountRepository {
             user.updateProfile(profileUpdates).await()
 
             //Updates email in Firebase Authentication
-            // And send email verification to email adress
+            // And send email verification to email address
             user.verifyBeforeUpdateEmail(newEmail).await()
             user.sendEmailVerification().await()
 
