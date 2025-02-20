@@ -46,6 +46,16 @@ class PlantRepository {
                 callback(null)
             }
     }
+    fun decreaseWaterLevel(plant: Plant, amount: Int) {
+        plant.waterLevel = maxOf(0, plant.waterLevel - amount)
+        plant.waterLevel -= amount
+        Log.d("PlantStatus", "Your Plant lost water by $amount!")
+    }
+    fun decreaseFertilizer(plant: Plant, amount: Int) {
+        plant.fertilizerLevel = maxOf(0, plant.fertilizerLevel - amount)
+        plant.fertilizerLevel -= amount
+        Log.d("PlantStatus", "Your Plant lost water by $amount!")
+    }
 
     fun saveUserPlant(plant: Plant, callback: (Boolean) -> Unit) {
         userId ?: return

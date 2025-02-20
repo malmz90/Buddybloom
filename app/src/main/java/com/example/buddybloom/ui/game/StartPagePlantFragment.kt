@@ -74,6 +74,7 @@ class StartPagePlantFragment : Fragment() {
             }
 
             btnFertilize.setOnClickListener {
+                plantViewModel.increaseFertilizeLevel(10)
                 Toast.makeText(
                     requireContext(),
                     "Your plant increased nutrition with 10",
@@ -132,6 +133,7 @@ class StartPagePlantFragment : Fragment() {
             }
 
             imgBtnWaterspray.setOnClickListener {
+                plantViewModel.checkDifficultyWaterSpray()
                 Toast.makeText(
                     requireContext(),
                     "You've successfully sprayed water on your plant!",

@@ -7,6 +7,7 @@ import androidx.work.WorkerParameters
 import com.example.buddybloom.data.model.WeatherReport
 import com.example.buddybloom.data.repository.PlantRepository
 import com.example.buddybloom.data.repository.WeatherRepository
+import com.example.buddybloom.ui.game.PlantViewModel
 import com.google.firebase.auth.FirebaseAuth
 import java.util.Calendar
 import java.util.Locale
@@ -17,6 +18,7 @@ class PlantWorker(appContext: Context, workerParams: WorkerParameters) :
 
     private lateinit var weatherRepository: WeatherRepository
     private lateinit var plantRepository: PlantRepository
+    private val plantViewModel = PlantViewModel()
 
     override fun doWork(): Result {
         weatherRepository = WeatherRepository()
@@ -35,8 +37,9 @@ class PlantWorker(appContext: Context, workerParams: WorkerParameters) :
         }
         plantRepository.snapshotOfCurrentUserPlant { plant ->
             if (plant != null) {
-            plant.decreaseWaterLevel(10)
-            plant.plantThirsty()
+           plantRepository.decreaseWaterLevel(plant,10)
+                plantViewModel.checkDifficultyFertilizeDecrease()
+
 
             plantRepository.saveUserPlant(plant) { success ->
                 if (success) {
