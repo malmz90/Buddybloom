@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.Log
 import androidx.work.Worker
 import androidx.work.WorkerParameters
+import com.example.buddybloom.data.model.Plant
 import com.example.buddybloom.data.model.PlantManager
 import com.example.buddybloom.data.model.WeatherReport
 import com.example.buddybloom.data.repository.PlantRepository
@@ -41,7 +42,7 @@ class PlantWorker(appContext: Context, workerParams: WorkerParameters) :
         }
         plantRepository.snapshotOfCurrentUserPlant { plant ->
             if (plant != null) {
-           plantManager.decreaseWaterLevel(plant,10)
+           plantRepository.decreaseWaterLevel(plant,10)
                 plantViewModel.checkDifficultyFertilizeDecrease()
 
             plantRepository.saveUserPlant(plant) { success ->
@@ -56,6 +57,7 @@ class PlantWorker(appContext: Context, workerParams: WorkerParameters) :
             }
         }
     }
+
 
     /**
      * Checks how many days have passed since the weather was last updated on Firebase and adds that amount of days

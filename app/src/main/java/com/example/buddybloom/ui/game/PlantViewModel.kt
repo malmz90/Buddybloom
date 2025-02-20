@@ -80,13 +80,13 @@ class PlantViewModel : ViewModel() {
     fun checkDifficultyFertilizeDecrease(){
         _currentPlant.value?.let{plant->
             if (plant.difficulty == "Easy"){
-                plantManager.decreaseFertilizer(plant,1)
+                plantRepository.decreaseFertilizer(plant,1)
                 Log.d("PlantVM", "Nutrition decreases by amount 1")
             }else if(plant.difficulty == "Medium"){
-                plantManager.decreaseFertilizer(plant,2)
+                plantRepository.decreaseFertilizer(plant,2)
                 Log.d("PlantVM",  "Nutrition decreases by amount 2")
             }else if(plant.difficulty == "Hard"){
-                plantManager.decreaseFertilizer(plant,5)
+                plantRepository.decreaseFertilizer(plant,5)
                 Log.d("PlantVM", "Nutrition decreases by amount 5")
             }else {
                 Log.d("PlantVM", "No plant Found")
