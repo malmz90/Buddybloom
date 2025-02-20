@@ -33,10 +33,17 @@ class RegisterFragment : Fragment() {
         val activity = requireActivity() as? AuthenticationActivity
         activity?.binding?.btnBack?.visibility = View.VISIBLE
 
+        /**
+         * Calls upon function in AccountRepo to register user (through the viewmodel)
+         */
         binding.btnRegister.setOnClickListener {
             registerUser()
         }
 
+        /**
+         * Observes the registration result livedata in the viewmodel provided by function in AccountRepo.
+         * If result is true, the user is navigated to the login fragment.
+         */
         avm.registerResult.observe(viewLifecycleOwner) { success ->
             binding.progressBar.visibility = View.GONE
             if (success) {
@@ -55,6 +62,10 @@ class RegisterFragment : Fragment() {
         return password.matches(passwordPattern.toRegex())
     }
 
+    /**
+     * Calls upon function in AccountRepo through the viewmodel to register user
+     * Takes in user's input as parameters.
+     */
     private fun registerUser() {
         val email = binding.tietEmail.text.toString().trim()
         val password = binding.tietPassword.text.toString().trim()
