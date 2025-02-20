@@ -40,11 +40,6 @@ class StartPagePlantFragment : Fragment() {
         // Boolean for blinds toggle button.
         var isBlindsVisible = false
         plantViewModel.currentPlant.observe(viewLifecycleOwner) { plant ->
-            plant?.let{
-                binding.tvWaterLevel.text = "${maxOf(0, it.waterLevel)}%"
-                binding.progressWater.progress = maxOf(0, it.waterLevel)
-            }
-
             binding.imgFlower.setImageResource(getPlantImage(plant))
             binding.tvDaystreak.text = String.format(getDayStreak(plant).toString())
             binding.btnPlantNeeds.setOnClickListener {
@@ -55,21 +50,6 @@ class StartPagePlantFragment : Fragment() {
             }
         }
         binding.apply {
-            binding.btnRefresh.setOnClickListener {
-                plantViewModel.checkAndUpdateWaterLevel()
-
-                binding.btnRefresh.animate()
-                    .rotationBy(360f)
-                    .setDuration(1000)
-                    .start()
-
-                Toast.makeText(
-                    requireContext(),
-                    "Updating plant status...",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-
             btnWater.setOnClickListener {
                 plantViewModel.increaseWaterLevel(10)
                 Toast.makeText(
@@ -196,16 +176,6 @@ class StartPagePlantFragment : Fragment() {
 
     private fun getPlantImage(plant: Plant?): Int {
         if (plant == null) return R.drawable.icon_obs
-
-        if (plant.waterLevel < 30) {
-            return when (plant.name.lowercase()) {
-                "elephant" -> R.drawable.flower_elefant5
-                "hibiscus" -> R.drawable.flower_hibiscus5
-                "zebra" -> R.drawable.flower_zebra7
-                else -> R.drawable.flower_elefant5
-            }
-        }
-
         val daysOld = (System.currentTimeMillis() - plant.createdAt) / (1000 * 60 * 60 * 24)
 
         val stage = when {
