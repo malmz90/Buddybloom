@@ -4,7 +4,6 @@ import android.content.Context
 import android.util.Log
 import androidx.work.Worker
 import androidx.work.WorkerParameters
-import com.example.buddybloom.data.model.PlantManager
 import com.example.buddybloom.data.model.WeatherReport
 import com.example.buddybloom.data.repository.PlantRepository
 import com.example.buddybloom.data.repository.WeatherRepository
@@ -18,7 +17,6 @@ class PlantWorker(appContext: Context, workerParams: WorkerParameters) :
 
     private lateinit var weatherRepository: WeatherRepository
     private lateinit var plantRepository: PlantRepository
-    private val plantManager = PlantManager()
 
     override fun doWork(): Result {
 
@@ -39,7 +37,8 @@ class PlantWorker(appContext: Context, workerParams: WorkerParameters) :
         }
         plantRepository.snapshotOfCurrentUserPlant { plant ->
             if (plant != null) {
-           plantManager.decreaseWaterLevel(plant,10)
+            plant.decreaseWaterLevel(10)
+            plant.plantThirsty()
 
             plantRepository.saveUserPlant(plant) { success ->
                 if (success) {

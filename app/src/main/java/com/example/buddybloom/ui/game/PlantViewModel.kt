@@ -5,36 +5,19 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.buddybloom.data.model.Plant
-import com.example.buddybloom.data.model.PlantManager
 import com.example.buddybloom.data.repository.PlantRepository
 
 class PlantViewModel : ViewModel() {
     private val plantRepository = PlantRepository()
-
-    private val plantManager = PlantManager()
-
-
     private val _selectedPlant = MutableLiveData<Plant?>()
     val selectedPlant: LiveData<Plant?> get() = _selectedPlant
 
     private val _currentPlant = MutableLiveData<Plant?>()
     val currentPlant: LiveData<Plant?> get() = _currentPlant
 
-    private var isUpdating = false
-
     init {
         plantRepository.snapshotOfCurrentUserPlant { plant ->
             _currentPlant.value = plant
-        }
-    }
-   fun checkAndUpdateWaterLevel() {
-        _currentPlant.value?.let { plant ->
-            plantManager.updateWaterBasedOnTimePassed(plant)
-            plantRepository.saveUserPlant(plant) { success ->
-                if (success) {
-                    Log.d("PlantVM", "Plant saved with updated water level")
-                }
-            }
         }
     }
 
@@ -55,14 +38,11 @@ class PlantViewModel : ViewModel() {
     }
 
     fun increaseWaterLevel(amount: Int) {
-        _currentPlant.value?.let { plant ->
+        _selectedPlant.value?.let { plant ->
             plant.waterLevel = minOf(100, plant.waterLevel + amount)
-            plant.lastWaterUpdate = System.currentTimeMillis()
-            plantRepository.saveUserPlant(plant) { success ->
-                if (success) {
-                    Log.d("PlantVM", "Water level increased by $amount")
-                }
-            }
-        }
+            _selectedPlant.postValue(plant)
+            // savePlantForCurrentUser()
+            Log.d("PlantVM", "Water level increased by $amount")
+        } ?: Log.e("PlantVM", "No plant selected to update water level")
     }
 }
