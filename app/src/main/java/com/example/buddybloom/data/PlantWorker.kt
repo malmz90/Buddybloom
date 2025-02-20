@@ -45,6 +45,7 @@ class PlantWorker(appContext: Context, workerParams: WorkerParameters) :
            plantRepository.decreaseWaterLevel(plant,10)
                 plantViewModel.checkDifficultyFertilizeDecrease()
 
+
             plantRepository.saveUserPlant(plant) { success ->
                 if (success) {
                     Log.d("PlantWorker", "Plant data updated successfully!")
@@ -57,7 +58,6 @@ class PlantWorker(appContext: Context, workerParams: WorkerParameters) :
             }
         }
     }
-
 
     /**
      * Checks how many days have passed since the weather was last updated on Firebase and adds that amount of days
