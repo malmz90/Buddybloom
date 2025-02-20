@@ -49,6 +49,10 @@ class StartPagePlantFragment : Fragment() {
                 }
             }
         }
+
+        if(plantViewModel.isPlantThirsty()){
+            Toast.makeText(requireContext(),"Your plant is Thirsty",Toast.LENGTH_SHORT).show()
+        }
         binding.apply {
             btnWater.setOnClickListener {
 //                plantViewModel.increaseWaterLevel(10)
