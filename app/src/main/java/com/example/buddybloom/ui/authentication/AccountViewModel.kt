@@ -11,6 +11,7 @@ class AccountViewModel : ViewModel() {
 
     private val accountRepository = AccountRepository()
 
+    // Livedata for the registration result, updated in registerUser below and observed in RegisterFragment.
     private val _registerResult = MutableLiveData<Boolean>()
     val registerResult : LiveData<Boolean> get() = _registerResult
 
@@ -23,12 +24,17 @@ class AccountViewModel : ViewModel() {
     private val _updateStatus = MutableLiveData<Result<Unit>>()
     val updateStatus: LiveData<Result<Unit>> get() = _updateStatus
 
+    /**
+     * Calls upon function in AccountRepo to register user
+     * Callback is used to set the registration result (livedata)
+     */
     fun registerUser(email : String, password : String, name : String) {
         accountRepository.registerUser(email, password, name) { success ->
             _registerResult.value = success
         }
 
     }
+
     fun loginUser(email: String, password: String) {
         accountRepository.loginUser(email, password) { success ->
             _loginResult.value = success

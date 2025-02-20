@@ -27,6 +27,11 @@ class AccountRepository {
         }
     }
 
+    /**
+     * Registers a new user with the provided email and password.
+     * Callback with a boolean indicating success or failure.
+     * Callback is called upon in the viewmodel to set the registration result (livedata).
+     */
     fun registerUser(email: String, password: String, name: String, callback: (Boolean) -> Unit) {
         auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener { task ->
             if (task.isSuccessful) {
@@ -34,6 +39,7 @@ class AccountRepository {
                 val user = User(
                     id = currentUser?.uid ?: "", email = email, name = name
                 )
+                // Calls function to save user to Firestore.
                 saveUser(user) { success ->
                     callback(success)
                 }
@@ -44,6 +50,10 @@ class AccountRepository {
         }
     }
 
+    /**
+     * Saves a user to the Firestore database.
+     * Called upon in registerUser above.
+     */
     private fun saveUser(user: User, callback: (Boolean) -> Unit) {
         val userId = auth.currentUser?.uid ?: return
         val docRef = db.collection("users").document(userId)
@@ -59,6 +69,7 @@ class AccountRepository {
     fun sendPasswordResetEmail(email: String): Task<Void> {
         return auth.sendPasswordResetEmail(email)
     }
+
     suspend fun updateUserInfo(newEmail: String, newUsername: String): Result<Unit> {
         val user = auth.currentUser ?: return Result.failure(Exception("Ingen användare inloggad"))
         val userId = user.uid
@@ -114,6 +125,7 @@ class AccountRepository {
                 }
         } ?:onFailure(Exception("User ID is null"))
     }
+
     fun signOut(callback: (Boolean) -> Unit){
         auth.signOut()
         callback(true)
