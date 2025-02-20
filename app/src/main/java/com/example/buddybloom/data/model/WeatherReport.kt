@@ -2,7 +2,6 @@ package com.example.buddybloom.data.model
 
 import com.google.firebase.Timestamp
 
-
 sealed class WeatherReport {
 
     data class Hourly(
@@ -29,5 +28,4 @@ sealed class WeatherReport {
     enum class Condition {
         SUNNY, CLOUDY, RAIN
     }
-
 }

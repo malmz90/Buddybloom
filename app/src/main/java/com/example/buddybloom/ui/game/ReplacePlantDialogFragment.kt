@@ -20,14 +20,13 @@ import com.example.buddybloom.ui.authentication.AccountViewModel
 import com.google.android.material.button.MaterialButton
 import com.google.firebase.auth.FirebaseAuth
 
+//Replace plant dialog that pops up after choosing a plant if you want to replace current plant
 class ReplacePlantDialogFragment(private val plant: Plant) : DialogFragment(R.layout.dialog_replace_plant) {
 
     private lateinit var plantViewModel: PlantViewModel
-    //private lateinit var auth : FirebaseAuth
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         plantViewModel = ViewModelProvider(requireActivity())[PlantViewModel::class.java]
-        //auth = FirebaseAuth.getInstance()
 
         val builder = AlertDialog.Builder(requireContext())
         val inflater =  requireActivity().layoutInflater
@@ -63,5 +62,4 @@ class ReplacePlantDialogFragment(private val plant: Plant) : DialogFragment(R.la
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         return dialog
     }
-
 }

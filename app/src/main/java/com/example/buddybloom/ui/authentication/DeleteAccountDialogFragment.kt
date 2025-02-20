@@ -16,11 +16,12 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.buddybloom.R
 import com.google.android.material.button.MaterialButton
 
-
+// class for delete account dialog popup
 class DeleteAccountDialogFragment : DialogFragment(R.layout.dialog_delete_account) {
     private lateinit var viewModel: AccountViewModel
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        // Creates a dialog box with custom design
         val builder = AlertDialog.Builder(requireContext())
         val inflater =  requireActivity().layoutInflater
         val view = inflater.inflate(R.layout.dialog_delete_account, null)
@@ -29,6 +30,7 @@ class DeleteAccountDialogFragment : DialogFragment(R.layout.dialog_delete_accoun
 
         builder.setView(view)
 
+        //variables for buttons
         val noButton : MaterialButton = view.findViewById(R.id.btn_no)
         val yesButton : MaterialButton = view.findViewById(R.id.btn_yes)
 
@@ -48,6 +50,7 @@ class DeleteAccountDialogFragment : DialogFragment(R.layout.dialog_delete_accoun
         return dialog
     }
 
+    //gets function from viewmodel to delete account and exits the app if deleted
     private fun deleteAccount() {
         viewModel.deleteAccount(
             onSuccess = {

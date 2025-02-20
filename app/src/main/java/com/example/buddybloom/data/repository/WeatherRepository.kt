@@ -79,15 +79,12 @@ class WeatherRepository {
                 temperature = (-5..25).random(),
                 weekDay = startingDate.getDisplayName(
                     Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.getDefault()
-                )
-
-            )
+                ))
             days.add(dailyReport)
             startingDate.add(Calendar.DAY_OF_YEAR, 1)
         }
         return WeatherReport.Weekly(dailyReports = days)
     }
-
 
     /**
      * Uses the current report and appends a new day for each day passed.
@@ -118,5 +115,4 @@ class WeatherRepository {
             lastDailyReport = newDailyReports.last()
         }
         return WeatherReport.Weekly( dailyReports =  newDailyReports)    }
-
 }

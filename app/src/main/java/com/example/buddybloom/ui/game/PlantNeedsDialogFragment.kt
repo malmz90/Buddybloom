@@ -65,9 +65,7 @@ class PlantNeedsDialogFragment : DialogFragment() {
             WindowManager.LayoutParams.MATCH_PARENT,
             WindowManager.LayoutParams.WRAP_CONTENT
         )
-
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-
 
         viewModel = ViewModelProvider(requireActivity())[PlantViewModel::class.java]
         //viewModel.getCurrentUserPlant()
@@ -94,8 +92,6 @@ class PlantNeedsDialogFragment : DialogFragment() {
                 }
             }
         }
-
-
         return dialog
     }
 
@@ -103,7 +99,5 @@ class PlantNeedsDialogFragment : DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Log.i("PlantNeedsFragment", "onViewCreated() called!")
-
-
     }
 }
