@@ -66,9 +66,20 @@ class StartPagePlantFragment : Fragment() {
                     binding.ivAnimationWateringCan.setImageDrawable(drawable)
                     drawable.start()
 
+                    //Disable button while animation is running.
+                    binding.btnWater.setBackgroundColor(Color.parseColor("#DEDEDE"))
+                    binding.btnWater.setTextColor(Color.parseColor("#FFFFFF"))
+                    binding.btnWater.isEnabled = false
+
                     // Hide the animation after 3 seconds.
                     Handler(Looper.getMainLooper()).postDelayed({
                         binding.ivAnimationWateringCan.visibility = View.INVISIBLE
+
+                        // Enable button after animation is done.
+                        binding.btnWater.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.eggwhite))
+                        binding.btnWater.setTextColor(ContextCompat.getColor(requireContext(), R.color.darkgreen))
+                        binding.btnWater.isEnabled = true
+
                     }, 3000)
                 }
             }
@@ -89,20 +100,9 @@ class StartPagePlantFragment : Fragment() {
                     binding.ivAnimationWateringCan.setImageDrawable(drawable)
                     drawable.start()
 
-                    //Disable button while animation is running.
-                    binding.btnWater.setBackgroundColor(Color.parseColor("#DEDEDE"))
-                    binding.btnWater.setTextColor(Color.parseColor("#FFFFFF"))
-                    binding.btnWater.isEnabled = false
-
                     // Hide the animation after 3 seconds.
                     Handler(Looper.getMainLooper()).postDelayed({
                         binding.ivAnimationWateringCan.visibility = View.INVISIBLE
-
-                        // Enable button after animation is done.
-                        binding.btnWater.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.eggwhite))
-                        binding.btnWater.setTextColor(ContextCompat.getColor(requireContext(), R.color.darkgreen))
-                        binding.btnWater.isEnabled = true
-
                     }, 3000)
                 }
             }
