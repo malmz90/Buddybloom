@@ -6,5 +6,3 @@ data class User(
     var name: String = "",
     val weeklyWeatherReport: WeatherReport.Weekly? = null
 )
-
-

@@ -2,6 +2,7 @@ package com.example.buddybloom.ui.game
 
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -20,6 +21,7 @@ import com.example.buddybloom.R
 import com.example.buddybloom.data.PlantWorker
 import com.example.buddybloom.databinding.ActivityGameBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.snackbar.Snackbar
 import java.util.concurrent.TimeUnit
 
 class GameActivity : AppCompatActivity() {
@@ -45,6 +47,10 @@ class GameActivity : AppCompatActivity() {
         val bottomNavigationView: BottomNavigationView = binding.navbarMenu
 
         bottomNavigationView.setOnItemSelectedListener { item ->
+            if (plantViewModel.currentPlant.value == null && (item.itemId == R.id.nav_profile || item.itemId == R.id.nav_home)){
+                Snackbar.make(binding.root, "You must choose a plant first!", Snackbar.LENGTH_SHORT).show()
+                return@setOnItemSelectedListener false
+            }
             when (item.itemId) {
                 R.id.nav_profile -> {
                     showFragment(ProfileFragment())
@@ -75,13 +81,22 @@ class GameActivity : AppCompatActivity() {
 
     private fun checkUserPlant() {
         plantViewModel.currentPlant.observe(this) { plant ->
+            val bottomNavigationView : BottomNavigationView = binding.navbarMenu
+
             if (plant == null) {
                 binding.navbarMenu.selectedItemId = R.id.nav_home
                 showFragment(ChoosePlantFragment())
+
+                //Unable to press home or profile if not choosen a plant first time logged in
+                bottomNavigationView.menu.findItem(R.id.nav_profile).isEnabled = false
+                bottomNavigationView.menu.findItem(R.id.nav_home).isEnabled = false
             } else {
                 binding.navbarMenu.selectedItemId = R.id.nav_plant
                 Log.d("GameAct", "User already has a plant")
                 showFragment(StartPagePlantFragment())
+
+                bottomNavigationView.menu.findItem(R.id.nav_profile).isEnabled = true
+                bottomNavigationView.menu.findItem(R.id.nav_home).isEnabled = true
             }
         }
     }

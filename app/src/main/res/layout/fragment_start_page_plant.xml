@@ -38,8 +38,8 @@
 
         <ImageView
             android:id="@+id/iv_blinds"
-            android:layout_width="250dp"
-            android:layout_height="250dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:translationZ="10dp"
             android:visibility="invisible"
             app:layout_constraintEnd_toEndOf="@+id/cv_plant" />
@@ -83,36 +83,36 @@
         android:visibility="invisible"/>
 
     <Button
-            android:id="@+id/btn_weather"
-            android:layout_width="79dp"
-            android:layout_height="57dp"
-            android:layout_marginStart="32dp"
-            android:backgroundTint="@color/darkgreen"
-            app:strokeColor="@color/darkbrown"
-            app:strokeWidth="1dp"
-            android:elevation="5dp"
-            android:translationZ="1dp"
-            android:stateListAnimator="@null"
-            android:drawableLeft="@drawable/icon_weather"
-            app:layout_constraintBottom_toTopOf="@id/bkg_btn"
-            app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginBottom="30dp"/>
+        android:id="@+id/btn_weather"
+        android:layout_width="80dp"
+        android:layout_height="60dp"
+        android:layout_marginStart="35dp"
+        android:layout_marginBottom="20dp"
+        android:backgroundTint="@color/darkgreen"
+        android:drawableLeft="@drawable/icon_weather"
+        android:elevation="5dp"
+        android:stateListAnimator="@null"
+        android:translationZ="1dp"
+        app:layout_constraintBottom_toTopOf="@id/bkg_btn"
+        app:layout_constraintStart_toStartOf="parent"
+        app:strokeColor="@color/darkbrown"
+        app:strokeWidth="1dp" />
 
-        <Button
-            android:id="@+id/btn_plant_needs"
-            android:layout_width="79dp"
-            android:layout_height="57dp"
-            android:layout_marginEnd="32dp"
-            android:layout_marginBottom="30dp"
-            android:backgroundTint="@color/darkgreen"
-            android:drawableLeft="@drawable/icon_daily_task"
-            android:elevation="5dp"
-            android:translationZ="1dp"
-            android:stateListAnimator="@null"
-            app:layout_constraintBottom_toTopOf="@id/bkg_btn"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:strokeColor="@color/darkbrown"
-            app:strokeWidth="1dp" />
+    <Button
+        android:id="@+id/btn_plant_needs"
+        android:layout_width="80dp"
+        android:layout_height="60dp"
+        android:layout_marginEnd="35dp"
+        android:layout_marginBottom="20dp"
+        android:backgroundTint="@color/darkgreen"
+        android:drawableLeft="@drawable/icon_daily_task"
+        android:elevation="5dp"
+        android:stateListAnimator="@null"
+        android:translationZ="1dp"
+        app:layout_constraintBottom_toTopOf="@id/bkg_btn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:strokeColor="@color/darkbrown"
+        app:strokeWidth="1dp" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/bkg_btn"
@@ -182,38 +182,112 @@
 
         <ImageButton
             android:id="@+id/imgBtn_bugspray"
-            android:layout_width="80dp"
-            android:layout_height="83dp"
-            android:layout_marginBottom="0dp"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
             android:background="@drawable/border_circle"
             android:backgroundTint="@color/turquise"
+            android:elevation="5dp"
             android:scaleType="fitCenter"
             android:src="@drawable/icon_bugspray"
-            android:elevation="5dp"
-            android:translationZ="2dp"
             android:stateListAnimator="@null"
+            android:translationZ="2dp"
             app:layout_constraintBottom_toBottomOf="@id/bkg_btn"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/imgBtn_waterspray"
-            app:layout_constraintTop_toBottomOf="@+id/switch_blinds" />
+            app:layout_constraintTop_toBottomOf="@+id/btn_fertilize" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layout_waterbar"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/border_shadow"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingVertical="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/switch_blinds">
+
+            <LinearLayout
+                android:id="@+id/linearLayout_waterbar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="13dp"
+                android:layout_marginEnd="4dp"
+                android:orientation="horizontal"
+                android:paddingHorizontal="8dp"
+                app:layout_constraintEnd_toStartOf="@+id/btn_refresh"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:text="Water Level"
+                    android:textColor="@color/darkgreen"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/tv_water_level"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:text="100%"
+                    android:textColor="@color/darkgreen"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <ProgressBar
+                android:id="@+id/progress_water"
+                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                android:layout_width="130dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="11dp"
+                android:background="@color/turquise"
+                android:max="100"
+                android:progress="100"
+                android:progressTint="@color/darkbrown"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/btn_refresh"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/linearLayout_waterbar" />
+
+            <ImageButton
+                android:id="@+id/btn_refresh"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@drawable/border_circle"
+                android:backgroundTint="@color/turquise"
+                android:padding="8dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/icon_refresh"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/progress_water"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <ImageButton
             android:id="@+id/imgBtn_waterspray"
-            android:layout_width="80dp"
-            android:layout_height="83dp"
-            android:layout_marginEnd="40dp"
-            android:layout_marginBottom="0dp"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
             android:background="@drawable/border_circle"
             android:backgroundTint="@color/turquise"
-            android:scaleType="fitCenter"
             android:elevation="5dp"
-            android:translationZ="2dp"
-            android:stateListAnimator="@null"
+            android:scaleType="fitCenter"
             android:src="@drawable/icon_waterspray"
+            android:stateListAnimator="@null"
+            android:translationZ="2dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/imgBtn_bugspray"
+            app:layout_constraintEnd_toStartOf="@+id/layout_waterbar"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/switch_blinds" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            app:layout_constraintTop_toBottomOf="@+id/btn_water" />
+</androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -29,8 +29,6 @@ class HistoryDialogFragment : DialogFragment(R.layout.dialog_history) {
         }
     }
 
-
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -64,5 +62,4 @@ class HistoryDialogFragment : DialogFragment(R.layout.dialog_history) {
 //        plantRepository.savePlantHistory(Plant("Elefantianus", streakDays = 112), {}, {})
 //        plantRepository.savePlantHistory(Plant("Zebraskopus", streakDays = 19), {}, {})
 //    }
-
 }

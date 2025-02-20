@@ -16,7 +16,7 @@ class AuthenticationFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentAuthenticationBinding.inflate(inflater,container, false)
         return binding.root
     }
@@ -27,6 +27,7 @@ class AuthenticationFragment : Fragment() {
         val activity = requireActivity() as? AuthenticationActivity
         activity?.binding?.btnBack?.visibility = View.GONE
 
+        //TODO behövs dessa?
         val registerFragment = RegisterFragment()
         val loginFragment = LoginFragment()
 
@@ -44,6 +45,7 @@ class AuthenticationFragment : Fragment() {
                 .commit()
         }
 
+        //opens info about the app when pressing info button
         binding.btnAbout.setOnClickListener {
             val aboutInfoFragment = AboutInfoFragment()
             aboutInfoFragment.show(requireActivity().supportFragmentManager, "AboutInfoFragmentTag")

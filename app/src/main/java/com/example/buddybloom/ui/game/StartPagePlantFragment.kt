@@ -19,7 +19,6 @@ import com.example.buddybloom.data.model.Plant
 import com.example.buddybloom.databinding.FragmentStartPagePlantBinding
 import com.example.buddybloom.ui.weather.WeatherDialogFragment
 
-
 class StartPagePlantFragment : Fragment() {
 
     private lateinit var binding: FragmentStartPagePlantBinding
@@ -80,6 +79,7 @@ class StartPagePlantFragment : Fragment() {
                     Toast.LENGTH_SHORT
                 ).show()
 
+                //show the animation of fertilizing
                 val drawable: Drawable? =
                     ContextCompat.getDrawable(requireContext(), R.drawable.gif_fertilize)
                 if (drawable is AnimatedImageDrawable) {
@@ -119,8 +119,6 @@ class StartPagePlantFragment : Fragment() {
                 weatherDialog.show(parentFragmentManager, "WeatherDialogFragment")
             }
 
-
-
             imgBtnWaterspray.setOnClickListener {
                 Toast.makeText(
                     requireContext(),
@@ -128,6 +126,7 @@ class StartPagePlantFragment : Fragment() {
                     Toast.LENGTH_SHORT
                 ).show()
 
+                // show the animation for waterspray
                 val drawable: Drawable? =
                     ContextCompat.getDrawable(requireContext(), R.drawable.gif_waterspray)
                 if (drawable is AnimatedImageDrawable) {
@@ -149,6 +148,7 @@ class StartPagePlantFragment : Fragment() {
                     Toast.LENGTH_SHORT
                 ).show()
 
+                //show the animation for bugspray
                 val drawable: Drawable? =
                     ContextCompat.getDrawable(requireContext(), R.drawable.gif_bugspray)
                 if (drawable is AnimatedImageDrawable) {

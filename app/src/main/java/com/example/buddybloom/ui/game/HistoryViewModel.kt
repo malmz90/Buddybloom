@@ -7,7 +7,6 @@ import com.example.buddybloom.data.repository.PlantRepository
 
 class HistoryViewModel : ViewModel() {
     private val plantRepo = PlantRepository()
-
     private var _historyItems = plantRepo.getPlantHistoryLiveData()
     val historyItems: LiveData<List<PlantHistory>> get() = _historyItems
 }

@@ -19,10 +19,8 @@ class PlantWorker(appContext: Context, workerParams: WorkerParameters) :
     private lateinit var plantRepository: PlantRepository
 
     override fun doWork(): Result {
-
         weatherRepository = WeatherRepository()
         plantRepository = PlantRepository()
-
 
         decreaseWaterLevelForCurrentPlant()
         updateWeather()

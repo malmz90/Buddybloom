@@ -11,7 +11,6 @@ import com.google.firebase.firestore.firestore
 import com.google.firebase.firestore.toObjects
 
 class PlantRepository {
-
     private val db = Firebase.firestore
     private val auth = FirebaseAuth.getInstance()
     private val userId = auth.currentUser?.uid
@@ -47,7 +46,6 @@ class PlantRepository {
                 callback(null)
             }
     }
-
 
     fun saveUserPlant(plant: Plant, callback: (Boolean) -> Unit) {
         userId ?: return

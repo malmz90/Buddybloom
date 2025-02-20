@@ -56,6 +56,7 @@ class AccountRepository {
         }
     }
 
+    //Send emaillink to reset password
     fun sendPasswordResetEmail(email: String): Task<Void> {
         return auth.sendPasswordResetEmail(email)
     }
@@ -94,6 +95,7 @@ class AccountRepository {
         }
     }
 
+    //Function to delete account from app
     fun deleteAccount(onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
         userId?.let { uid ->
             db.collection("users").document(uid).delete()
@@ -114,6 +116,7 @@ class AccountRepository {
                 }
         } ?:onFailure(Exception("User ID is null"))
     }
+
     fun signOut(callback: (Boolean) -> Unit){
         auth.signOut()
         callback(true)

@@ -25,7 +25,7 @@ class ProfileFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentProfileBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -35,6 +35,7 @@ class ProfileFragment : Fragment() {
 
         accountViewModel = ViewModelProvider(this)[AccountViewModel::class.java]
 
+        //Clicklistener for user to get popup about deleting their account
         binding.deleteAccountText.setOnClickListener {
             val deleteAccountDialog = DeleteAccountDialogFragment()
             deleteAccountDialog.show(parentFragmentManager, "DeleteAccountDialogFragment")
@@ -48,6 +49,7 @@ class ProfileFragment : Fragment() {
             }
         }
 
+        //info popup about the app
         binding.ibInfo.setOnClickListener {
             val aboutInfoFragment = AboutInfoFragment()
             aboutInfoFragment.show(requireActivity().supportFragmentManager, "AboutInfoFragmentTag")
@@ -82,6 +84,7 @@ class ProfileFragment : Fragment() {
                 Toast.makeText(requireContext(), "Fel: ${exception.message}", Toast.LENGTH_LONG).show()
             }
         }
+
         binding.saveButton.setOnClickListener {
             val newMail = binding.etEmail2.text.toString()
             val newUserName = binding.etUsername.text.toString()

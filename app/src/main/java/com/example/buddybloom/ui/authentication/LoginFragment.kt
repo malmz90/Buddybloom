@@ -37,9 +37,11 @@ class LoginFragment : Fragment() {
 
         avm = ViewModelProvider(this)[AccountViewModel::class.java]
 
+        //shows back button on loginpage
         val activity = requireActivity() as? AuthenticationActivity
         activity?.binding?.btnBack?.visibility = View.VISIBLE
 
+        //hides keyboard
         view.setOnTouchListener { _, _ ->
             (activity as? AuthenticationActivity)?.hideKeyboard()
             false
@@ -81,6 +83,7 @@ class LoginFragment : Fragment() {
         val email = binding.etEmail.text.toString().trim()
         val password = binding.etPass.text.toString().trim()
 
+        //shows built in error message design if invalid fields
         binding.textinputPwLayout.error = null
         binding.textinputEtLayout.error = null
 
@@ -118,6 +121,7 @@ class LoginFragment : Fragment() {
         }
     }
 
+    //opens dialog box if user press Forgot Password
     private fun forgotPassword() {
         val builder = AlertDialog.Builder(requireContext())
         val view = requireActivity().layoutInflater.inflate(R.layout.dialog_forgot, null)
@@ -140,7 +144,6 @@ class LoginFragment : Fragment() {
         view.findViewById<Button>(R.id.btn_cancel).setOnClickListener {
             dialog.dismiss()
         }
-
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         dialog.show()
     }

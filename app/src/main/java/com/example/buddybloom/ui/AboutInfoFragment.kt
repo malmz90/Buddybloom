@@ -7,13 +7,13 @@ import android.view.ViewGroup
 import com.example.buddybloom.R
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
+//About the app info bottom sheet dialog
 class AboutInfoFragment : BottomSheetDialogFragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_about_info, container, false)
     }
 }

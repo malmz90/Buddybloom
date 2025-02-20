@@ -17,6 +17,7 @@ class AccountViewModel : ViewModel() {
     private val _loginResult = MutableLiveData<Boolean>()
     val loginResult: LiveData<Boolean> get() = _loginResult
 
+    //LiveData to keep result of reset password(true if success, else false)
     private val _resetPasswordResult = MutableLiveData<Boolean>()
     val resetPasswordResult: LiveData<Boolean> get() = _resetPasswordResult
 
@@ -27,14 +28,15 @@ class AccountViewModel : ViewModel() {
         accountRepository.registerUser(email, password, name) { success ->
             _registerResult.value = success
         }
-
     }
+
     fun loginUser(email: String, password: String) {
         accountRepository.loginUser(email, password) { success ->
             _loginResult.value = success
         }
     }
 
+    //Sends reset password email if user forgot password, updates reset password to true if the email is sent successfully
     fun sendPasswordResetEmail(email: String){
         if(email.isBlank()){
             _resetPasswordResult.value =false
@@ -45,6 +47,7 @@ class AccountViewModel : ViewModel() {
         }
     }
 
+    //function if user wants to delete their account, calls from accountrepo. OnSuccess if deletion is successful or onFailure if it fails
     fun deleteAccount(onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
         accountRepository.deleteAccount(onSuccess, onFailure)
     }
@@ -59,7 +62,6 @@ class AccountViewModel : ViewModel() {
     viewModelScope.launch {
         val result = accountRepository.updateUserInfo(newEmail, newUsername)
         _updateStatus.postValue(result)
+        }
     }
-    }
-
 }

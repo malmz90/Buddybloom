@@ -35,8 +35,8 @@ class AddPlantDialogFragment(private val newPlant: Plant) :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        //sets plant info text in popup dialog
         val tvPlantInfo = view.findViewById<TextView>(R.id.tv_plant_info)
-
         tvPlantInfo.text = newPlant.info
 
         binding.btnAddPlant.setOnClickListener {
@@ -49,8 +49,6 @@ class AddPlantDialogFragment(private val newPlant: Plant) :
                     ReplacePlantDialogFragment(newPlant).show(parentFragmentManager, null)
                     dismiss()
                 }
-
-
             }
         }
 

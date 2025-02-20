@@ -19,7 +19,7 @@ class RegisterFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentRegisterBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -29,6 +29,7 @@ class RegisterFragment : Fragment() {
 
         avm = ViewModelProvider(this)[AccountViewModel::class.java]
 
+        //sets back button visible when register new user
         val activity = requireActivity() as? AuthenticationActivity
         activity?.binding?.btnBack?.visibility = View.VISIBLE
 
