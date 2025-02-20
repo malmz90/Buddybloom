@@ -29,5 +29,11 @@ class PlantManager {
         plant.waterLevel -= amount
         Log.d("PlantStatus", "Your Plant lost water by $amount!")
     }
+    fun decreaseFertilizer(plant: Plant, amount: Int) {
+        plant.fertilizerLevel = maxOf(0, plant.fertilizerLevel - amount)
+        plant.fertilizerLevel -= amount
+        Log.d("PlantStatus", "Your Plant lost water by $amount!")
+    }
+
 
 }
