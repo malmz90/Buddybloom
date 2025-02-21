@@ -80,8 +80,8 @@ class StartPagePlantFragment : Fragment() {
                         binding.ivAnimationWateringCan.visibility = View.INVISIBLE
 
                         // Enable button after animation is done.
-                        binding.btnWater.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.eggwhite))
-                        binding.btnWater.setTextColor(ContextCompat.getColor(requireContext(), R.color.darkgreen))
+                        binding.btnWater.setBackgroundColor(Color.parseColor("#F6F1DE"))
+                        binding.btnWater.setTextColor(Color.parseColor("#246246"))
                         binding.btnWater.isEnabled = true
 
                     }, 3000)
