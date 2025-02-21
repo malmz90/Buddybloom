@@ -55,7 +55,7 @@ class StartPagePlantFragment : Fragment() {
         }
         binding.apply {
             btnWater.setOnClickListener {
-//                plantViewModel.increaseWaterLevel(10)
+                plantViewModel.increaseWaterLevel(10)
                 Toast.makeText(
                     requireContext(),
                     "Your plant increased water level with 10",
