@@ -55,7 +55,7 @@ class StartPagePlantFragment : Fragment() {
         }
         binding.apply {
             btnWater.setOnClickListener {
-//                plantViewModel.increaseWaterLevel(10)
+                plantViewModel.increaseWaterLevel(10)
                 Toast.makeText(
                     requireContext(),
                     "Your plant increased water level with 10",
@@ -80,8 +80,8 @@ class StartPagePlantFragment : Fragment() {
                         binding.ivAnimationWateringCan.visibility = View.INVISIBLE
 
                         // Enable button after animation is done.
-                        binding.btnWater.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.eggwhite))
-                        binding.btnWater.setTextColor(ContextCompat.getColor(requireContext(), R.color.darkgreen))
+                        binding.btnWater.setBackgroundColor(Color.parseColor("#F6F1DE"))
+                        binding.btnWater.setTextColor(Color.parseColor("#246246"))
                         binding.btnWater.isEnabled = true
 
                     }, 3000)
