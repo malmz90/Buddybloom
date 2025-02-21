@@ -41,6 +41,7 @@ class AddPlantDialogFragment(private val newPlant: Plant) :
 
         binding.btnAddPlant.setOnClickListener {
             plantViewModel.getCurrentUserPlant { fetchedPlant ->
+                //I user has no plant (null), skip confirmation dialog.
                 if (fetchedPlant == null) {
                     plantViewModel.savePlantForCurrentUser(newPlant) {
                         dismiss()
