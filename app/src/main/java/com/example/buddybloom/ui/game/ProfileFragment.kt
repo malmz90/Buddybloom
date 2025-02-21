@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import com.example.buddybloom.R
+import com.example.buddybloom.data.repository.AccountRepository
 import com.example.buddybloom.databinding.FragmentProfileBinding
 import com.example.buddybloom.ui.AboutInfoFragment
 import com.example.buddybloom.ui.authentication.AccountViewModel
@@ -21,6 +22,7 @@ class ProfileFragment : Fragment() {
 
     private lateinit var binding : FragmentProfileBinding
     private lateinit var accountViewModel: AccountViewModel
+    private val accountRepository = AccountRepository()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -71,6 +73,8 @@ class ProfileFragment : Fragment() {
         binding.btnHistoryCheck.setOnClickListener {
             HistoryDialogFragment().show(parentFragmentManager, null)
         }
+
+        // Need for Update Email
         accountViewModel.updateStatus.observe(viewLifecycleOwner) { result ->
             result.onSuccess {
                 Toast.makeText(requireContext(), "Update Success! Verfify before signing in!!.", Toast.LENGTH_LONG).show()
@@ -88,7 +92,16 @@ class ProfileFragment : Fragment() {
         binding.saveButton.setOnClickListener {
             val newMail = binding.etEmail2.text.toString()
             val newUserName = binding.etUsername.text.toString()
-            accountViewModel.updateUser(newMail, newUserName)
+
+           when{
+               newUserName.isNotEmpty() -> { accountViewModel.updateUserName(newUserName)
+                   Toast.makeText(requireContext(),
+                       "User name updated!",Toast.LENGTH_SHORT).show()
+               }
+               newMail.isNotEmpty() -> { accountViewModel.updateUserEmail(newMail) }
+               else -> Toast.makeText(requireContext(),
+                   " At least one field needs to be filled!",Toast.LENGTH_SHORT).show()
+           }
         }
     }
 }

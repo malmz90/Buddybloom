@@ -72,41 +72,60 @@ class AccountRepository {
     }
 
     /**
-     * Function that updates when user presses save button in profile fragment
-     * and user needs to verify email address to change email, User automatically sign out
-     * and comes to login page. User needs to sign in again.
+     * Updates userName in fireBase
      */
-    suspend fun updateUserInfo(newEmail: String, newUsername: String): Result<Unit> {
-        val user = auth.currentUser ?: return Result.failure(Exception("Ingen användare inloggad"))
-        val userId = user.uid
+    suspend fun updateUserName(newUserName:String):Result<Unit>{
+        val user = auth.currentUser ?: return Result.failure(Exception("No User has logged in"))
 
         return try {
             // Updates username in Firebase Authentication
             val profileUpdates = UserProfileChangeRequest.Builder()
-                .setDisplayName(newUsername)
+                .setDisplayName(newUserName)
                 .build()
             user.updateProfile(profileUpdates).await()
+            // Uppdatera Firestore
+            val userRef = db.collection("users").document(user.uid)
 
+            userRef.update("name", newUserName).await()
+
+            Log.d("AccountRepository", "Username updated successfully.")
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Log.e("AccountRepository", "Failed to update username: ${e.message}")
+            Result.failure(e)
+        }
+    }
+
+    /**
+     * Function that updates Email when user presses save button in profile fragment
+     * and user needs to verify email address to change email, User automatically sign out
+     * and comes to login page. User needs to sign in again.
+     */
+    suspend fun updateUserEmail(newEmail: String): Result<Unit> {
+        val user = auth.currentUser ?: return Result.failure(Exception("No user has logged in"))
+        val userId = user.uid
+
+        return try {
             //Updates email in Firebase Authentication
             // And send email verification to email address
             user.verifyBeforeUpdateEmail(newEmail).await()
             user.sendEmailVerification().await()
 
-            //Updates firestore to whit email and username
+            //Updates firestore to with email
             val userRef = db.collection("users").document(userId)
             val updates = mapOf(
-                "email" to newEmail,
-                "name" to newUsername
+                "email" to newEmail
+
             )
             userRef.update(updates).await()
 
             // User logs out, and needs to sign in again after verification of email
             auth.signOut()
 
-            Log.d("AccountRespitory", "UserInfo updated. User need to signin again.")
+            Log.d("AccountRespitory", "Email updated. User need to signin again.")
             Result.success(Unit)
         } catch (e: Exception) {
-            Log.e("AccountRespitory", "Failed to update userinfo: ${e.message}")
+            Log.e("AccountRespitory", "Failed to update Email: ${e.message}")
             Result.failure(e)
         }
     }

@@ -4,6 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.buddybloom.data.model.Plant
+import com.example.buddybloom.data.model.User
 import com.example.buddybloom.data.repository.AccountRepository
 import kotlinx.coroutines.launch
 
@@ -22,8 +24,13 @@ class AccountViewModel : ViewModel() {
     private val _resetPasswordResult = MutableLiveData<Boolean>()
     val resetPasswordResult: LiveData<Boolean> get() = _resetPasswordResult
 
+    // LiveData for update Email
     private val _updateStatus = MutableLiveData<Result<Unit>>()
     val updateStatus: LiveData<Result<Unit>> get() = _updateStatus
+
+    // LiveData for updateUserName
+    private val _usernameUpdateStatus = MutableLiveData<Result<Unit>>()
+    val usernameUpdateStatus: LiveData<Result<Unit>> = _usernameUpdateStatus
 
     /**
      * Calls upon function in AccountRepo to register user
@@ -63,10 +70,17 @@ class AccountViewModel : ViewModel() {
         }
     }
 
-    fun updateUser(newEmail: String, newUsername: String) {
+    fun updateUserEmail(newEmail: String) {
     viewModelScope.launch {
-        val result = accountRepository.updateUserInfo(newEmail, newUsername)
+        val result = accountRepository.updateUserEmail(newEmail)
         _updateStatus.postValue(result)
+        }
+    }
+
+    fun updateUserName(newUserName:String){
+        viewModelScope.launch {
+            val result = accountRepository.updateUserName(newUserName)
+            _usernameUpdateStatus.postValue(result)
         }
     }
 }
