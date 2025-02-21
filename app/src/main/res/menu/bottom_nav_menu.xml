@@ -3,14 +3,16 @@
     <item
         android:id="@+id/nav_profile"
         android:icon="@drawable/icon_profile"
-        android:title="Profile" />
+        android:title="Profile"
+        android:enabled="true"/>
     <item
         android:id="@+id/nav_plant"
         android:icon="@drawable/icon_add_plant"
-        android:title="Plant" />
+        android:title="Plant"
+        android:enabled="true"/>
     <item
         android:id="@+id/nav_home"
         android:icon="@drawable/icon_btn_plus"
-        android:title="Home"/>
-
+        android:title="Home"
+        android:enabled="true"/>
 </menu>

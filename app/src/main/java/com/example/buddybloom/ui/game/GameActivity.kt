@@ -47,8 +47,10 @@ class GameActivity : AppCompatActivity() {
         val bottomNavigationView: BottomNavigationView = binding.navbarMenu
 
         bottomNavigationView.setOnItemSelectedListener { item ->
-            if (plantViewModel.currentPlant.value == null && (item.itemId == R.id.nav_profile || item.itemId == R.id.nav_home)){
-                Snackbar.make(binding.root, "You must choose a plant first!", Snackbar.LENGTH_SHORT).show()
+            //unable to press plant page and profile unless you've chosen a plant first
+            val hasPlant = plantViewModel.currentPlant.value != null
+            if(!hasPlant && (item.itemId == R.id.nav_profile || item.itemId == R.id.nav_plant)) {
+                Toast.makeText(this, "Choose a plant first!", Toast.LENGTH_SHORT).show()
                 return@setOnItemSelectedListener false
             }
             when (item.itemId) {
@@ -81,22 +83,14 @@ class GameActivity : AppCompatActivity() {
 
     private fun checkUserPlant() {
         plantViewModel.currentPlant.observe(this) { plant ->
-            val bottomNavigationView : BottomNavigationView = binding.navbarMenu
-
             if (plant == null) {
                 binding.navbarMenu.selectedItemId = R.id.nav_home
                 showFragment(ChoosePlantFragment())
 
-                //Unable to press home or profile if not choosen a plant first time logged in
-                bottomNavigationView.menu.findItem(R.id.nav_profile).isEnabled = false
-                bottomNavigationView.menu.findItem(R.id.nav_home).isEnabled = false
             } else {
                 binding.navbarMenu.selectedItemId = R.id.nav_plant
                 Log.d("GameAct", "User already has a plant")
                 showFragment(StartPagePlantFragment())
-
-                bottomNavigationView.menu.findItem(R.id.nav_profile).isEnabled = true
-                bottomNavigationView.menu.findItem(R.id.nav_home).isEnabled = true
             }
         }
     }
