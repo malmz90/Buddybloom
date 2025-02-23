@@ -2,6 +2,7 @@ package com.example.buddybloom.data.model
 
 import android.util.Log
 import com.example.buddybloom.R
+import com.google.firebase.Timestamp
 
 data class Plant(
     val name: String = "",
@@ -9,7 +10,7 @@ data class Plant(
     var sunLevel: Int = 100,
     var fertilizerLevel: Int = 100,
     val info: String = "",
-    var createdAt: Long = System.currentTimeMillis(),
-    val streakDays: Int = 0,
+    var createdAt: Timestamp = Timestamp.now(),
+    var lastUpdated: Timestamp = Timestamp.now(),
     val difficulty: String = "Easy"
 )
