@@ -5,18 +5,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.buddybloom.data.Game
-import com.example.buddybloom.data.model.LocalGameState
+import com.example.buddybloom.data.GameEngine
 import com.example.buddybloom.data.model.Plant
 import com.example.buddybloom.data.repository.PlantRepository
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class PlantViewModel : ViewModel() {
     private val plantRepository = PlantRepository()
-    private val game = Game(LocalGameState)
 
     private val _selectedPlant = MutableLiveData<Plant?>()
     val selectedPlant: LiveData<Plant?> get() = _selectedPlant
@@ -31,58 +27,46 @@ class PlantViewModel : ViewModel() {
     private val _errorMessage = MutableLiveData<String?>()
     val errorMessage: LiveData<String?> get() = _errorMessage
 
+    private val gameEngine = GameEngine(
+        scope = viewModelScope,
+        onPlantEvent = { localPlant ->
+            _testPlant.postValue(localPlant)
+        }, onAutoSave = { localPlant ->
+            savePlantToRemote(localPlant)
+        })
+
     init {
-        startGameLoop()
-        startAutoSave()
         syncPlantFromRemote()
 //        plantRepository.snapshotOfCurrentUserPlant { plant ->
 //            _currentPlant.value = plant
 //        }
     }
 
-    private fun startAutoSave() {
-        viewModelScope.launch {
-            while (true) {
-                delay(Game.AUTO_SAVE_TIMER)
-                withContext(Dispatchers.IO) {
-                    game.state.plant?.let {
-                        updatePlantOnRemote(it)
-                    }
-                }
-            }
-        }
-    }
-
-    private fun startGameLoop() {
-        viewModelScope.launch {
-            while (true) {
-                delay(Game.GAME_LOOP_TIMER)
-                game.runGameLoop()
-                updatePlantLiveData()
-            }
-        }
-    }
-
     private fun syncPlantFromRemote() {
         viewModelScope.launch(Dispatchers.IO) {
+            //Get the plant currently stored on Firebase
             val fetchedPlant = plantRepository.fetchPlant { error ->
                 _errorMessage.postValue(error.message)
             }
-            withContext(Dispatchers.Main) {
-                game.setPlant(fetchedPlant)
-                game.state.plant?.let {
-                    val hoursSinceLastUpdate =
-                        ((System.currentTimeMillis() - (it.lastUpdated.seconds * 1000)) / (1000 * 60 * 60)).toInt()
-                    if (hoursSinceLastUpdate > 0) {
-                        game.runGameLoop(hoursSinceLastUpdate)
+            //Update the (local) session data
+           gameEngine.updateLocalPlant(fetchedPlant)
+            fetchedPlant?.let {
+                val hoursSinceLastUpdate =
+                    ((System.currentTimeMillis() - (it.lastUpdated.seconds * 1000)) / (1000 * 60 * 60)).toInt()
+                //Calculate game events since last session
+                if (hoursSinceLastUpdate > 0) {
+                    gameEngine.runGameLoop(hoursSinceLastUpdate)
+                    //Update the plant on Firestore again
+                    plantRepository.updateRemotePlant(it) { error ->
+                        _errorMessage.postValue(error.message)
                     }
                 }
-                updatePlantLiveData()
             }
         }
     }
 
-    fun savePlantToRemote(plant: Plant) {
+
+    private fun savePlantToRemote(plant: Plant) {
         viewModelScope.launch(Dispatchers.IO) {
             plantRepository.savePlant(plant) { error ->
                 _errorMessage.postValue(error.message)
@@ -90,35 +74,15 @@ class PlantViewModel : ViewModel() {
         }
     }
 
-    private suspend fun updatePlantOnRemote(plant: Plant) {
-        plantRepository.updatePlant(plant) { error ->
-            _errorMessage.postValue(error.message)
-        }
-    }
 
-    fun setUserId(newId: String?) {
-        game.setUserId(newId)
-    }
-
-    fun setPlant(newPlant: Plant?) {
-        game.setPlant(newPlant)
-        updatePlantLiveData()
-    }
 
     fun waterPlant() {
-        game.waterPlant()
-        updatePlantLiveData()
+        gameEngine.waterPlant()
     }
 
 
     fun addFertilizer() {
-        game.addFertilizer()
-        updatePlantLiveData()
-    }
-
-
-    private fun updatePlantLiveData() {
-        _testPlant.postValue(game.state.plant)
+        gameEngine.addFertilizer()
     }
 
     //TODO ta bort?

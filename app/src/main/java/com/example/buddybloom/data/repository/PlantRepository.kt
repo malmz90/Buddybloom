@@ -54,7 +54,7 @@ class PlantRepository {
         } ?: onFailure(Exception(firebaseException))
     }
 
-    suspend fun updatePlant(plant: Plant, onFailure: (Exception) -> Unit) {
+    suspend fun updateRemotePlant(plant: Plant, onFailure: (Exception) -> Unit) {
         auth.currentUser?.uid?.let {
             try {
                 val updates = mapOf(
