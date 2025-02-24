@@ -40,8 +40,8 @@ class StartPagePlantFragment : Fragment() {
         // Boolean for blinds toggle button.
         var isBlindsVisible = false
         plantViewModel.currentPlant.observe(viewLifecycleOwner) { plant ->
-            binding.imgFlower.setImageResource(getPlantImage(plant))
-            binding.tvDaystreak.text = String.format(getDayStreak(plant).toString())
+            binding.imgFlower.setImageResource(getPlantImageId(plant))
+            binding.tvDaystreak.text = String.format(getDaysOld(plant).toString())
             binding.btnPlantNeeds.setOnClickListener {
                 if (plant != null) {
                     val plantNeedsDialog = PlantNeedsDialogFragment.newInstance(plant)
@@ -50,8 +50,8 @@ class StartPagePlantFragment : Fragment() {
             }
         }
 
-        if(plantViewModel.isPlantThirsty()){
-            Toast.makeText(requireContext(),"Your plant is Thirsty",Toast.LENGTH_SHORT).show()
+        if (plantViewModel.isPlantThirsty()) {
+            Toast.makeText(requireContext(), "Your plant is Thirsty", Toast.LENGTH_SHORT).show()
         }
         binding.apply {
             btnWater.setOnClickListener {
@@ -183,7 +183,10 @@ class StartPagePlantFragment : Fragment() {
         }
     }
 
-    private fun getDayStreak(plant: Plant?): Int {
+    /**
+     * Calculates how old the plant is in days, based on the current time and time of creation.
+     */
+    private fun getDaysOld(plant: Plant?): Int {
         if (plant != null) {
             val daysOld = (System.currentTimeMillis() - plant.createdAt) / (1000 * 60 * 60 * 24)
             return daysOld.toInt()
@@ -192,7 +195,10 @@ class StartPagePlantFragment : Fragment() {
         }
     }
 
-    private fun getPlantImage(plant: Plant?): Int {
+    /**
+     * Returns the correct image based on how old the plant is.
+     */
+    private fun getPlantImageId(plant: Plant?): Int {
         if (plant == null) return R.drawable.icon_obs
         val daysOld = (System.currentTimeMillis() - plant.createdAt) / (1000 * 60 * 60 * 24)
 
@@ -229,6 +235,6 @@ class StartPagePlantFragment : Fragment() {
             }
 
             else -> R.drawable.flower_elefant1
-            }
         }
     }
+}

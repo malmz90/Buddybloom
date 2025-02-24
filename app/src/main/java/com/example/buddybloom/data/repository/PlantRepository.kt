@@ -83,7 +83,7 @@ class PlantRepository {
             return
         }
         val docRef = db.collection(USERS).document(userId).collection(HISTORY).document()
-        docRef.set(PlantHistory(name = plant.name, streakCount = plant.streakDays))
+        docRef.set(PlantHistory(name = plant.name))
             .addOnSuccessListener {
                 onSuccess()
             }.addOnFailureListener {

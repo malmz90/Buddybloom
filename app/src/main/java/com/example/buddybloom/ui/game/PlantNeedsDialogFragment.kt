@@ -4,8 +4,6 @@ import android.app.Dialog
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.util.Log
-import android.view.View
 import android.view.WindowManager
 import android.widget.ImageView
 import android.widget.TextView
@@ -23,7 +21,6 @@ class PlantNeedsDialogFragment : DialogFragment() {
     private lateinit var fertilizerLevel: TextView
     private lateinit var sunLevel: TextView
     private lateinit var updateText: TextView
-    private var plant: Plant? = null
 
     companion object {
         fun newInstance(plant: Plant): PlantNeedsDialogFragment {
@@ -68,17 +65,13 @@ class PlantNeedsDialogFragment : DialogFragment() {
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
         viewModel = ViewModelProvider(requireActivity())[PlantViewModel::class.java]
-        //viewModel.getCurrentUserPlant()
         waterLevel = view.findViewById(R.id.tv_water_count)
         fertilizerLevel = view.findViewById(R.id.tv_fertilize_count)
         sunLevel = view.findViewById(R.id.tv_sun_count)
         updateText = view.findViewById(R.id.tv_updates)
 
-        //TODO observe does not seem to trigger the latest changes while this dialog is up,
-        // only when closed and opened again. Troubleshoot?
-        viewModel.selectedPlant.observe(requireActivity()) { plant ->
-            Log.i("PlantNeedsFragment", "Plant: $plant")
-            plant?.let {
+        viewModel.currentPlant.observe(requireActivity()) {
+            it?.let {
                 waterLevel.text = String.format(" ${it.waterLevel}/100")
                 fertilizerLevel.text = String.format(" ${it.fertilizerLevel}/100")
                 sunLevel.text = String.format(" ${it.sunLevel}/100")
@@ -93,11 +86,5 @@ class PlantNeedsDialogFragment : DialogFragment() {
             }
         }
         return dialog
-    }
-
-    //TODO onViewCreated() is never called in this fragment (???)
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        Log.i("PlantNeedsFragment", "onViewCreated() called!")
     }
 }

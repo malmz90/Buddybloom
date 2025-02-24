@@ -61,7 +61,8 @@ class WeatherRepository {
     }
 
     /**
-     * Generates one weekly weather report where every day is sunny and temperature and sunshine duration is random. Daily data is empty.
+     * Generates one weekly weather report where every day is sunny and temperature and sunshine duration is random.
+     * Daily data is empty.
      */
     fun generateNewSunnyWeeklyReport(): WeatherReport.Weekly {
         val startingDate = Calendar.getInstance().apply {

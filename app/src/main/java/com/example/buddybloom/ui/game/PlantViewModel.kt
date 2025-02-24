@@ -1,7 +1,6 @@
 package com.example.buddybloom.ui.game
 
 import android.util.Log
-import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -17,13 +16,8 @@ class PlantViewModel : ViewModel() {
 
     init {
         plantRepository.snapshotOfCurrentUserPlant { plant ->
-            _currentPlant.value = plant
+            _currentPlant.postValue(plant)
         }
-    }
-
-    //TODO ta bort?
-    fun setSelectedPlant(plant: Plant) {
-        _selectedPlant.value = plant
     }
 
     fun getCurrentUserPlant(onPlantFetched: (Plant?) -> Unit) {
@@ -41,47 +35,48 @@ class PlantViewModel : ViewModel() {
     /**
      * Takes currentPlant and if waterLevel is under 10 a toast will appear for user
      */
-    fun isPlantThirsty():Boolean{
-        return _currentPlant.value?.let{ plant->
+    fun isPlantThirsty(): Boolean {
+        return _currentPlant.value?.let { plant ->
             plant.waterLevel < 10
-        }?:false
+        } ?: false
     }
 
     /**
      * Checks difficulty on current Plant and increasing water level by different of difficulty
      */
-    fun checkDifficultyWaterSpray(){
-        _currentPlant.value?.let{plant->
-            if (plant.difficulty == "Easy"){
+    fun checkDifficultyWaterSpray() {
+        _currentPlant.value?.let { plant ->
+            if (plant.difficulty == "Easy") {
                 increaseWaterLevel(2)
                 Log.d("PlantVM", "Water level increased by 2")
-            }else if(plant.difficulty == "Medium"){
+            } else if (plant.difficulty == "Medium") {
                 increaseWaterLevel(5)
                 Log.d("PlantVM", "Water level increased by 5")
-            }else if(plant.difficulty == "Hard"){
+            } else if (plant.difficulty == "Hard") {
                 increaseWaterLevel(8)
                 Log.d("PlantVM", "Water level increased by 8")
-            }else {
+            } else {
                 Log.d("PlantVM", "No plant Found")
             }
         }
 
     }
+
     /**
      * Checks difficulty on current Plant and decrease FertilizerLevel level by different of difficulty
      */
-    fun checkDifficultyFertilizeDecrease(){
-        _currentPlant.value?.let{plant->
-            if (plant.difficulty == "Easy"){
-                plantRepository.decreaseFertilizer(plant,1)
+    fun checkDifficultyFertilizeDecrease() {
+        _currentPlant.value?.let { plant ->
+            if (plant.difficulty == "Easy") {
+                plantRepository.decreaseFertilizer(plant, 1)
                 Log.d("PlantVM", "Nutrition decreases by amount 1")
-            }else if(plant.difficulty == "Medium"){
-                plantRepository.decreaseFertilizer(plant,2)
-                Log.d("PlantVM",  "Nutrition decreases by amount 2")
-            }else if(plant.difficulty == "Hard"){
-                plantRepository.decreaseFertilizer(plant,5)
+            } else if (plant.difficulty == "Medium") {
+                plantRepository.decreaseFertilizer(plant, 2)
+                Log.d("PlantVM", "Nutrition decreases by amount 2")
+            } else if (plant.difficulty == "Hard") {
+                plantRepository.decreaseFertilizer(plant, 5)
                 Log.d("PlantVM", "Nutrition decreases by amount 5")
-            }else {
+            } else {
                 Log.d("PlantVM", "No plant Found")
             }
         }
@@ -98,6 +93,7 @@ class PlantViewModel : ViewModel() {
             Log.d("PlantStatus", "Your Plant increased Nutrition by $amount!")
         }
     }
+
     /**
      * Takes userplant and increases WaterLevel, amount sets in StartPagePlantFragment
      * and drives when user presses the Water button

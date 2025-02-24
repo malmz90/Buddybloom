@@ -25,9 +25,8 @@ class HistoryAdapter(private var historyItems: MutableList<PlantHistory>) :
 
     override fun onBindViewHolder(holder: HistoryViewHolder, position: Int) {
         val currentItem = historyItems[position]
-        val textString =
-            "You managed to keep your ${currentItem.name} alive for ${currentItem.streakCount} days!"
-        holder.textView.text = textString
+        holder.textView.text =
+            String.format("You managed to keep your ${currentItem.name} alive for ${currentItem.streakCount} days!")
     }
 
     fun update(newItems: MutableList<PlantHistory>) {

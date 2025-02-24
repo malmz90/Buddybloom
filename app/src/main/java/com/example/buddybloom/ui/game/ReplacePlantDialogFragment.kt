@@ -47,11 +47,6 @@ class ReplacePlantDialogFragment(private val plant: Plant) : DialogFragment(R.la
                 }
             }
             dismiss()
-
-//            val transaction = parentFragmentManager.beginTransaction()
-//            transaction.replace(R.id.fvc_game_activity, StartPagePlantFragment())
-//            transaction.addToBackStack(null)
-//            transaction.commit()
         }
 
         val dialog = builder.create()

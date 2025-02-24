@@ -1,17 +1,13 @@
 package com.example.buddybloom.ui.game
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
-import com.example.buddybloom.R
-import com.example.buddybloom.data.repository.AccountRepository
 import com.example.buddybloom.databinding.FragmentProfileBinding
 import com.example.buddybloom.ui.AboutInfoFragment
 import com.example.buddybloom.ui.authentication.AccountViewModel
@@ -22,7 +18,6 @@ class ProfileFragment : Fragment() {
 
     private lateinit var binding : FragmentProfileBinding
     private lateinit var accountViewModel: AccountViewModel
-    private val accountRepository = AccountRepository()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
