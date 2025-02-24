@@ -1,5 +1,6 @@
 package com.example.buddybloom.data
 
+import android.util.Log
 import com.example.buddybloom.data.GameEngine.LocalGameState.localPlant
 import com.example.buddybloom.data.GameEngine.LocalGameState.localUserId
 import com.example.buddybloom.data.GameEngine.LocalGameState.localWeatherReport
@@ -69,6 +70,7 @@ class GameEngine
         scope.launch {
             while (true) {
                 delay(AUTO_SAVE_TIMER)
+                Log.i("GameEngine", "AutoSave triggered")
                 localPlant?.let {
                     withContext(Dispatchers.IO) {
                         onAutoSave(it)
@@ -82,6 +84,7 @@ class GameEngine
         scope.launch {
             while (true) {
                 delay(GAME_LOOP_TIMER)
+                Log.i("GameEngine", "Game loop triggered")
                 runGameLoop()
             }
         }
@@ -94,6 +97,7 @@ class GameEngine
 
     fun updateLocalPlant(newPlant: Plant?) {
         localPlant = newPlant
+        onPlantEvent(localPlant)
     }
 
     fun getPlant(): Plant? {

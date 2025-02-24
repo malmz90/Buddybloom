@@ -7,7 +7,6 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import com.example.buddybloom.R
-import com.example.buddybloom.data.model.LocalGameState
 import com.example.buddybloom.databinding.ActivityAuthenticationBinding
 
 class AuthenticationActivity : AppCompatActivity() {
@@ -28,9 +27,6 @@ class AuthenticationActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-
-        //Makes sure saved game state is reset when user is not logged in
-        LocalGameState.reset()
 
         //back button on start pages
         binding.btnBack.setOnClickListener {

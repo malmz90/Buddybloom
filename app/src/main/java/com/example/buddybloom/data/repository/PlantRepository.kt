@@ -106,7 +106,6 @@ class PlantRepository {
                 val plant = document?.toObject(Plant::class.java)
                 callback(plant)
             }.addOnFailureListener {
-                //TODO error handling
                 callback(null)
             }
     }

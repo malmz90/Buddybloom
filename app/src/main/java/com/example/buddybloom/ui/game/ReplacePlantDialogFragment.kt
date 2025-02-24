@@ -21,7 +21,8 @@ import com.google.android.material.button.MaterialButton
 import com.google.firebase.auth.FirebaseAuth
 
 //Replace plant dialog that pops up after choosing a plant if you want to replace current plant
-class ReplacePlantDialogFragment(private val plant: Plant) : DialogFragment(R.layout.dialog_replace_plant) {
+class ReplacePlantDialogFragment(private val plant: Plant) :
+    DialogFragment(R.layout.dialog_replace_plant) {
 
     private lateinit var plantViewModel: PlantViewModel
 
@@ -29,29 +30,20 @@ class ReplacePlantDialogFragment(private val plant: Plant) : DialogFragment(R.la
         plantViewModel = ViewModelProvider(requireActivity())[PlantViewModel::class.java]
 
         val builder = AlertDialog.Builder(requireContext())
-        val inflater =  requireActivity().layoutInflater
+        val inflater = requireActivity().layoutInflater
         val view = inflater.inflate(R.layout.dialog_replace_plant, null)
 
         builder.setView(view)
 
-        val noButton : MaterialButton = view.findViewById(R.id.btn_no)
-        val yesButton : MaterialButton = view.findViewById(R.id.btn_yes)
+        val noButton: MaterialButton = view.findViewById(R.id.btn_no)
+        val yesButton: MaterialButton = view.findViewById(R.id.btn_yes)
 
         noButton.setOnClickListener {
             dismiss()
         }
         yesButton.setOnClickListener {
-            plantViewModel.savePlantForCurrentUser(plant){
-                activity?.run {
-                    Toast.makeText(requireContext(), "${plant.name} Selected!", Toast.LENGTH_SHORT).show()
-                }
-            }
+            plantViewModel.savePlantToRemote(plant)
             dismiss()
-
-//            val transaction = parentFragmentManager.beginTransaction()
-//            transaction.replace(R.id.fvc_game_activity, StartPagePlantFragment())
-//            transaction.addToBackStack(null)
-//            transaction.commit()
         }
 
         val dialog = builder.create()

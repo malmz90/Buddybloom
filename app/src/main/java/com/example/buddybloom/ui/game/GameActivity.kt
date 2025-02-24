@@ -33,7 +33,7 @@ class GameActivity : AppCompatActivity() {
         enableEdgeToEdge()
         binding = ActivityGameBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        plantWorksSchedule() // Begin schedule
+//        plantWorksSchedule() // Begin schedule
         ViewCompat.setOnApplyWindowInsetsListener(binding.main) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
@@ -82,7 +82,7 @@ class GameActivity : AppCompatActivity() {
     }
 
     private fun checkUserPlant() {
-        plantViewModel.currentPlant.observe(this) { plant ->
+        plantViewModel.testPlant.observe(this) { plant ->
             if (plant == null) {
                 binding.navbarMenu.selectedItemId = R.id.nav_home
                 showFragment(ChoosePlantFragment())
@@ -95,38 +95,52 @@ class GameActivity : AppCompatActivity() {
         }
     }
 
+//    private fun checkUserPlant() {
+//        plantViewModel.currentPlant.observe(this) { plant ->
+//            if (plant == null) {
+//                binding.navbarMenu.selectedItemId = R.id.nav_home
+//                showFragment(ChoosePlantFragment())
+//
+//            } else {
+//                binding.navbarMenu.selectedItemId = R.id.nav_plant
+//                Log.d("GameAct", "User already has a plant")
+//                showFragment(StartPagePlantFragment())
+//            }
+//        }
+//    }
+
     /**
 Sets up a Schedule for plants works that should run in background and
  updates firestore, functions that runs is placed in Plant-class and PlantWorker-class.
  */
-    private fun plantWorksSchedule() {
-        val workManager = WorkManager.getInstance(this)
-
-        workManager.getWorkInfosForUniqueWorkLiveData("PlantWateringWork")
-            .observe(this, Observer { workInfos ->
-                val isJobRunning = workInfos.any {
-                    it.state == WorkInfo.State.ENQUEUED || it.state == WorkInfo.State.RUNNING
-                }
-
-                if (!isJobRunning) {
-                    val workRequest = PeriodicWorkRequestBuilder<PlantWorker>(
-                        15, TimeUnit.MINUTES
-                    ).setConstraints(
-                        Constraints.Builder()
-                            .setRequiredNetworkType(NetworkType.CONNECTED) //Drives only with InternetService
-                            .build()
-                    ).build()
-
-                    workManager.enqueueUniquePeriodicWork(
-                        "PlantWateringWork",
-                        ExistingPeriodicWorkPolicy.UPDATE,
-                        workRequest
-                    )
-
-                    Log.d("WorkManager", "WorkManager schemalagd!")
-                } else {
-                    Log.d("WorkManager", "Jobb är redan schemalagt och körs.")
-                }
-            })
-    }
+//    private fun plantWorksSchedule() {
+//        val workManager = WorkManager.getInstance(this)
+//
+//        workManager.getWorkInfosForUniqueWorkLiveData("PlantWateringWork")
+//            .observe(this, Observer { workInfos ->
+//                val isJobRunning = workInfos.any {
+//                    it.state == WorkInfo.State.ENQUEUED || it.state == WorkInfo.State.RUNNING
+//                }
+//
+//                if (!isJobRunning) {
+//                    val workRequest = PeriodicWorkRequestBuilder<PlantWorker>(
+//                        15, TimeUnit.MINUTES
+//                    ).setConstraints(
+//                        Constraints.Builder()
+//                            .setRequiredNetworkType(NetworkType.CONNECTED) //Drives only with InternetService
+//                            .build()
+//                    ).build()
+//
+//                    workManager.enqueueUniquePeriodicWork(
+//                        "PlantWateringWork",
+//                        ExistingPeriodicWorkPolicy.UPDATE,
+//                        workRequest
+//                    )
+//
+//                    Log.d("WorkManager", "WorkManager schemalagd!")
+//                } else {
+//                    Log.d("WorkManager", "Jobb är redan schemalagt och körs.")
+//                }
+//            })
+//    }
 }

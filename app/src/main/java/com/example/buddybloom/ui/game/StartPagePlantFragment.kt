@@ -39,7 +39,7 @@ class StartPagePlantFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         // Boolean for blinds toggle button.
         var isBlindsVisible = false
-        plantViewModel.currentPlant.observe(viewLifecycleOwner) { plant ->
+        plantViewModel.testPlant.observe(viewLifecycleOwner) { plant ->
             binding.imgFlower.setImageResource(getPlantImage(plant))
             binding.tvDaystreak.text = String.format(getDayStreak(plant).toString())
             binding.btnPlantNeeds.setOnClickListener {
@@ -50,12 +50,12 @@ class StartPagePlantFragment : Fragment() {
             }
         }
 
-        if(plantViewModel.isPlantThirsty()){
-            Toast.makeText(requireContext(),"Your plant is Thirsty",Toast.LENGTH_SHORT).show()
+        if (plantViewModel.isPlantThirsty()) {
+            Toast.makeText(requireContext(), "Your plant is Thirsty", Toast.LENGTH_SHORT).show()
         }
         binding.apply {
             btnWater.setOnClickListener {
-                plantViewModel.increaseWaterLevel(10)
+                plantViewModel.waterPlant()
                 Toast.makeText(
                     requireContext(),
                     "Your plant increased water level with 10",
@@ -89,7 +89,7 @@ class StartPagePlantFragment : Fragment() {
             }
 
             btnFertilize.setOnClickListener {
-                plantViewModel.increaseFertilizeLevel(10)
+                plantViewModel.fertilizePlant()
                 Toast.makeText(
                     requireContext(),
                     "Your plant increased nutrition with 10",
@@ -185,7 +185,8 @@ class StartPagePlantFragment : Fragment() {
 
     private fun getDayStreak(plant: Plant?): Int {
         if (plant != null) {
-            val daysOld = (System.currentTimeMillis() - plant.createdAt) / (1000 * 60 * 60 * 24)
+            val daysOld =
+                ((System.currentTimeMillis() - (plant.createdAt.seconds*1000)) / (1000 * 60 * 60 * 24))
             return daysOld.toInt()
         } else {
             return 0
@@ -194,7 +195,7 @@ class StartPagePlantFragment : Fragment() {
 
     private fun getPlantImage(plant: Plant?): Int {
         if (plant == null) return R.drawable.icon_obs
-        val daysOld = (System.currentTimeMillis() - plant.createdAt) / (1000 * 60 * 60 * 24)
+        val daysOld = ((System.currentTimeMillis() - (plant.createdAt.seconds*1000)) / (1000 * 60 * 60 * 24))
 
         val stage = when {
             daysOld >= 6 -> 4
@@ -229,6 +230,6 @@ class StartPagePlantFragment : Fragment() {
             }
 
             else -> R.drawable.flower_elefant1
-            }
         }
     }
+}

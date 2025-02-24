@@ -40,11 +40,10 @@ class AddPlantDialogFragment(private val newPlant: Plant) :
         tvPlantInfo.text = newPlant.info
 
         binding.btnAddPlant.setOnClickListener {
-            plantViewModel.getCurrentUserPlant { fetchedPlant ->
-                if (fetchedPlant == null) {
-                    plantViewModel.savePlantForCurrentUser(newPlant) {
-                        dismiss()
-                    }
+            plantViewModel.testPlant.observe(viewLifecycleOwner) { currentPlant ->
+                if (currentPlant == null) {
+                    plantViewModel.savePlantToRemote(newPlant)
+                    dismiss()
                 } else {
                     ReplacePlantDialogFragment(newPlant).show(parentFragmentManager, null)
                     dismiss()

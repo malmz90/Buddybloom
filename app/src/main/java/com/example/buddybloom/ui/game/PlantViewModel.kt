@@ -20,7 +20,7 @@ class PlantViewModel : ViewModel() {
     private val _currentPlant = MutableLiveData<Plant?>()
     val currentPlant: LiveData<Plant?> get() = _currentPlant
 
-    private val _testPlant = MutableLiveData<Plant?>()
+    private val _testPlant = MutableLiveData<Plant?>(null)
     val testPlant: LiveData<Plant?> get() = _testPlant
 
     //TODO Make sure UI listens to these (show a toast?)
@@ -66,7 +66,7 @@ class PlantViewModel : ViewModel() {
     }
 
 
-    private fun savePlantToRemote(plant: Plant) {
+    fun savePlantToRemote(plant: Plant) {
         viewModelScope.launch(Dispatchers.IO) {
             plantRepository.savePlant(plant) { error ->
                 _errorMessage.postValue(error.message)
@@ -81,7 +81,7 @@ class PlantViewModel : ViewModel() {
     }
 
 
-    fun addFertilizer() {
+    fun fertilizePlant() {
         gameEngine.addFertilizer()
     }
 
