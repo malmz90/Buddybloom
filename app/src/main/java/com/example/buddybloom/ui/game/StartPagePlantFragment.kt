@@ -9,6 +9,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -86,7 +87,7 @@ class StartPagePlantFragment : Fragment() {
             btnWater.setOnClickListener {
                 // starts random function for infection
                 plantViewModel.startRandomInfection(plant)
-                plantViewModel.increaseWaterLevel(10)
+              //  plantViewModel.increaseWaterLevel(10)
                 Toast.makeText(
                     requireContext(),
                     "Your plant increased water level with 10",

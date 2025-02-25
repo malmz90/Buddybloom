@@ -19,8 +19,8 @@ import kotlinx.coroutines.launch
 class PlantViewModel : ViewModel() {
     private val plantRepository = PlantRepository()
 
-//    private val _currentPlant = MutableLiveData<Plant?>()
-//    val currentPlant: LiveData<Plant?> get() = _currentPlant
+    private val _currentPlant = MutableLiveData<Plant?>()
+    val currentPlant: LiveData<Plant?> get() = _currentPlant
 
     private val _localSessionPlant = MutableLiveData<Plant?>()
     val localSessionPlant: LiveData<Plant?> get() = _localSessionPlant
