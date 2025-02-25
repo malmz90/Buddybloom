@@ -69,8 +69,8 @@ class PlantNeedsDialogFragment : DialogFragment() {
         fertilizerLevel = view.findViewById(R.id.tv_fertilize_count)
         sunLevel = view.findViewById(R.id.tv_sun_count)
         updateText = view.findViewById(R.id.tv_updates)
-
-        viewModel.currentPlant.observe(requireActivity()) {
+        
+        viewModel.localSessionPlant.observe(requireActivity()) {
             it?.let {
                 waterLevel.text = String.format(" ${it.waterLevel}/100")
                 fertilizerLevel.text = String.format(" ${it.fertilizerLevel}/100")

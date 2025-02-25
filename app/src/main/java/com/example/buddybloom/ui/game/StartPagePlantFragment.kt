@@ -9,7 +9,6 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -17,11 +16,8 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.Observer
 import com.example.buddybloom.R
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
-import com.bumptech.glide.Glide
 import com.example.buddybloom.data.model.Plant
 import com.example.buddybloom.databinding.FragmentStartPagePlantBinding
 import com.example.buddybloom.ui.weather.WeatherDialogFragment
@@ -32,6 +28,10 @@ class StartPagePlantFragment : Fragment() {
     private lateinit var plantViewModel: PlantViewModel
     private lateinit var soundPool: SoundPool
     private var waterSpraySoundId: Int = 0
+    private var fertilizeSoundId: Int = 0
+    private var wateringSoundId: Int = 0
+    private var blindsSoundStartId: Int = 0
+    private var blindsSoundEndId: Int = 0
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -76,7 +76,11 @@ class StartPagePlantFragment : Fragment() {
         }
         val plant = Plant()
         soundPool = SoundPool.Builder().setMaxStreams(1).build()
-        waterSpraySoundId = soundPool.load(requireContext(), R.raw.spraysound, 1)
+        waterSpraySoundId = soundPool.load(requireContext(), R.raw.spray_sound, 1)
+        fertilizeSoundId = soundPool.load(requireContext(), R.raw.fertilize_sound, 1)
+        wateringSoundId = soundPool.load(requireContext(), R.raw.watering_sound, 1)
+        blindsSoundStartId = soundPool.load(requireContext(), R.raw.blinds_sound_start, 1)
+        blindsSoundEndId = soundPool.load(requireContext(), R.raw.blinds_sound_end, 1)
 
         binding.apply {
             btnWater.setOnClickListener {
@@ -100,6 +104,9 @@ class StartPagePlantFragment : Fragment() {
                         }
                     }
                 }
+
+                // Play sound
+                soundPool.play(wateringSoundId, 1f, 1f, 0, 0, 1f)
 
                 // Show the animation of watering can.
                 val drawable: Drawable? =
@@ -128,12 +135,14 @@ class StartPagePlantFragment : Fragment() {
             }
 
             btnFertilize.setOnClickListener {
-                plantViewModel.increaseFertilizeLevel(10)
                 Toast.makeText(
                     requireContext(),
                     "Your plant increased nutrition with 10",
                     Toast.LENGTH_SHORT
                 ).show()
+
+                // Play sound
+                soundPool.play(fertilizeSoundId, 1f, 1f, 0, 0, 1f)
 
                 //show the animation of fertilizing
                 val drawable: Drawable? =
@@ -146,27 +155,36 @@ class StartPagePlantFragment : Fragment() {
                     // Hide the animation after 3 seconds.
                     Handler(Looper.getMainLooper()).postDelayed({
                         binding.ivAnimationWateringCan.visibility = View.INVISIBLE
+                        plantViewModel.fertilizePlant()
                     }, 3000)
                 }
             }
+
             switchBlinds.setOnClickListener {
                 // Toggling between visible/invisible on the blinds.
                 isBlindsVisible = !isBlindsVisible
                 binding.ivBlinds.setImageResource(R.drawable.iconimg_blinds)
                 if (isBlindsVisible) {
-                    binding.ivBlinds.visibility = View.VISIBLE
-                    Toast.makeText(
-                        requireContext(),
-                        "You've successfully protected your plant!",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    // Play sound
+                    soundPool.play(blindsSoundStartId, 1f, 1f, 0, 0, 1f)
+
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        binding.ivBlinds.visibility = View.VISIBLE
+                        Toast.makeText(requireContext(),
+                            "You've successfully protected your plant!", Toast.LENGTH_SHORT
+                        ).show()
+                    }, 1000)
                 } else {
-                    binding.ivBlinds.visibility = View.INVISIBLE
-                    Toast.makeText(
-                        requireContext(),
-                        "You've removed your protection from your plant!",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    // Play sound
+                    soundPool.play(blindsSoundEndId, 1f, 1f, 0, 0, 1f)
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        binding.ivBlinds.visibility = View.INVISIBLE
+                        Toast.makeText(
+                            requireContext(),
+                            "You've removed your protection from your plant!",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }, 1000)
                 }
             }
 
@@ -175,8 +193,9 @@ class StartPagePlantFragment : Fragment() {
                 weatherDialog.show(parentFragmentManager, "WeatherDialogFragment")
             }
 
+            //TODO Connect this to the view model
             imgBtnWaterspray.setOnClickListener {
-                plantViewModel.checkDifficultyWaterSpray()
+                //plantViewModel.checkDifficultyWaterSpray()
                 Toast.makeText(
                     requireContext(),
                     "You've successfully sprayed water on your plant!",
@@ -200,7 +219,7 @@ class StartPagePlantFragment : Fragment() {
                     }, 3000)
                 }
             }
-
+            //TODO Connect this to the view model
             imgBtnBugspray.setOnClickListener {
                 // show spray gif
                 val drawable: Drawable? =
@@ -256,7 +275,8 @@ class StartPagePlantFragment : Fragment() {
      */
     private fun getDaysOld(plant: Plant?): Int {
         if (plant != null) {
-            val daysOld = (System.currentTimeMillis() - plant.createdAt) / (1000 * 60 * 60 * 24)
+            val daysOld =
+                ((System.currentTimeMillis() - (plant.createdAt.seconds*1000)) / (1000 * 60 * 60 * 24))
             return daysOld.toInt()
         } else {
             return 0
@@ -279,7 +299,7 @@ class StartPagePlantFragment : Fragment() {
             }
         }
 
-        val daysOld = (System.currentTimeMillis() - plant.createdAt) / (1000 * 60 * 60 * 24)
+        val daysOld = ((System.currentTimeMillis() - (plant.createdAt.seconds*1000)) / (1000 * 60 * 60 * 24))
 
         val stage = when {
             daysOld >= 6 -> 4
