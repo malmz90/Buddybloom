@@ -55,6 +55,9 @@ class StartPagePlantFragment : Fragment() {
                     plantNeedsDialog.show(parentFragmentManager, "PlantNeedsDialogFragment")
                 }
             }
+            //Progress indicator
+            "${plant?.waterLevel ?: 0}%".also { binding.tvWaterLevel.text = it }
+            binding.progressWater.progress = plant?.waterLevel ?: 0
         }
 
         if (plantViewModel.isPlantThirsty()) {
@@ -142,7 +145,8 @@ class StartPagePlantFragment : Fragment() {
 
                     Handler(Looper.getMainLooper()).postDelayed({
                         binding.ivBlinds.visibility = View.VISIBLE
-                        Toast.makeText(requireContext(),
+                        Toast.makeText(
+                            requireContext(),
                             "You've successfully protected your plant!", Toast.LENGTH_SHORT
                         ).show()
                     }, 1000)
@@ -228,7 +232,7 @@ class StartPagePlantFragment : Fragment() {
     private fun getDaysOld(plant: Plant?): Int {
         if (plant != null) {
             val daysOld =
-                ((System.currentTimeMillis() - (plant.createdAt.seconds*1000)) / (1000 * 60 * 60 * 24))
+                ((System.currentTimeMillis() - (plant.createdAt.seconds * 1000)) / (1000 * 60 * 60 * 24))
             return daysOld.toInt()
         } else {
             return 0
@@ -250,9 +254,10 @@ class StartPagePlantFragment : Fragment() {
                 else -> R.drawable.flower_elefant5
             }
         }
-        
-        val daysOld = ((System.currentTimeMillis() - (plant.createdAt.seconds*1000)) / (1000 * 60 * 60 * 24))
-        
+
+        val daysOld =
+            ((System.currentTimeMillis() - (plant.createdAt.seconds * 1000)) / (1000 * 60 * 60 * 24))
+
         val stage = when {
             daysOld >= 6 -> 4
             daysOld >= 4 -> 3
