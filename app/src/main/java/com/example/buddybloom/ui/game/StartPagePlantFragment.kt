@@ -43,7 +43,7 @@ class StartPagePlantFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         // Boolean for blinds toggle button.
         var isBlindsVisible = false
-        plantViewModel.currentPlant.observe(viewLifecycleOwner) { plant ->
+        plantViewModel.localSessionPlant.observe(viewLifecycleOwner) { plant ->
             binding.imgFlower.setImageResource(getPlantImageId(plant))
             binding.tvDaystreak.text = String.format(getDaysOld(plant).toString())
             binding.btnPlantNeeds.setOnClickListener {
@@ -64,7 +64,6 @@ class StartPagePlantFragment : Fragment() {
 
         binding.apply {
             btnWater.setOnClickListener {
-                plantViewModel.increaseWaterLevel(10)
                 Toast.makeText(
                     requireContext(),
                     "Your plant increased water level with 10",
@@ -92,13 +91,13 @@ class StartPagePlantFragment : Fragment() {
                         binding.btnWater.setBackgroundColor(Color.parseColor("#F6F1DE"))
                         binding.btnWater.setTextColor(Color.parseColor("#246246"))
                         binding.btnWater.isEnabled = true
+                        plantViewModel.waterPlant()
 
                     }, 3000)
                 }
             }
 
             btnFertilize.setOnClickListener {
-                plantViewModel.increaseFertilizeLevel(10)
                 Toast.makeText(
                     requireContext(),
                     "Your plant increased nutrition with 10",
@@ -119,6 +118,7 @@ class StartPagePlantFragment : Fragment() {
                     // Hide the animation after 3 seconds.
                     Handler(Looper.getMainLooper()).postDelayed({
                         binding.ivAnimationWateringCan.visibility = View.INVISIBLE
+                        plantViewModel.fertilizePlant()
                     }, 3000)
                 }
             }
@@ -148,8 +148,9 @@ class StartPagePlantFragment : Fragment() {
                 weatherDialog.show(parentFragmentManager, "WeatherDialogFragment")
             }
 
+            //TODO Connect this to the view model
             imgBtnWaterspray.setOnClickListener {
-                plantViewModel.checkDifficultyWaterSpray()
+                //plantViewModel.checkDifficultyWaterSpray()
                 Toast.makeText(
                     requireContext(),
                     "You've successfully sprayed water on your plant!",
@@ -173,7 +174,7 @@ class StartPagePlantFragment : Fragment() {
                     }, 3000)
                 }
             }
-
+            //TODO Connect this to the view model
             imgBtnBugspray.setOnClickListener {
                 Toast.makeText(
                     requireContext(),
@@ -203,12 +204,14 @@ class StartPagePlantFragment : Fragment() {
         soundPool.release()
     }
 
+
     /**
      * Calculates how old the plant is in days, based on the current time and time of creation.
      */
     private fun getDaysOld(plant: Plant?): Int {
         if (plant != null) {
-            val daysOld = (System.currentTimeMillis() - plant.createdAt) / (1000 * 60 * 60 * 24)
+            val daysOld =
+                ((System.currentTimeMillis() - (plant.createdAt.seconds*1000)) / (1000 * 60 * 60 * 24))
             return daysOld.toInt()
         } else {
             return 0
@@ -230,9 +233,9 @@ class StartPagePlantFragment : Fragment() {
                 else -> R.drawable.flower_elefant5
             }
         }
-
-        val daysOld = (System.currentTimeMillis() - plant.createdAt) / (1000 * 60 * 60 * 24)
-
+        
+        val daysOld = ((System.currentTimeMillis() - (plant.createdAt.seconds*1000)) / (1000 * 60 * 60 * 24))
+        
         val stage = when {
             daysOld >= 6 -> 4
             daysOld >= 4 -> 3

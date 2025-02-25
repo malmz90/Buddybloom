@@ -34,7 +34,7 @@
             android:clipToOutline="true"
             android:paddingBottom="85dp"
             android:scaleType="centerCrop"
-            android:src="@drawable/flower_elefant1"/>
+            android:src="@drawable/icon_obs"/>
 
         <ImageView
             android:id="@+id/iv_blinds"
