@@ -44,8 +44,8 @@ class StartPagePlantFragment : Fragment() {
         // Boolean for blinds toggle button.
         var isBlindsVisible = false
         plantViewModel.localSessionPlant.observe(viewLifecycleOwner) { plant ->
-            binding.imgFlower.setImageResource(getPlantImage(plant))
-            binding.tvDaystreak.text = String.format(getDayStreak(plant).toString())
+            binding.imgFlower.setImageResource(getPlantImageId(plant))
+            binding.tvDaystreak.text = String.format(getDaysOld(plant).toString())
             binding.btnPlantNeeds.setOnClickListener {
                 if (plant != null) {
                     val plantNeedsDialog = PlantNeedsDialogFragment.newInstance(plant)
