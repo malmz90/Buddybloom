@@ -1,11 +1,18 @@
 package com.example.buddybloom.ui.game
 
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.buddybloom.data.model.Plant
 import com.example.buddybloom.data.repository.PlantRepository
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 class PlantViewModel : ViewModel() {
     private val plantRepository = PlantRepository()
@@ -13,6 +20,8 @@ class PlantViewModel : ViewModel() {
     val selectedPlant: LiveData<Plant?> get() = _selectedPlant
     private val _currentPlant = MutableLiveData<Plant?>()
     val currentPlant: LiveData<Plant?> get() = _currentPlant
+    private val _isInfected = MutableLiveData<Boolean>()
+    val isInfected: LiveData<Boolean> get() = _isInfected
 
     init {
         plantRepository.snapshotOfCurrentUserPlant { plant ->
@@ -29,6 +38,18 @@ class PlantViewModel : ViewModel() {
     fun savePlantForCurrentUser(plant: Plant, onPlantSaved: () -> Unit) {
         plantRepository.saveUserPlant(plant) { saved ->
             if (saved) onPlantSaved()
+        }
+    }
+
+    fun startRandomInfection(plant:Plant) {
+        plantRepository.startRandomInfection(plant)
+
+    }
+
+    fun sprayOnBugs(plant:Plant) {
+        plantRepository.plantGetFreeFromBugs(plant)
+        _currentPlant.value?.let { plant ->
+            plant.infected = false
         }
     }
 
@@ -61,7 +82,6 @@ class PlantViewModel : ViewModel() {
         }
 
     }
-
     /**
      * Checks difficulty on current Plant and decrease FertilizerLevel level by different of difficulty
      */
@@ -93,7 +113,6 @@ class PlantViewModel : ViewModel() {
             Log.d("PlantStatus", "Your Plant increased Nutrition by $amount!")
         }
     }
-
     /**
      * Takes userplant and increases WaterLevel, amount sets in StartPagePlantFragment
      * and drives when user presses the Water button

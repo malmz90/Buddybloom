@@ -7,5 +7,6 @@ data class Plant(
     var fertilizerLevel: Int = 100,
     val info: String = "",
     var createdAt: Long = System.currentTimeMillis(),
-    val difficulty: String = "Easy"
+    val difficulty: String = "Easy",
+    var infected:Boolean = false
 )

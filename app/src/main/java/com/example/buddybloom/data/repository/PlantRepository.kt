@@ -1,5 +1,6 @@
 package com.example.buddybloom.data.repository
 
+import android.os.Looper
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -9,11 +10,16 @@ import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.firestore
 import com.google.firebase.firestore.toObjects
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+
 
 class PlantRepository {
     private val db = Firebase.firestore
     private val auth = FirebaseAuth.getInstance()
     private val userId = auth.currentUser?.uid
+    private var isInfected = false
 
     companion object {
         const val USERS = "users"
@@ -45,6 +51,62 @@ class PlantRepository {
                 //TODO error handling
                 callback(null)
             }
+    }
+    // Needs to update plant if infected alse when its not infected after have been infected
+    fun updateInfectedStatus(infected: Boolean) {
+        userId ?: return
+        val plantRef = db.collection(USERS).document(userId).collection(PLANTS).document(PLANT_REF)
+
+        plantRef.update("infected", infected)
+            .addOnSuccessListener {
+                Log.d("PlantRepository", "Infected status updated successfully!")
+            }
+            .addOnFailureListener { e ->
+                Log.e("PlantRepository", "Error updating infected status", e)
+            }
+    }
+
+    /**
+     * get user plant and if it not already is infected by bugs it randomly pix a number
+     * and if it lower than 10 it will be infected and a bug gif will show on screen,
+     * user needs to press bug spray button to get plant healthy again.
+     */
+        fun startRandomInfection(plant:Plant) {
+            userId ?: return
+            val plantRef =
+                db.collection(USERS).document(userId).collection(PLANTS).document(PLANT_REF)
+
+            plantRef.get().addOnSuccessListener { document ->
+                val plant = document.toObject(Plant::class.java)
+                if (plant != null && plant.infected) {
+                    Log.d("infected", "Plant is already infected, skipping random check")
+                    return@addOnSuccessListener // stop random if plant already is infeckted
+                }
+
+                val randomValue = (0..50).random()
+                Log.d("infected", "Random value: $randomValue")
+                if (randomValue <= 10) {
+                    plant?.infected = true
+                    updateInfectedStatus(true)
+                    Log.d("infected", "Plant is infected: ${plant?.infected}")
+                } else {
+                    Log.d("infected", "Plant is not infected: ${plant?.infected}")
+                }
+            }
+        }
+
+    /**
+     * plant gets healhty after been infected by bugs
+     */
+    fun plantGetFreeFromBugs(plant:Plant) {
+        plant.infected = false
+        updateInfectedStatus(false)
+    }
+
+    fun increaseWaterLevel(plant:Plant,amount: Int) {
+        plant.waterLevel = maxOf(0, plant.waterLevel + amount)
+        plant.waterLevel += amount
+        Log.d("PlantStatus", "Your Plant lost water by $amount!")
     }
     /**
      * Decreases WaterLevel, amount sets in Plantworker
