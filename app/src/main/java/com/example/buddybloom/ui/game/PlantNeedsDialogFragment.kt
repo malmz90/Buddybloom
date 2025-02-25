@@ -4,8 +4,6 @@ import android.app.Dialog
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.util.Log
-import android.view.View
 import android.view.WindowManager
 import android.widget.ImageView
 import android.widget.TextView
@@ -23,7 +21,6 @@ class PlantNeedsDialogFragment : DialogFragment() {
     private lateinit var fertilizerLevel: TextView
     private lateinit var sunLevel: TextView
     private lateinit var updateText: TextView
-    private var plant: Plant? = null
 
     companion object {
         fun newInstance(plant: Plant): PlantNeedsDialogFragment {
@@ -72,12 +69,9 @@ class PlantNeedsDialogFragment : DialogFragment() {
         fertilizerLevel = view.findViewById(R.id.tv_fertilize_count)
         sunLevel = view.findViewById(R.id.tv_sun_count)
         updateText = view.findViewById(R.id.tv_updates)
-
-        //TODO observe does not seem to trigger the latest changes while this dialog is up,
-        // only when closed and opened again. Troubleshoot?
-        viewModel.localSessionPlant.observe(requireActivity()) { plant ->
-            Log.i("PlantNeedsFragment", "Plant: $plant")
-            plant?.let {
+        
+        viewModel.localSessionPlant.observe(requireActivity()) {
+            it?.let {
                 waterLevel.text = String.format(" ${it.waterLevel}/100")
                 fertilizerLevel.text = String.format(" ${it.fertilizerLevel}/100")
                 sunLevel.text = String.format(" ${it.sunLevel}/100")

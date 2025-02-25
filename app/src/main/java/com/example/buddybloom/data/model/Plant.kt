@@ -1,7 +1,5 @@
 package com.example.buddybloom.data.model
 
-import android.util.Log
-import com.example.buddybloom.R
 import com.google.firebase.Timestamp
 
 data class Plant(

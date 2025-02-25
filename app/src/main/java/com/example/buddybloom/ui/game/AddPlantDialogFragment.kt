@@ -38,6 +38,7 @@ class AddPlantDialogFragment(private val newPlant: Plant) :
 
         binding.btnAddPlant.setOnClickListener {
             plantViewModel.localSessionPlant.observe(viewLifecycleOwner) { currentPlant ->
+                //I user has no plant (null), skip confirmation dialog.
                 if (currentPlant == null) {
                     plantViewModel.savePlantToRemote(newPlant)
                     dismiss()

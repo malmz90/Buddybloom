@@ -6,11 +6,9 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.buddybloom.R
 import com.example.buddybloom.data.model.Plant
-import com.example.buddybloom.data.repository.PlantRepository
 import com.example.buddybloom.databinding.FragmentChoosePlantBinding
 
 
@@ -57,22 +55,10 @@ class ChoosePlantFragment : Fragment() {
     }
 
     private fun showAddPlantDialogFragment(plant: Plant) {
+
         parentFragmentManager.beginTransaction().apply {
             show(AddPlantDialogFragment(plant))
             commit()
         }
-
-//        plantRepository.saveUserPlant(plant) { success ->
-//            if (success) {
-//                activity?.runOnUiThread {
-//                    Toast.makeText(context, "Plant saved successfully!", Toast.LENGTH_SHORT).show()
-//                    (activity as? GameActivity)?.showFragment(StartPagePlantFragment())
-//                }
-//            } else {
-//                activity?.runOnUiThread {
-//                    Toast.makeText(context, "Failed to save plant", Toast.LENGTH_SHORT).show()
-//                }
-//            }
-//        }
     }
 }

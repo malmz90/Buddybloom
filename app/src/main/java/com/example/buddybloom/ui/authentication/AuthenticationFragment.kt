@@ -27,10 +27,6 @@ class AuthenticationFragment : Fragment() {
         val activity = requireActivity() as? AuthenticationActivity
         activity?.binding?.btnBack?.visibility = View.GONE
 
-        //TODO behövs dessa?
-        val registerFragment = RegisterFragment()
-        val loginFragment = LoginFragment()
-
         binding.btnRegister.setOnClickListener {
             requireActivity().supportFragmentManager.beginTransaction()
                 .replace(R.id.fcv_home, RegisterFragment())

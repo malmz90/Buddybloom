@@ -3,6 +3,8 @@ package com.example.buddybloom.ui.game
 import android.graphics.Color
 import android.graphics.drawable.AnimatedImageDrawable
 import android.graphics.drawable.Drawable
+import android.media.AudioManager
+import android.media.SoundPool
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -24,6 +26,8 @@ class StartPagePlantFragment : Fragment() {
 
     private lateinit var binding: FragmentStartPagePlantBinding
     private lateinit var plantViewModel: PlantViewModel
+    private lateinit var soundPool: SoundPool
+    private var waterSpraySoundId: Int = 0
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -53,6 +57,10 @@ class StartPagePlantFragment : Fragment() {
         if (plantViewModel.isPlantThirsty()) {
             Toast.makeText(requireContext(), "Your plant is Thirsty", Toast.LENGTH_SHORT).show()
         }
+
+        soundPool = SoundPool.Builder().setMaxStreams(1).build()
+        waterSpraySoundId = soundPool.load(requireContext(), R.raw.spraysound, 1)
+
         binding.apply {
             btnWater.setOnClickListener {
                 Toast.makeText(
@@ -68,7 +76,6 @@ class StartPagePlantFragment : Fragment() {
                     binding.ivAnimationWateringCan.visibility = View.VISIBLE
                     binding.ivAnimationWateringCan.setImageDrawable(drawable)
                     drawable.start()
-
 
                     //Disable button while animation is running.
                     binding.btnWater.setBackgroundColor(Color.parseColor("#DEDEDE"))
@@ -146,6 +153,9 @@ class StartPagePlantFragment : Fragment() {
                     Toast.LENGTH_SHORT
                 ).show()
 
+                // Play sound
+                soundPool.play(waterSpraySoundId, 1f, 1f, 0, 0, 1f)
+
                 // show the animation for waterspray
                 val drawable: Drawable? =
                     ContextCompat.getDrawable(requireContext(), R.drawable.gif_waterspray)
@@ -185,7 +195,16 @@ class StartPagePlantFragment : Fragment() {
         }
     }
 
-    private fun getDayStreak(plant: Plant?): Int {
+    override fun onDestroy() {
+        super.onDestroy()
+        soundPool.release()
+    }
+
+
+    /**
+     * Calculates how old the plant is in days, based on the current time and time of creation.
+     */
+    private fun getDaysOld(plant: Plant?): Int {
         if (plant != null) {
             val daysOld =
                 ((System.currentTimeMillis() - (plant.createdAt.seconds*1000)) / (1000 * 60 * 60 * 24))
@@ -195,10 +214,24 @@ class StartPagePlantFragment : Fragment() {
         }
     }
 
-    private fun getPlantImage(plant: Plant?): Int {
+    /**
+     * Returns the correct image based on how old the plant is.
+     */
+    private fun getPlantImageId(plant: Plant?): Int {
         if (plant == null) return R.drawable.icon_obs
-        val daysOld = ((System.currentTimeMillis() - (plant.createdAt.seconds*1000)) / (1000 * 60 * 60 * 24))
 
+        // Check if plant is dried (water level below 30)
+        if (plant.waterLevel < 30) {
+            return when (plant.name.lowercase()) {
+                "elephant" -> R.drawable.flower_elefant5
+                "hibiscus" -> R.drawable.flower_hibiscus5
+                "zebra" -> R.drawable.flower_zebra7
+                else -> R.drawable.flower_elefant5
+            }
+        }
+        
+        val daysOld = ((System.currentTimeMillis() - (plant.createdAt.seconds*1000)) / (1000 * 60 * 60 * 24))
+        
         val stage = when {
             daysOld >= 6 -> 4
             daysOld >= 4 -> 3

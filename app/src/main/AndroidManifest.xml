@@ -13,18 +13,17 @@
         android:theme="@style/Theme.BuddyBloom"
         tools:targetApi="31">
         <activity
-            android:name=".ui.authentication.AuthenticationActivity"
-            android:exported="true"
-            android:windowSoftInputMode="adjustResize">
+            android:name=".ui.IntroActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.IntroActivity"
-            android:exported="false" />
+            android:name=".ui.authentication.AuthenticationActivity"
+            android:exported="true"
+            android:windowSoftInputMode="adjustResize" />
         <activity android:name=".ui.game.GameActivity" />
     </application>
 
