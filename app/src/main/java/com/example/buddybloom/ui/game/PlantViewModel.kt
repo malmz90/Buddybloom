@@ -29,11 +29,27 @@ class PlantViewModel : ViewModel() {
 
     private val gameManager = GameManager(
         scope = viewModelScope,
-        onPlantEvent = { localPlant ->
-            _localSessionPlant.postValue(localPlant)
-        }, onAutoSave = { localPlant ->
-            updateRemotePlant(localPlant)
-        })
+        onPlantEvent = { plant ->
+            _localSessionPlant.postValue(plant)
+            if (plant == null) {
+                deletePlantFromRemote() // Delete plant when it dies
+            } else {
+                updateRemotePlant(plant)
+            }
+        },
+        onAutoSave = { plant ->
+            updateRemotePlant(plant)
+        }
+    )
+
+    /** Delete plant is firestore */
+    private fun deletePlantFromRemote() {
+        viewModelScope.launch(Dispatchers.IO) {
+            plantRepository.deletePlant() { error ->
+                _errorMessage.postValue(error.message)
+            }
+        }
+    }
 
     /**
      * Updates the fields of the current plant on Firestore.

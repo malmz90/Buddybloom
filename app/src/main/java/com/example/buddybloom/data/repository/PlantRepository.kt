@@ -26,6 +26,18 @@ class PlantRepository {
         private const val HISTORY = "history"
     }
 
+
+    suspend fun deletePlant(onFailure: (Exception) -> Unit) {
+        auth.currentUser?.uid?.let {
+            try {
+                db.collection(USERS).document(it).collection(PLANTS).document(PLANT_REF).delete().await()
+            } catch (error: Exception) {
+                onFailure(error)
+            }
+        } ?: onFailure(Exception(firebaseException))
+    }
+
+
     /**
      * Fetches the current plant from Firestore, or null if document doesn't exist (user has no plant).
      */
