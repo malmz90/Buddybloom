@@ -3,7 +3,6 @@ package com.example.buddybloom.ui.game
 import android.graphics.Color
 import android.graphics.drawable.AnimatedImageDrawable
 import android.graphics.drawable.Drawable
-import android.media.AudioManager
 import android.media.SoundPool
 import android.os.Build
 import android.os.Bundle
@@ -28,6 +27,7 @@ class StartPagePlantFragment : Fragment() {
     private lateinit var plantViewModel: PlantViewModel
     private lateinit var soundPool: SoundPool
     private var waterSpraySoundId: Int = 0
+    private var fertilizeSoundId: Int = 0
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -59,7 +59,8 @@ class StartPagePlantFragment : Fragment() {
         }
 
         soundPool = SoundPool.Builder().setMaxStreams(1).build()
-        waterSpraySoundId = soundPool.load(requireContext(), R.raw.spraysound, 1)
+        waterSpraySoundId = soundPool.load(requireContext(), R.raw.spray_sound, 1)
+        fertilizeSoundId =  soundPool.load(requireContext(), R.raw.fertilize_sound, 1)
 
         binding.apply {
             btnWater.setOnClickListener {
@@ -103,6 +104,9 @@ class StartPagePlantFragment : Fragment() {
                     "Your plant increased nutrition with 10",
                     Toast.LENGTH_SHORT
                 ).show()
+
+                // Play sound
+                soundPool.play(fertilizeSoundId, 1f, 1f, 0, 0, 1f)
 
                 //show the animation of fertilizing
                 val drawable: Drawable? =
