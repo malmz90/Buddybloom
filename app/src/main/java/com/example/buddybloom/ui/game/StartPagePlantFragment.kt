@@ -3,6 +3,8 @@ package com.example.buddybloom.ui.game
 import android.graphics.Color
 import android.graphics.drawable.AnimatedImageDrawable
 import android.graphics.drawable.Drawable
+import android.media.AudioManager
+import android.media.SoundPool
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -24,6 +26,8 @@ class StartPagePlantFragment : Fragment() {
 
     private lateinit var binding: FragmentStartPagePlantBinding
     private lateinit var plantViewModel: PlantViewModel
+    private lateinit var soundPool: SoundPool
+    private var waterSpraySoundId: Int = 0
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -53,6 +57,10 @@ class StartPagePlantFragment : Fragment() {
         if (plantViewModel.isPlantThirsty()) {
             Toast.makeText(requireContext(), "Your plant is Thirsty", Toast.LENGTH_SHORT).show()
         }
+
+        soundPool = SoundPool.Builder().setMaxStreams(1).build()
+        waterSpraySoundId = soundPool.load(requireContext(), R.raw.spraysound, 1)
+
         binding.apply {
             btnWater.setOnClickListener {
                 plantViewModel.increaseWaterLevel(10)
@@ -144,6 +152,9 @@ class StartPagePlantFragment : Fragment() {
                     Toast.LENGTH_SHORT
                 ).show()
 
+                // Play sound
+                soundPool.play(waterSpraySoundId, 1f, 1f, 0, 0, 1f)
+
                 // show the animation for waterspray
                 val drawable: Drawable? =
                     ContextCompat.getDrawable(requireContext(), R.drawable.gif_waterspray)
@@ -181,6 +192,11 @@ class StartPagePlantFragment : Fragment() {
                 }
             }
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        soundPool.release()
     }
 
     /**
