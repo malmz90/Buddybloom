@@ -39,7 +39,7 @@ class StartPagePlantFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         // Boolean for blinds toggle button.
         var isBlindsVisible = false
-        plantViewModel.testPlant.observe(viewLifecycleOwner) { plant ->
+        plantViewModel.localSessionPlant.observe(viewLifecycleOwner) { plant ->
             binding.imgFlower.setImageResource(getPlantImage(plant))
             binding.tvDaystreak.text = String.format(getDayStreak(plant).toString())
             binding.btnPlantNeeds.setOnClickListener {
@@ -55,7 +55,6 @@ class StartPagePlantFragment : Fragment() {
         }
         binding.apply {
             btnWater.setOnClickListener {
-                plantViewModel.waterPlant()
                 Toast.makeText(
                     requireContext(),
                     "Your plant increased water level with 10",
@@ -70,6 +69,7 @@ class StartPagePlantFragment : Fragment() {
                     binding.ivAnimationWateringCan.setImageDrawable(drawable)
                     drawable.start()
 
+
                     //Disable button while animation is running.
                     binding.btnWater.setBackgroundColor(Color.parseColor("#DEDEDE"))
                     binding.btnWater.setTextColor(Color.parseColor("#FFFFFF"))
@@ -83,13 +83,13 @@ class StartPagePlantFragment : Fragment() {
                         binding.btnWater.setBackgroundColor(Color.parseColor("#F6F1DE"))
                         binding.btnWater.setTextColor(Color.parseColor("#246246"))
                         binding.btnWater.isEnabled = true
+                        plantViewModel.waterPlant()
 
                     }, 3000)
                 }
             }
 
             btnFertilize.setOnClickListener {
-                plantViewModel.fertilizePlant()
                 Toast.makeText(
                     requireContext(),
                     "Your plant increased nutrition with 10",
@@ -107,6 +107,7 @@ class StartPagePlantFragment : Fragment() {
                     // Hide the animation after 3 seconds.
                     Handler(Looper.getMainLooper()).postDelayed({
                         binding.ivAnimationWateringCan.visibility = View.INVISIBLE
+                        plantViewModel.fertilizePlant()
                     }, 3000)
                 }
             }
@@ -136,8 +137,9 @@ class StartPagePlantFragment : Fragment() {
                 weatherDialog.show(parentFragmentManager, "WeatherDialogFragment")
             }
 
+            //TODO Connect this to the view model
             imgBtnWaterspray.setOnClickListener {
-                plantViewModel.checkDifficultyWaterSpray()
+                //plantViewModel.checkDifficultyWaterSpray()
                 Toast.makeText(
                     requireContext(),
                     "You've successfully sprayed water on your plant!",
@@ -158,7 +160,7 @@ class StartPagePlantFragment : Fragment() {
                     }, 3000)
                 }
             }
-
+            //TODO Connect this to the view model
             imgBtnBugspray.setOnClickListener {
                 Toast.makeText(
                     requireContext(),

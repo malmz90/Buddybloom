@@ -20,12 +20,15 @@ class PlantRepository {
     private val firebaseException = Exception("Firebase authentication error.")
 
     companion object {
-        const val USERS = "users"
-        const val PLANTS = "plants"
-        const val PLANT_REF = "plantRef"
-        const val HISTORY = "history"
+        private const val USERS = "users"
+        private const val PLANTS = "plants"
+        private const val PLANT_REF = "plantRef"
+        private const val HISTORY = "history"
     }
 
+    /**
+     * Fetches the current plant from Firestore, or null if document doesn't exist (user has no plant).
+     */
     //TODO Add retries?
     suspend fun fetchPlant(onFailure: (Exception) -> Unit): Plant? {
         return auth.currentUser?.uid?.let {
@@ -42,6 +45,9 @@ class PlantRepository {
         }
     }
 
+    /**
+     * Overwrites the current plant on Firestore with a new one.
+     */
     suspend fun savePlant(plant: Plant, onFailure: (Exception) -> Unit) {
         auth.currentUser?.uid?.let {
             try {
@@ -54,6 +60,9 @@ class PlantRepository {
         } ?: onFailure(Exception(firebaseException))
     }
 
+    /**
+     * Updates only the specified fields of the current plant on Firestore.
+     */
     suspend fun updateRemotePlant(plant: Plant, onFailure: (Exception) -> Unit) {
         auth.currentUser?.uid?.let {
             try {
@@ -75,6 +84,9 @@ class PlantRepository {
         } ?: onFailure(firebaseException)
     }
 
+    /**
+     * Removes the stored plant document from Firestore.
+     */
     suspend fun deletePlantFromRemote(onFailure: (Exception) -> Unit) {
         auth.currentUser?.uid?.let {
             try {

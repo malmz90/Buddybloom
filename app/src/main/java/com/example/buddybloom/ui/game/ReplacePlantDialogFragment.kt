@@ -4,24 +4,16 @@ import android.app.Dialog
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.view.WindowManager
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.buddybloom.R
 import com.example.buddybloom.data.model.Plant
-import com.example.buddybloom.data.repository.PlantRepository
-import com.example.buddybloom.ui.authentication.AccountViewModel
 import com.google.android.material.button.MaterialButton
-import com.google.firebase.auth.FirebaseAuth
 
 //Replace plant dialog that pops up after choosing a plant if you want to replace current plant
-class ReplacePlantDialogFragment(private val plant: Plant) :
+class ReplacePlantDialogFragment(private val newPlant: Plant) :
     DialogFragment(R.layout.dialog_replace_plant) {
 
     private lateinit var plantViewModel: PlantViewModel
@@ -42,7 +34,7 @@ class ReplacePlantDialogFragment(private val plant: Plant) :
             dismiss()
         }
         yesButton.setOnClickListener {
-            plantViewModel.savePlantToRemote(plant)
+            plantViewModel.savePlantToRemote(newPlant)
             dismiss()
         }
 

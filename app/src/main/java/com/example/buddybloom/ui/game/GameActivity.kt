@@ -7,22 +7,11 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.work.WorkInfo
-import androidx.work.WorkManager
-import androidx.work.Constraints
-import androidx.work.ExistingPeriodicWorkPolicy
-import androidx.work.NetworkType
-import androidx.work.PeriodicWorkRequestBuilder
 import com.example.buddybloom.R
-import com.example.buddybloom.data.PlantWorker
 import com.example.buddybloom.databinding.ActivityGameBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.android.material.snackbar.Snackbar
-import java.util.concurrent.TimeUnit
 
 class GameActivity : AppCompatActivity() {
     private lateinit var binding: ActivityGameBinding
@@ -48,7 +37,7 @@ class GameActivity : AppCompatActivity() {
 
         bottomNavigationView.setOnItemSelectedListener { item ->
             //unable to press plant page and profile unless you've chosen a plant first
-            val hasPlant = plantViewModel.currentPlant.value != null
+            val hasPlant = plantViewModel.localSessionPlant.value != null
             if(!hasPlant && (item.itemId == R.id.nav_profile || item.itemId == R.id.nav_plant)) {
                 Toast.makeText(this, "Choose a plant first!", Toast.LENGTH_SHORT).show()
                 return@setOnItemSelectedListener false
@@ -82,7 +71,7 @@ class GameActivity : AppCompatActivity() {
     }
 
     private fun checkUserPlant() {
-        plantViewModel.testPlant.observe(this) { plant ->
+        plantViewModel.localSessionPlant.observe(this) { plant ->
             if (plant == null) {
                 binding.navbarMenu.selectedItemId = R.id.nav_home
                 showFragment(ChoosePlantFragment())

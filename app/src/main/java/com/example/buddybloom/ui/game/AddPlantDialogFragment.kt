@@ -1,6 +1,4 @@
-import android.app.Activity
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,7 +10,6 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.example.buddybloom.databinding.FragmentDialogAddPlantBinding
 import com.example.buddybloom.ui.game.PlantViewModel
 import com.example.buddybloom.ui.game.ReplacePlantDialogFragment
-import kotlin.math.log
 
 class AddPlantDialogFragment(private val newPlant: Plant) :
     BottomSheetDialogFragment(R.layout.fragment_dialog_add_plant) {
@@ -40,7 +37,7 @@ class AddPlantDialogFragment(private val newPlant: Plant) :
         tvPlantInfo.text = newPlant.info
 
         binding.btnAddPlant.setOnClickListener {
-            plantViewModel.testPlant.observe(viewLifecycleOwner) { currentPlant ->
+            plantViewModel.localSessionPlant.observe(viewLifecycleOwner) { currentPlant ->
                 if (currentPlant == null) {
                     plantViewModel.savePlantToRemote(newPlant)
                     dismiss()

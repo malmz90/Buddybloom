@@ -68,7 +68,6 @@ class PlantNeedsDialogFragment : DialogFragment() {
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
         viewModel = ViewModelProvider(requireActivity())[PlantViewModel::class.java]
-        //viewModel.getCurrentUserPlant()
         waterLevel = view.findViewById(R.id.tv_water_count)
         fertilizerLevel = view.findViewById(R.id.tv_fertilize_count)
         sunLevel = view.findViewById(R.id.tv_sun_count)
@@ -76,7 +75,7 @@ class PlantNeedsDialogFragment : DialogFragment() {
 
         //TODO observe does not seem to trigger the latest changes while this dialog is up,
         // only when closed and opened again. Troubleshoot?
-        viewModel.selectedPlant.observe(requireActivity()) { plant ->
+        viewModel.localSessionPlant.observe(requireActivity()) { plant ->
             Log.i("PlantNeedsFragment", "Plant: $plant")
             plant?.let {
                 waterLevel.text = String.format(" ${it.waterLevel}/100")
@@ -93,11 +92,5 @@ class PlantNeedsDialogFragment : DialogFragment() {
             }
         }
         return dialog
-    }
-
-    //TODO onViewCreated() is never called in this fragment (???)
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        Log.i("PlantNeedsFragment", "onViewCreated() called!")
     }
 }

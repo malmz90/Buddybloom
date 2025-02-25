@@ -19,8 +19,6 @@ class ChoosePlantFragment : Fragment() {
     private lateinit var binding: FragmentChoosePlantBinding
     private lateinit var adapter: ChoosePlantRecyclerAdapter
     private val plants = mutableListOf<Plant>()
-    private var userPlant: Plant? = null
-    private val plantRepository = PlantRepository()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -59,12 +57,6 @@ class ChoosePlantFragment : Fragment() {
     }
 
     private fun showAddPlantDialogFragment(plant: Plant) {
-//        val userId = FirebaseAuth.getInstance().currentUser?.uid
-//        if (userId == null) {
-//            Toast.makeText(context, "No user logged in", Toast.LENGTH_SHORT).show()
-//            return
-//        }
-
         parentFragmentManager.beginTransaction().apply {
             show(AddPlantDialogFragment(plant))
             commit()
