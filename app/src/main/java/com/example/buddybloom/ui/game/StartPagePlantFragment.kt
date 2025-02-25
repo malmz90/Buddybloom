@@ -28,6 +28,9 @@ class StartPagePlantFragment : Fragment() {
     private lateinit var soundPool: SoundPool
     private var waterSpraySoundId: Int = 0
     private var fertilizeSoundId: Int = 0
+    private var wateringSoundId: Int = 0
+    private var blindsSoundStartId: Int = 0
+    private var blindsSoundEndId: Int = 0
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -60,7 +63,10 @@ class StartPagePlantFragment : Fragment() {
 
         soundPool = SoundPool.Builder().setMaxStreams(1).build()
         waterSpraySoundId = soundPool.load(requireContext(), R.raw.spray_sound, 1)
-        fertilizeSoundId =  soundPool.load(requireContext(), R.raw.fertilize_sound, 1)
+        fertilizeSoundId = soundPool.load(requireContext(), R.raw.fertilize_sound, 1)
+        wateringSoundId = soundPool.load(requireContext(), R.raw.watering_sound, 1)
+        blindsSoundStartId = soundPool.load(requireContext(), R.raw.blinds_sound_start, 1)
+        blindsSoundEndId = soundPool.load(requireContext(), R.raw.blinds_sound_end, 1)
 
         binding.apply {
             btnWater.setOnClickListener {
@@ -69,6 +75,9 @@ class StartPagePlantFragment : Fragment() {
                     "Your plant increased water level with 10",
                     Toast.LENGTH_SHORT
                 ).show()
+
+                // Play sound
+                soundPool.play(wateringSoundId, 1f, 1f, 0, 0, 1f)
 
                 // Show the animation of watering can.
                 val drawable: Drawable? =
@@ -122,24 +131,32 @@ class StartPagePlantFragment : Fragment() {
                     }, 3000)
                 }
             }
+
             switchBlinds.setOnClickListener {
                 // Toggling between visible/invisible on the blinds.
                 isBlindsVisible = !isBlindsVisible
                 binding.ivBlinds.setImageResource(R.drawable.iconimg_blinds)
                 if (isBlindsVisible) {
-                    binding.ivBlinds.visibility = View.VISIBLE
-                    Toast.makeText(
-                        requireContext(),
-                        "You've successfully protected your plant!",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    // Play sound
+                    soundPool.play(blindsSoundStartId, 1f, 1f, 0, 0, 1f)
+
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        binding.ivBlinds.visibility = View.VISIBLE
+                        Toast.makeText(requireContext(),
+                            "You've successfully protected your plant!", Toast.LENGTH_SHORT
+                        ).show()
+                    }, 1000)
                 } else {
-                    binding.ivBlinds.visibility = View.INVISIBLE
-                    Toast.makeText(
-                        requireContext(),
-                        "You've removed your protection from your plant!",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    // Play sound
+                    soundPool.play(blindsSoundEndId, 1f, 1f, 0, 0, 1f)
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        binding.ivBlinds.visibility = View.INVISIBLE
+                        Toast.makeText(
+                            requireContext(),
+                            "You've removed your protection from your plant!",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }, 1000)
                 }
             }
 
