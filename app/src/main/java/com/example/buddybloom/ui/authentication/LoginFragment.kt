@@ -73,9 +73,9 @@ class LoginFragment : Fragment() {
         activity?.binding?.btnBack?.visibility = View.VISIBLE
 
         //hides keyboard
-        view.setOnTouchListener { _, _ ->
-            (activity as? AuthenticationActivity)?.hideKeyboard()
-            false
+        //TODO testa
+        view.setOnClickListener {
+            activity?.hideKeyboard()
         }
 
         //TODO remove after testing.

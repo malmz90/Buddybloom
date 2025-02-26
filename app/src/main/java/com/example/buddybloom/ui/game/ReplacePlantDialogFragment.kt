@@ -27,13 +27,13 @@ class ReplacePlantDialogFragment(private val newPlant: Plant) :
 
         builder.setView(view)
 
-        val noButton: MaterialButton = view.findViewById(R.id.btn_no)
-        val yesButton: MaterialButton = view.findViewById(R.id.btn_yes)
+        val btnNo: MaterialButton = view.findViewById(R.id.btn_no)
+        val btnYes: MaterialButton = view.findViewById(R.id.btn_yes)
 
-        noButton.setOnClickListener {
+        btnNo.setOnClickListener {
             dismiss()
         }
-        yesButton.setOnClickListener {
+        btnYes.setOnClickListener {
             plantViewModel.savePlantToRemote(newPlant)
             dismiss()
         }

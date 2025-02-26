@@ -62,11 +62,12 @@ class RegisterFragment : Fragment() {
                 Toast.makeText(context, "Registration succeeded!", Toast.LENGTH_SHORT).show()
                 removeFragment()
             } else {
-                Toast.makeText(context, "Registration failed! Check all fields", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Registration failed!", Toast.LENGTH_SHORT).show()
             }
         }
     }
 
+    //TODO ta bort test under dev
     // Function to check if the password is strong
     private fun isPasswordStrong(password: String): Boolean {
 //        val passwordPattern = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@!#\$%^&+=]).{8,}$"

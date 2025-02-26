@@ -121,37 +121,4 @@ class WeatherRepository {
         }
         return WeatherReport.Weekly(dailyReports = newDailyReports)
     }
-
-//    /**
-//     * Checks how many days have passed since the weather was last updated on Firebase and adds that amount of days
-//     * to the weather report. Rebuilds weather from scratch if weather is off sync.
-//     *
-//     */
-//    private fun updateWeather() {
-//        weatherRepository.fetchCurrentWeatherReport { currentWeeklyReport ->
-//
-//            val currentTime = System.currentTimeMillis()
-//            val elapsedTime = currentTime - currentWeeklyReport.lastUpdated.seconds * 1000
-//            val daysMissed = TimeUnit.MILLISECONDS.toDays(elapsedTime).toInt()
-//
-//            //Update the report with the days passed since last login.
-//            var updatedReport: WeatherReport.Weekly = currentWeeklyReport
-//            if (daysMissed > 0) {
-//                updatedReport = weatherRepository.passDaysForWeather(updatedReport, daysMissed)
-//            }
-//
-//            //Check if stored first weekday is out of sync of the actual week day for any reason
-//            // and create a new report when out of sync.
-//            val actualCurrentDay = Calendar.getInstance()
-//                .getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.getDefault())
-//            val storedCurrentDay = updatedReport.dailyReports.firstOrNull()?.weekDay
-//            if (actualCurrentDay != storedCurrentDay) {
-//                updatedReport =
-//                    weatherRepository.generateNewSunnyWeeklyReport()
-//                Log.i("PlantWorker", "Weather out of sync (rebuilt).")
-//            }
-//            weatherRepository.updateWeatherReport(updatedReport)
-//        }
-//    }
-
 }

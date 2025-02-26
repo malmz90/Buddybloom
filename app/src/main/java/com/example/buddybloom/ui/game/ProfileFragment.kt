@@ -84,7 +84,7 @@ class ProfileFragment : Fragment() {
         }
 
         // Need for Update Email
-        avm.updateStatus.observe(viewLifecycleOwner) { result ->
+        avm.updateEmailStatus.observe(viewLifecycleOwner) { result ->
             result.onSuccess {
                 Toast.makeText(requireContext(), "Update Success! Verfify before signing in!!.", Toast.LENGTH_LONG).show()
 

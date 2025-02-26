@@ -10,5 +10,4 @@ class WeatherViewModel : ViewModel() {
 
     private var _weeklyWeatherReport = weatherRepository.getWeatherReportLiveData()
     val weeklyWeatherReport: LiveData<WeatherReport.Weekly?> get() = _weeklyWeatherReport
-
 }

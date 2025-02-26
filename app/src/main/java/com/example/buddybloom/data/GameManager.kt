@@ -2,7 +2,6 @@ package com.example.buddybloom.data
 
 import android.util.Log
 import com.example.buddybloom.data.GameManager.LocalGameState.localPlant
-import com.example.buddybloom.data.GameManager.LocalGameState.localUserId
 import com.example.buddybloom.data.GameManager.LocalGameState.localWeatherReport
 import com.example.buddybloom.data.model.Plant
 import com.example.buddybloom.data.model.WeatherReport
@@ -11,6 +10,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlin.random.Random
 
 /**
  * Handles game logic and modifiers and keeps a local game session running.
@@ -33,8 +33,6 @@ class GameManager
 ) {
 
     private object LocalGameState {
-        //TODO Do we really need to keep the id for anything?
-        var localUserId: String? = null
         var localPlant: Plant? = null
         var localWeatherReport: WeatherReport.Weekly? = null
     }
@@ -83,15 +81,13 @@ class GameManager
             decreaseWaterLevel()
             decreaseFertilizerLevel()
         }
+
         if (localPlant?.waterLevel == 0) {
             onPlantEvent(null) // Notify ViewModel to delete plant
         } else {
             onPlantEvent(localPlant)
         }
     }
-
-
-    fun initialSync() {}
 
     /**
      * The auto save coroutine timer.
@@ -132,19 +128,48 @@ class GameManager
     }
 
     /**
-     * Fetches the current local copy of the plant.
+     * get user plant and if it not already is infected by bugs it randomly pix a number
+     * and if it lower than 10 it will be infected and a bug gif will show on screen,
+     * user needs to press bug spray button to get plant healthy again.
      */
-    fun getPlant(): Plant? {
-        return localPlant
+    fun startRandomInfection() {
+        localPlant?.let { plant ->
+            if (plant.infected) {
+                Log.d("GameManager", "Plant is already infected, skipping random check")
+                return
+            }
+            val randomValue = (0..50).random()
+            Log.d("GameManager", "Random value: $randomValue")
+
+            if (randomValue <= 10) {
+                plant.infected = true
+                onPlantEvent(localPlant) // Update
+                Log.d("GameManager", "Plant is now infected!")
+            }
+        }
     }
 
+    /**
+     * plant gets healhty after been infected by bugs
+     */
+    fun plantGetFreeFromBugs() {
+        localPlant?.let { plant ->
+            if (plant.infected) {
+                plant.infected = false
+                onPlantEvent(localPlant) // Update
+                Log.d("GameManager", "Plant is now healthy!")
+            }
+        }
+    }
     /**
      * When the user presses the water button.
      */
     fun waterPlant() {
         localPlant?.let {
             it.waterLevel = (minOf(100, it.waterLevel + WATER_INCREASE))
+            startRandomInfection()
             onPlantEvent(localPlant)
+
         }
     }
 
@@ -188,15 +213,5 @@ class GameManager
             }
             it.fertilizerLevel = newLevel
         }
-    }
-
-    /**
-     * Resets the local game state.
-     */
-    //TODO Make sure this is called when the user logs out?
-    fun resetState() {
-        localUserId = null
-        localPlant = null
-        localWeatherReport = null
     }
 }
