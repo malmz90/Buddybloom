@@ -8,7 +8,11 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.buddybloom.R
+import com.example.buddybloom.data.repository.AccountRepository
 import com.example.buddybloom.databinding.FragmentRegisterBinding
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.firebase.auth.FirebaseAuth
 
 class RegisterFragment : Fragment() {
 
@@ -27,7 +31,15 @@ class RegisterFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        avm = ViewModelProvider(this)[AccountViewModel::class.java]
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(getString(R.string.default_web_client_id))
+            .requestEmail()
+            .build()
+
+        val googleSignInClient = GoogleSignIn.getClient(requireActivity(), gso)
+        val accountRepository = AccountRepository(FirebaseAuth.getInstance(), googleSignInClient)
+        val factory = AccountViewModelFactory(accountRepository)
+        avm = ViewModelProvider(this, factory)[AccountViewModel::class.java]
 
         //sets back button visible when register new user
         val activity = requireActivity() as? AuthenticationActivity

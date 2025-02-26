@@ -8,16 +8,22 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
+import com.example.buddybloom.R
+import com.example.buddybloom.data.repository.AccountRepository
 import com.example.buddybloom.databinding.FragmentProfileBinding
 import com.example.buddybloom.ui.AboutInfoFragment
 import com.example.buddybloom.ui.authentication.AccountViewModel
+import com.example.buddybloom.ui.authentication.AccountViewModelFactory
 import com.example.buddybloom.ui.authentication.AuthenticationActivity
 import com.example.buddybloom.ui.authentication.DeleteAccountDialogFragment
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.firebase.auth.FirebaseAuth
 
 class ProfileFragment : Fragment() {
 
     private lateinit var binding : FragmentProfileBinding
-    private lateinit var accountViewModel: AccountViewModel
+    private lateinit var avm: AccountViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -30,7 +36,15 @@ class ProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        accountViewModel = ViewModelProvider(this)[AccountViewModel::class.java]
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(getString(R.string.default_web_client_id))
+            .requestEmail()
+            .build()
+
+        val googleSignInClient = GoogleSignIn.getClient(requireActivity(), gso)
+        val accountRepository = AccountRepository(FirebaseAuth.getInstance(), googleSignInClient)
+        val factory = AccountViewModelFactory(accountRepository)
+        avm = ViewModelProvider(this, factory)[AccountViewModel::class.java]
 
         //Clicklistener for user to get popup about deleting their account
         binding.deleteAccountText.setOnClickListener {
@@ -52,7 +66,7 @@ class ProfileFragment : Fragment() {
             aboutInfoFragment.show(requireActivity().supportFragmentManager, "AboutInfoFragmentTag")
         }
         binding.ibSignout.setOnClickListener {
-            accountViewModel.signOutUser { success ->
+            avm.signOutUser { success ->
                 if(success){
                     Toast.makeText(requireContext(),"Signing out",Toast.LENGTH_SHORT).show()
                     val newIntent = Intent(requireContext(), AuthenticationActivity::class.java)
@@ -70,7 +84,7 @@ class ProfileFragment : Fragment() {
         }
 
         // Need for Update Email
-        accountViewModel.updateStatus.observe(viewLifecycleOwner) { result ->
+        avm.updateStatus.observe(viewLifecycleOwner) { result ->
             result.onSuccess {
                 Toast.makeText(requireContext(), "Update Success! Verfify before signing in!!.", Toast.LENGTH_LONG).show()
 
@@ -89,11 +103,11 @@ class ProfileFragment : Fragment() {
             val newUserName = binding.etUsername.text.toString()
 
            when{
-               newUserName.isNotEmpty() -> { accountViewModel.updateUserName(newUserName)
+               newUserName.isNotEmpty() -> { avm.updateUserName(newUserName)
                    Toast.makeText(requireContext(),
                        "User name updated!",Toast.LENGTH_SHORT).show()
                }
-               newMail.isNotEmpty() -> { accountViewModel.updateUserEmail(newMail) }
+               newMail.isNotEmpty() -> { avm.updateUserEmail(newMail) }
                else -> Toast.makeText(requireContext(),
                    " At least one field needs to be filled!",Toast.LENGTH_SHORT).show()
            }

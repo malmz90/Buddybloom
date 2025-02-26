@@ -41,6 +41,8 @@ android {
 }
 
 dependencies {
+    implementation("com.google.firebase:firebase-bom:33.1.0")
+    implementation(libs.play.services.auth)
     implementation (libs.lifecycle.viewmodel.ktx)
     implementation (libs.coroutines.core)
     implementation (libs.coroutines.android)

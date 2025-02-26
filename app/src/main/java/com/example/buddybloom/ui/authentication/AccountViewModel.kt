@@ -1,5 +1,7 @@
 package com.example.buddybloom.ui.authentication
 
+import android.content.Intent
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -7,11 +9,18 @@ import androidx.lifecycle.viewModelScope
 import com.example.buddybloom.data.model.Plant
 import com.example.buddybloom.data.model.User
 import com.example.buddybloom.data.repository.AccountRepository
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.auth.api.signin.GoogleSignInOptionsExtension
+import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.tasks.Task
+import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.launch
 
-class AccountViewModel : ViewModel() {
+class AccountViewModel(private val accountRepository :AccountRepository) : ViewModel() {
 
-    private val accountRepository = AccountRepository()
+//    private val accountRepository = AccountRepository
+
+    val loginStatus : LiveData<FirebaseUser?> = accountRepository.loginStatus
 
     // Livedata for the registration result, updated in registerUser below and observed in RegisterFragment.
     private val _registerResult = MutableLiveData<Boolean>()
@@ -81,6 +90,26 @@ class AccountViewModel : ViewModel() {
         viewModelScope.launch {
             val result = accountRepository.updateUserName(newUserName)
             _usernameUpdateStatus.postValue(result)
+        }
+    }
+
+    fun getGoogleSignInIntent(): Intent {
+        return accountRepository.signInGoogleIntent()
+    }
+
+    fun authenticateWithGoogle(task: Task<GoogleSignInAccount>, callback: (Boolean) -> Unit) {
+        try {
+            val account = task.getResult(ApiException::class.java)
+            val idToken = account.idToken ?: run {
+                Log.e("GoogleSignIn", "Google sign-in account is null")
+                callback(false)
+                return
+            }
+
+            accountRepository.firebaseAuthWithGoogle(idToken, callback)
+        } catch (e: ApiException) {
+            Log.e("GoogleSignIn", "Google sign-in failed: ${e.statusCode}", e)
+            callback(false)
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.example.buddybloom.ui.game
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
@@ -19,8 +20,10 @@ import androidx.work.NetworkType
 import androidx.work.PeriodicWorkRequestBuilder
 import com.example.buddybloom.R
 import com.example.buddybloom.databinding.ActivityGameBinding
+import com.example.buddybloom.ui.authentication.AuthenticationActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.auth.FirebaseAuth
 import java.util.concurrent.TimeUnit
 
 class GameActivity : AppCompatActivity() {
@@ -39,6 +42,12 @@ class GameActivity : AppCompatActivity() {
             insets
         }
         plantViewModel = ViewModelProvider(this)[PlantViewModel::class.java]
+
+        if(FirebaseAuth.getInstance().currentUser == null) {
+            navigateToLogin()
+            return
+        }
+        plantViewModel.refreshPlant()
 
         // Add this line to check for plant when activity starts
         checkUserPlant()
@@ -74,6 +83,13 @@ class GameActivity : AppCompatActivity() {
         showFragment(StartPagePlantFragment())
     }
 
+    private fun navigateToLogin() {
+        val intent = Intent(this,AuthenticationActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(intent)
+        finish()
+    }
+
     private fun showFragment(fragment: Fragment) {
         supportFragmentManager.beginTransaction()
             .replace(R.id.fvc_game_activity, fragment)
@@ -82,6 +98,11 @@ class GameActivity : AppCompatActivity() {
 
     private fun checkUserPlant() {
         plantViewModel.localSessionPlant.observe(this) { plant ->
+            //Check Authentication status
+            if(FirebaseAuth.getInstance().currentUser == null) {
+                navigateToLogin()
+                return@observe
+            }
             if (plant == null) {
                 binding.navbarMenu.selectedItemId = R.id.nav_home
                 showFragment(ChoosePlantFragment())

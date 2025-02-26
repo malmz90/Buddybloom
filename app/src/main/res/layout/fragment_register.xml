@@ -94,20 +94,6 @@
         android:text="@string/registerCaps"
         android:textColor="#4CAF50" />
 
-    <!-- Google Sign In Button -->
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btn_google"
-        style="@style/Widget.Material3.Button.OutlinedButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:backgroundTint="@color/lightgrey"
-        android:elevation="5dp"
-        android:translationZ="1dp"
-        android:stateListAnimator="@null"
-        android:text="@string/google"
-        app:cornerRadius="4dp" />
-
     <ProgressBar
         android:id="@+id/progressBar"
         android:layout_width="wrap_content"
