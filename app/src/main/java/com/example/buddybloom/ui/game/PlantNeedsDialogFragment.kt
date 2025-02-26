@@ -16,7 +16,7 @@ import com.example.buddybloom.data.model.Plant
 import com.google.android.material.button.MaterialButton
 
 class PlantNeedsDialogFragment : DialogFragment() {
-    private lateinit var viewModel: PlantViewModel
+    private lateinit var pvm: PlantViewModel
     private lateinit var waterLevel: TextView
     private lateinit var fertilizerLevel: TextView
     private lateinit var sunLevel: TextView
@@ -64,13 +64,13 @@ class PlantNeedsDialogFragment : DialogFragment() {
         )
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
-        viewModel = ViewModelProvider(requireActivity())[PlantViewModel::class.java]
+        pvm = ViewModelProvider(requireActivity())[PlantViewModel::class.java]
         waterLevel = view.findViewById(R.id.tv_water_count)
         fertilizerLevel = view.findViewById(R.id.tv_fertilize_count)
         sunLevel = view.findViewById(R.id.tv_sun_count)
         updateText = view.findViewById(R.id.tv_updates)
         
-        viewModel.localSessionPlant.observe(requireActivity()) {
+        pvm.localSessionPlant.observe(requireActivity()) {
             it?.let {
                 waterLevel.text = String.format(" ${it.waterLevel}/100")
                 fertilizerLevel.text = String.format(" ${it.fertilizerLevel}/100")

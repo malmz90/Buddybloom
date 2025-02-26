@@ -2,7 +2,6 @@ package com.example.buddybloom.data
 
 import android.util.Log
 import com.example.buddybloom.data.GameManager.LocalGameState.localPlant
-import com.example.buddybloom.data.GameManager.LocalGameState.localUserId
 import com.example.buddybloom.data.GameManager.LocalGameState.localWeatherReport
 import com.example.buddybloom.data.model.Plant
 import com.example.buddybloom.data.model.WeatherReport
@@ -34,8 +33,6 @@ class GameManager
 ) {
 
     private object LocalGameState {
-        //TODO Do we really need to keep the id for anything?
-        var localUserId: String? = null
         var localPlant: Plant? = null
         var localWeatherReport: WeatherReport.Weekly? = null
     }
@@ -92,9 +89,6 @@ class GameManager
         }
     }
 
-
-    fun initialSync() {}
-
     /**
      * The auto save coroutine timer.
      */
@@ -131,13 +125,6 @@ class GameManager
     fun updateLocalPlant(newPlant: Plant?) {
         localPlant = newPlant
         onPlantEvent(localPlant)
-    }
-
-    /**
-     * Fetches the current local copy of the plant.
-     */
-    fun getPlant(): Plant? {
-        return localPlant
     }
 
     /**
@@ -226,15 +213,5 @@ class GameManager
             }
             it.fertilizerLevel = newLevel
         }
-    }
-
-    /**
-     * Resets the local game state.
-     */
-    //TODO Make sure this is called when the user logs out?
-    fun resetState() {
-        localUserId = null
-        localPlant = null
-        localWeatherReport = null
     }
 }

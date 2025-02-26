@@ -13,13 +13,12 @@ import com.example.buddybloom.R
 import com.example.buddybloom.data.model.Plant
 import com.example.buddybloom.databinding.FragmentChoosePlantBinding
 
-
 class ChoosePlantFragment : Fragment() {
 
     private lateinit var binding: FragmentChoosePlantBinding
     private lateinit var adapter: ChoosePlantRecyclerAdapter
     private val plants = mutableListOf<Plant>()
-    private lateinit var plantViewModel: PlantViewModel
+    private lateinit var pvm: PlantViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -31,15 +30,14 @@ class ChoosePlantFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        plantViewModel = ViewModelProvider(requireActivity())[PlantViewModel::class.java]
+        pvm = ViewModelProvider(requireActivity())[PlantViewModel::class.java]
 
-        plantViewModel.plantJustDied.observe(viewLifecycleOwner) { justDied ->
+        pvm.plantJustDied.observe(viewLifecycleOwner) { justDied ->
             if (justDied) {
                 showPlantDeathDialog()
-                plantViewModel.resetPlantDeathState()
+                pvm.resetPlantDeathState()
             }
         }
-
 
         val plantElephant = Plant(
             name = "Elephant",
@@ -80,7 +78,6 @@ class ChoosePlantFragment : Fragment() {
     }
 
     private fun showAddPlantDialogFragment(plant: Plant) {
-
         parentFragmentManager.beginTransaction().apply {
             show(AddPlantDialogFragment(plant))
             commit()

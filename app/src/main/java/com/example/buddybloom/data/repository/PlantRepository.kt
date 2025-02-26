@@ -26,7 +26,6 @@ class PlantRepository {
         private const val HISTORY = "history"
     }
 
-
     suspend fun deletePlant(onFailure: (Exception) -> Unit) {
         auth.currentUser?.uid?.let {
             try {
@@ -36,7 +35,6 @@ class PlantRepository {
             }
         } ?: onFailure(Exception(firebaseException))
     }
-
 
     /**
      * Fetches the current plant from Firestore, or null if document doesn't exist (user has no plant).
@@ -97,90 +95,7 @@ class PlantRepository {
         } ?: onFailure(firebaseException)
     }
 
-    /**
-     * Removes the stored plant document from Firestore.
-     */
-    suspend fun deletePlantFromRemote(onFailure: (Exception) -> Unit) {
-        auth.currentUser?.uid?.let {
-            try {
-                db.collection(USERS).document(it).collection(PLANTS).document(PLANT_REF).delete()
-                    .await()
-            } catch (error: Exception) {
-                onFailure(error)
-            }
-        } ?: onFailure(Exception(firebaseException))
-    }
-
-    fun snapshotOfCurrentUserPlant(callback: (Plant?) -> Unit) {
-        userId ?: return
-        db.collection(USERS).document(userId).collection(PLANTS).document(PLANT_REF)
-            .addSnapshotListener { snapshot, error ->
-                if (error != null) {
-                    callback(null)
-                    return@addSnapshotListener
-                }
-                val plant = snapshot?.toObject(Plant::class.java)
-                callback(plant)
-            }
-    }
-
-    fun getCurrentUserPlant(callback: (Plant?) -> Unit) {
-        userId ?: return
-        db.collection(USERS).document(userId).collection(PLANTS).document(PLANT_REF).get()
-            .addOnSuccessListener { document ->
-                val plant = document?.toObject(Plant::class.java)
-                callback(plant)
-            }.addOnFailureListener {
-                callback(null)
-            }
-    }
-
-    /**
-     * Decreases WaterLevel, amount sets in Plantworker
-     */
-    fun decreaseWaterLevel(plant: Plant, amount: Int) {
-        plant.waterLevel = maxOf(0, plant.waterLevel - amount)
-        plant.waterLevel -= amount
-        Log.d("PlantStatus", "Your Plant lost water by $amount!")
-    }
-
-    /**
-     * Decreases FertilizeLevel, amount sets in Plantworker
-     */
-    fun decreaseFertilizer(plant: Plant, amount: Int) {
-        plant.fertilizerLevel = maxOf(0, plant.fertilizerLevel - amount)
-        plant.fertilizerLevel -= amount
-        Log.d("PlantStatus", "Your Plant lost Nutrition by $amount!")
-    }
-
-    fun saveUserPlant(plant: Plant, callback: (Boolean) -> Unit) {
-        userId ?: return
-        // Use if we want to save more than one plant
-        //db.collection(USERS).document(userId).collection(PLANTS).add(plant)
-        db.collection(USERS).document(userId).collection(PLANTS).document(PLANT_REF).set(plant)
-            .addOnSuccessListener {
-                Log.d("Firebase", "Plant saved successfully")
-                callback(true)
-            }.addOnFailureListener { e ->
-                Log.e("Firebase", "Error saving plant: ${e.message}")
-                callback(false)
-            }
-    }
-
-    fun savePlantHistory(plant: Plant, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
-        if (userId == null) {
-            onFailure(Exception("Firebase error: Could not find logged in user's id."))
-            return
-        }
-        val docRef = db.collection(USERS).document(userId).collection(HISTORY).document()
-        docRef.set(PlantHistory(name = plant.name))
-            .addOnSuccessListener {
-                onSuccess()
-            }.addOnFailureListener {
-                onFailure(it)
-            }
-    }
-
+    //TODO se över denna
     fun getPlantHistoryLiveData(): LiveData<List<PlantHistory>> {
         val liveData = MutableLiveData<List<PlantHistory>>()
         userId?.let {

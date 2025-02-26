@@ -14,13 +14,10 @@ import kotlinx.coroutines.launch
 class PlantViewModel : ViewModel() {
     private val plantRepository = PlantRepository()
 
-//    private val _currentPlant = MutableLiveData<Plant?>()
-//    val currentPlant: LiveData<Plant?> get() = _currentPlant
-
     private val _localSessionPlant = MutableLiveData<Plant?>()
     val localSessionPlant: LiveData<Plant?> get() = _localSessionPlant
 
-    private val _plantJustDied = MutableLiveData<Boolean>(false)
+    private val _plantJustDied = MutableLiveData(false)
     val plantJustDied: LiveData<Boolean> get() = _plantJustDied
 
     //TODO Make sure UI observes these (show a toast?)
@@ -75,9 +72,6 @@ class PlantViewModel : ViewModel() {
 
     init {
         syncPlantFromRemote()
-//        plantRepository.snapshotOfCurrentUserPlant { plant ->
-//            _currentPlant.value = plant
-//        }
     }
 
     /**
@@ -134,18 +128,6 @@ class PlantViewModel : ViewModel() {
 
     }
 
-//    fun getCurrentUserPlant(onPlantFetched: (Plant?) -> Unit) {
-//        plantRepository.getCurrentUserPlant { plant: Plant? ->
-//            onPlantFetched(plant)
-//        }
-//    }
-//
-//    fun savePlantForCurrentUser(plant: Plant, onPlantSaved: () -> Unit) {
-//        plantRepository.saveUserPlant(plant) { saved ->
-//            if (saved) onPlantSaved()
-//        }
-//    }
-
     /**
      * Takes currentPlant and if waterLevel is under 10 a toast will appear for user
      */
@@ -174,7 +156,6 @@ class PlantViewModel : ViewModel() {
 //                Log.d("PlantVM", "No plant Found")
 //            }
 //        }
-//
 //    }
 
     //TODO Move this logic into the game engine
@@ -197,31 +178,4 @@ class PlantViewModel : ViewModel() {
 //            }
 //        }
 //    }
-
-//    /**
-//     * Takes userplant and increases fertilizerLevel, amount sets in StartPagePlantFragment
-//     * and drives when user presses the fertilize button
-//     */
-//    fun increaseFertilizeLevel(amount: Int) {
-//        _currentPlant.value?.let { plant ->
-//            plant.fertilizerLevel = minOf(100, plant.waterLevel + amount)
-//            plant.fertilizerLevel += amount
-//            Log.d("PlantStatus", "Your Plant increased Nutrition by $amount!")
-//        }
-//    }
-
-//    /**
-//     * Takes userplant and increases WaterLevel, amount sets in StartPagePlantFragment
-//     * and drives when user presses the Water button
-//     */
-//    fun increaseWaterLevel(amount: Int) {
-//        _selectedPlant.value?.let { plant ->
-//            plant.waterLevel = minOf(100, plant.waterLevel + amount)
-//            _selectedPlant.postValue(plant)
-//            // savePlantForCurrentUser()
-//            Log.d("PlantVM", "Water level increased by $amount")
-//        } ?: Log.e("PlantVM", "No plant selected to update water level")
-//    }
-
-
 }

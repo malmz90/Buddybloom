@@ -4,7 +4,6 @@ import android.graphics.Color
 import android.graphics.drawable.AnimatedImageDrawable
 import android.graphics.drawable.Drawable
 import android.media.SoundPool
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -14,7 +13,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import com.example.buddybloom.R
 import androidx.lifecycle.ViewModelProvider
@@ -27,7 +25,7 @@ import com.example.buddybloom.ui.weather.WeatherDialogFragment
 class StartPagePlantFragment : Fragment() {
 
     private lateinit var binding: FragmentStartPagePlantBinding
-    private lateinit var plantViewModel: PlantViewModel
+    private lateinit var pvm: PlantViewModel
     private lateinit var gameManager: GameManager
     private lateinit var soundPool: SoundPool
     private var waterSpraySoundId: Int = 0
@@ -41,28 +39,18 @@ class StartPagePlantFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentStartPagePlantBinding.inflate(inflater, container, false)
-        plantViewModel = ViewModelProvider(requireActivity())[PlantViewModel::class.java]
+        pvm = ViewModelProvider(requireActivity())[PlantViewModel::class.java]
         return binding.root
     }
 
-    @RequiresApi(Build.VERSION_CODES.P)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        var testPlant : Plant? = null
         // Boolean for blinds toggle button.
         var isBlindsVisible = false
-        // krashes if gameManager not is her when bugspray button pressed, because
-        // button has if sats that compare if plant if infected or not and shows diffrent gifs
-        // more work needed to remove this
-        gameManager = GameManager(
-            scope = viewLifecycleOwner.lifecycleScope, // Use fragments scope
-            onPlantEvent = { plant ->
-                Log.d("GameManager", "Plant updated: $plant")
-            },
-            onAutoSave = { plant ->
-                Log.d("GameManager", "Auto-saving plant: $plant")
-            }
-        )
-        plantViewModel.localSessionPlant.observe(viewLifecycleOwner) { plant ->
+
+        pvm.localSessionPlant.observe(viewLifecycleOwner) { plant ->
+            testPlant = plant
             binding.imgFlower.setImageResource(getPlantImageId(plant))
             binding.tvDaystreak.text = String.format(getDaysOld(plant).toString())
             binding.btnPlantNeeds.setOnClickListener {
@@ -76,7 +64,7 @@ class StartPagePlantFragment : Fragment() {
             binding.progressWater.progress = plant?.waterLevel ?: 0
         }
 
-        if (plantViewModel.isPlantThirsty()) {
+        if (pvm.isPlantThirsty()) {
             Toast.makeText(requireContext(), "Your plant is Thirsty", Toast.LENGTH_SHORT).show()
         }
 
@@ -122,9 +110,8 @@ class StartPagePlantFragment : Fragment() {
                         binding.btnWater.setBackgroundColor(Color.parseColor("#F6F1DE"))
                         binding.btnWater.setTextColor(Color.parseColor("#246246"))
                         binding.btnWater.isEnabled = true
-                        plantViewModel.waterPlant() }
+                        pvm.waterPlant() }
                         , 3000)
-
                 }
             }
 
@@ -149,7 +136,7 @@ class StartPagePlantFragment : Fragment() {
                     // Hide the animation after 3 seconds.
                     Handler(Looper.getMainLooper()).postDelayed({
                         binding.ivAnimationWateringCan.visibility = View.INVISIBLE
-                        plantViewModel.fertilizePlant()
+                        pvm.fertilizePlant()
                     }, 3000)
                 }
             }
@@ -235,40 +222,39 @@ class StartPagePlantFragment : Fragment() {
                         binding.ivAnimationWateringCan.visibility = View.INVISIBLE
                     }, 3000)}
 
-                 val plant = gameManager.getPlant()
-                Log.d("BugSpray", "Plant fetched from GameManager: $plant")
-                    if (plant == null) {
+                Log.d("BugSpray", "Plant fetched from GameManager: $testPlant")
+                    if (testPlant == null) {
                         Log.e("BugSpray", "No plant found in GameManager!")
                         Toast.makeText(requireContext(), "No plant available!", Toast.LENGTH_SHORT).show()
                         return@setOnClickListener
-                    }
-                     Log.d("BugSpray", "Plant infection status: ${plant.infected}")
-                    if ( plant.infected) {
-                        Log.d("BugSpray", "Plant is infected, spraying bugs!")
-                        plantViewModel.sprayOnBugs()
-                        // if plant gets infected and button pressed bug gif be gone
+                    } else { //TODO kolla upp denna med null koll på testPlant
+                        Log.d("BugSpray", "Plant infection status: ${testPlant!!.infected}")
+                        if (testPlant!!.infected) {
+                            Log.d("BugSpray", "Plant is infected, spraying bugs!")
+                            pvm.sprayOnBugs()
+                            // if plant gets infected and button pressed bug gif be gone
                             binding.ivInfectedBug.visibility = View.GONE
-                        Toast.makeText(
-                            requireContext(),
-                            "You've successfully saved your plant from bugs!",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    } else {
-                        // show if no bugs found. infection = false
-                        Log.d("PlantStatus", "No infection found")
-                        val drawableNoBugs: Drawable? =
-                            ContextCompat.getDrawable(requireContext(), R.drawable.gif_bugspray)
-                        if (drawableNoBugs is AnimatedImageDrawable) {
-                            binding.ivAnimationWateringCan.visibility = View.VISIBLE
-                            binding.ivAnimationWateringCan.setImageDrawable(drawableNoBugs)
-                            drawableNoBugs.start()
-                            // Hide the animation after 3 seconds.
-                            Handler(Looper.getMainLooper()).postDelayed({
-                                binding.ivAnimationWateringCan.visibility = View.INVISIBLE
-                            }, 3000)
+                            Toast.makeText(
+                                requireContext(),
+                                "You've successfully saved your plant from bugs!",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        } else {
+                            // show if no bugs found. infection = false
+                            Log.d("PlantStatus", "No infection found")
+                            val drawableNoBugs: Drawable? =
+                                ContextCompat.getDrawable(requireContext(), R.drawable.gif_bugspray)
+                            if (drawableNoBugs is AnimatedImageDrawable) {
+                                binding.ivAnimationWateringCan.visibility = View.VISIBLE
+                                binding.ivAnimationWateringCan.setImageDrawable(drawableNoBugs)
+                                drawableNoBugs.start()
+                                // Hide the animation after 3 seconds.
+                                Handler(Looper.getMainLooper()).postDelayed({
+                                    binding.ivAnimationWateringCan.visibility = View.INVISIBLE
+                                }, 3000)
+                            }
                         }
                     }
-
             }
         }
     }
@@ -292,7 +278,7 @@ class StartPagePlantFragment : Fragment() {
     }
     // function shows infected gif
     private fun showInfectedBugGif() {
-        plantViewModel.localSessionPlant.value?.let { currentPlant ->
+        pvm.localSessionPlant.value?.let { currentPlant ->
             if (currentPlant.infected) {
                 val bugDrawable: Drawable? = ContextCompat.getDrawable(
                     requireContext(),

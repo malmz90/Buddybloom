@@ -59,6 +59,4 @@ class WeatherDialogFragment : DialogFragment(R.layout.dialog_weather) {
         }
         closeButton.setOnClickListener { dismiss() }
     }
-
-
 }

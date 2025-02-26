@@ -14,7 +14,7 @@ import com.example.buddybloom.ui.game.ReplacePlantDialogFragment
 class AddPlantDialogFragment(private val newPlant: Plant) :
     BottomSheetDialogFragment(R.layout.fragment_dialog_add_plant) {
 
-    private lateinit var plantViewModel: PlantViewModel
+    private lateinit var pvm: PlantViewModel
     private var _binding: FragmentDialogAddPlantBinding? = null
     private val binding get() = _binding!!
 
@@ -23,7 +23,7 @@ class AddPlantDialogFragment(private val newPlant: Plant) :
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        plantViewModel = ViewModelProvider(requireActivity())[PlantViewModel::class.java]
+        pvm = ViewModelProvider(requireActivity())[PlantViewModel::class.java]
         _binding = FragmentDialogAddPlantBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -37,10 +37,10 @@ class AddPlantDialogFragment(private val newPlant: Plant) :
         tvPlantInfo.text = newPlant.info
 
         binding.btnAddPlant.setOnClickListener {
-            plantViewModel.localSessionPlant.observe(viewLifecycleOwner) { currentPlant ->
+            pvm.localSessionPlant.observe(viewLifecycleOwner) { currentPlant ->
                 //I user has no plant (null), skip confirmation dialog.
                 if (currentPlant == null) {
-                    plantViewModel.savePlantToRemote(newPlant)
+                    pvm.savePlantToRemote(newPlant)
                     dismiss()
                 } else {
                     ReplacePlantDialogFragment(newPlant).show(parentFragmentManager, null)

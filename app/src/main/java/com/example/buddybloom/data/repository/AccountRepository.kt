@@ -115,7 +115,6 @@ class AccountRepository {
             val userRef = db.collection("users").document(userId)
             val updates = mapOf(
                 "email" to newEmail
-
             )
             userRef.update(updates).await()
 
