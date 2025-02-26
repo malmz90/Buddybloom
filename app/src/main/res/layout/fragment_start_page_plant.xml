@@ -218,7 +218,7 @@
                 android:layout_marginEnd="4dp"
                 android:orientation="horizontal"
                 android:paddingHorizontal="8dp"
-                app:layout_constraintEnd_toStartOf="@+id/btn_refresh"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
@@ -246,7 +246,6 @@
                 style="@style/Widget.AppCompat.ProgressBar.Horizontal"
                 android:layout_width="130dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="11dp"
                 android:background="@color/turquise"
@@ -254,24 +253,23 @@
                 android:progress="100"
                 android:progressTint="@color/darkbrown"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/btn_refresh"
-                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/linearLayout_waterbar" />
 
-            <ImageButton
-                android:id="@+id/btn_refresh"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:background="@drawable/border_circle"
-                android:backgroundTint="@color/turquise"
-                android:padding="8dp"
-                android:scaleType="fitCenter"
-                android:src="@drawable/icon_refresh"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/progress_water"
-                app:layout_constraintTop_toTopOf="parent" />
+<!--            <ImageButton-->
+<!--                android:id="@+id/btn_refresh"-->
+<!--                android:layout_width="40dp"-->
+<!--                android:layout_height="40dp"-->
+<!--                android:background="@drawable/border_circle"-->
+<!--                android:backgroundTint="@color/turquise"-->
+<!--                android:padding="8dp"-->
+<!--                android:scaleType="fitCenter"-->
+<!--                android:src="@drawable/icon_refresh"-->
+<!--                app:layout_constraintBottom_toBottomOf="parent"-->
+<!--                app:layout_constraintEnd_toEndOf="parent"-->
+<!--                app:layout_constraintStart_toEndOf="@+id/progress_water"-->
+<!--                app:layout_constraintTop_toTopOf="parent" />-->
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <ImageButton
