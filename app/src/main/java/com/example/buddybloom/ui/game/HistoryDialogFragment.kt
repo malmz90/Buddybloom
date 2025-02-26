@@ -4,6 +4,7 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -21,7 +22,7 @@ class HistoryDialogFragment : DialogFragment(R.layout.dialog_history) {
     override fun onStart() {
         super.onStart()
         dialog?.window?.apply {
-        setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         }
     }
 
@@ -36,26 +37,27 @@ class HistoryDialogFragment : DialogFragment(R.layout.dialog_history) {
         val adapter = HistoryAdapter(mutableListOf())
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(context)
-        hvm.historyItems.observe(viewLifecycleOwner) {
-            if (it.isEmpty()) {
+
+        // Observe history items
+        hvm.historyItems.observe(viewLifecycleOwner) { items ->
+            if (items.isEmpty()) {
                 recyclerView.visibility = View.GONE
                 placeHolderTextView.visibility = View.VISIBLE
             } else {
                 placeHolderTextView.visibility = View.GONE
                 recyclerView.visibility = View.VISIBLE
-                adapter.update(it.toMutableList())
+                adapter.update(items.toMutableList())
             }
         }
+
+        hvm.errorMessage.observe(viewLifecycleOwner) { errorMessage ->
+            errorMessage?.let {
+                Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+            }
+        }
+
         closeButton.setOnClickListener { dismiss() }
-         //   createMockData()
 
+        hvm.loadHistory()
     }
-
-    //TODO Remove after testing
-//    private fun createMockData() {
-//        val plantRepository = PlantRepository()
-//        plantRepository.savePlantHistory(Plant("Hillibiskus", streakDays = 5), {}, {})
-//        plantRepository.savePlantHistory(Plant("Elefantianus", streakDays = 112), {}, {})
-//        plantRepository.savePlantHistory(Plant("Zebraskopus", streakDays = 19), {}, {})
-//    }
 }
