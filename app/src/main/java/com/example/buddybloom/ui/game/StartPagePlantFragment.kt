@@ -19,13 +19,20 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.example.buddybloom.data.GameManager
 import com.example.buddybloom.data.model.Plant
+import com.example.buddybloom.data.repository.AccountRepository
 import com.example.buddybloom.databinding.FragmentStartPagePlantBinding
+import com.example.buddybloom.ui.authentication.AccountViewModel
+import com.example.buddybloom.ui.authentication.AccountViewModelFactory
 import com.example.buddybloom.ui.weather.WeatherDialogFragment
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.firebase.auth.FirebaseAuth
 
 class StartPagePlantFragment : Fragment() {
 
     private lateinit var binding: FragmentStartPagePlantBinding
     private lateinit var pvm: PlantViewModel
+    private lateinit var avm : AccountViewModel
     private lateinit var gameManager: GameManager
     private lateinit var soundPool: SoundPool
     private var waterSpraySoundId: Int = 0
@@ -40,6 +47,14 @@ class StartPagePlantFragment : Fragment() {
     ): View {
         binding = FragmentStartPagePlantBinding.inflate(inflater, container, false)
         pvm = ViewModelProvider(requireActivity())[PlantViewModel::class.java]
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(getString(R.string.default_web_client_id))
+            .requestEmail()
+            .build()
+        val googleSignInClient = GoogleSignIn.getClient(requireActivity(), gso)
+        val accountRepository = AccountRepository(FirebaseAuth.getInstance(), googleSignInClient)
+        val factory = AccountViewModelFactory(accountRepository)
+        avm = ViewModelProvider(requireActivity(), factory)[AccountViewModel::class.java]
         return binding.root
     }
 
@@ -49,21 +64,29 @@ class StartPagePlantFragment : Fragment() {
         // Boolean for blinds toggle button.
         var isBlindsVisible = false
 
-        pvm.localSessionPlant.observe(viewLifecycleOwner) { plant ->
-            testPlant = plant
-            binding.imgFlower.setImageResource(getPlantImageId(plant))
-            binding.tvDaystreak.text = String.format(getDaysOld(plant).toString())
-            binding.btnPlantNeeds.setOnClickListener {
-                if (plant != null) {
-                    val plantNeedsDialog = PlantNeedsDialogFragment.newInstance(plant)
-                    plantNeedsDialog.show(parentFragmentManager, "PlantNeedsDialogFragment")
-                }
-            }
-            //Progress indicator
-            "${plant?.waterLevel ?: 0}%".also { binding.tvWaterLevel.text = it }
-            binding.progressWater.progress = plant?.waterLevel ?: 0
+        //Observes if user is logging in so null pic won't show, if slow network progressbar shows instead
+        avm.isLoggingIn.observe(viewLifecycleOwner) { isLoggingIn ->
+            binding.loadingProgressBar.visibility = if (isLoggingIn) View.VISIBLE else View.GONE
+            binding.imgFlower.visibility = if (isLoggingIn) View.GONE else View.VISIBLE
         }
 
+        pvm.localSessionPlant.observe(viewLifecycleOwner) { plant ->
+            //Checks if user is logging in
+            if (avm.isLoggingIn.value != true) {
+                testPlant = plant
+                binding.imgFlower.setImageResource(getPlantImageId(plant))
+                binding.tvDaystreak.text = String.format(getDaysOld(plant).toString())
+                binding.btnPlantNeeds.setOnClickListener {
+                    plant?.let {
+                        val plantNeedsDialog = PlantNeedsDialogFragment.newInstance(plant)
+                        plantNeedsDialog.show(parentFragmentManager, "PlantNeedsDialogFragment")
+                    }
+                }
+                //Progress indicator
+                "${plant?.waterLevel ?: 0}%".also { binding.tvWaterLevel.text = it }
+                binding.progressWater.progress = plant?.waterLevel ?: 0
+            }
+        }
         if (pvm.isPlantThirsty()) {
             Toast.makeText(requireContext(), "Your plant is Thirsty", Toast.LENGTH_SHORT).show()
         }

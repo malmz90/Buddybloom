@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.buddybloom.R
 import com.example.buddybloom.databinding.ActivityGameBinding
+import com.example.buddybloom.ui.authentication.AccountViewModel
 import com.example.buddybloom.ui.authentication.AuthenticationActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
@@ -19,6 +20,7 @@ import com.google.firebase.auth.FirebaseAuth
 class GameActivity : AppCompatActivity() {
     private lateinit var binding: ActivityGameBinding
     private lateinit var pvm: PlantViewModel
+    private lateinit var avm : AccountViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

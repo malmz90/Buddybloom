@@ -26,6 +26,22 @@ class AccountRepository
     private val _loginStatus = MutableLiveData<FirebaseUser?>()
     val loginStatus: LiveData<FirebaseUser?> get() = _loginStatus
 
+    //To get userdata to fill fields in profilefragment
+    fun getUserData(callback: (User?) -> Unit) {
+        val userId = auth.currentUser?.uid ?: run {
+            callback(null)
+            return
+        }
+        db.collection("users").document(userId).get()
+            .addOnSuccessListener { document ->
+                val user = document.toObject(User::class.java)
+                callback(user)
+            }
+            .addOnFailureListener { e ->
+                Log.e("AccountRepo", "Failed to fetch user data ${e.message}")
+                callback(null)
+            }
+    }
 
     fun loginUser(email: String, password: String, callback: (Boolean) -> Unit) {
         auth.signInWithEmailAndPassword(email, password).addOnCompleteListener { task ->

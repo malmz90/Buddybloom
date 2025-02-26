@@ -8,6 +8,23 @@
     android:padding="16dp"
     tools:context=".ui.game.ProfileFragment">
 
+    <TextView
+        android:id="@+id/tv_hello"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:elevation="4dp"
+        android:fontFamily="@font/manjari"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:textAlignment="center"
+        android:text="Hello, name!"
+        android:textColor="@color/white"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toTopOf="@+id/textinputEmail_et_layout"
+        app:layout_constraintEnd_toStartOf="@+id/ib_signout"
+        app:layout_constraintStart_toEndOf="@+id/ib_info"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <ImageButton
         android:id="@+id/ib_info"
         android:layout_width="wrap_content"
@@ -166,15 +183,25 @@
         android:id="@+id/saveButton"
         android:layout_width="80dp"
         android:layout_height="80dp"
-        android:src="@drawable/icon_save"
-        android:contentDescription="@string/save_button"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginBottom="7dp"
-        android:scaleType="centerCrop"
         android:adjustViewBounds="true"
         android:background="@drawable/border_circlewhite"
-        android:padding="16dp" />
+        android:contentDescription="@string/save_button"
+        android:padding="16dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/icon_save"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/saveButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/deleteAccountText" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
