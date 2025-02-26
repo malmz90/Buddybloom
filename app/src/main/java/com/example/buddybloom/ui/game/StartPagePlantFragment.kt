@@ -217,7 +217,6 @@ class StartPagePlantFragment : Fragment() {
                     Toast.makeText(requireContext(), "Game is not ready yet!", Toast.LENGTH_SHORT).show()
                     return@setOnClickListener
                 }
-
                 Log.d("BugSpray", "Bug spray button clicked!")
                 // show spray gif
                 val drawable: Drawable? =
