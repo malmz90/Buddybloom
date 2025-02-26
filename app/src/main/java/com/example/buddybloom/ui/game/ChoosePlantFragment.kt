@@ -6,6 +6,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.buddybloom.R
 import com.example.buddybloom.data.model.Plant
@@ -17,6 +19,7 @@ class ChoosePlantFragment : Fragment() {
     private lateinit var binding: FragmentChoosePlantBinding
     private lateinit var adapter: ChoosePlantRecyclerAdapter
     private val plants = mutableListOf<Plant>()
+    private lateinit var plantViewModel: PlantViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -27,6 +30,16 @@ class ChoosePlantFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        plantViewModel = ViewModelProvider(requireActivity())[PlantViewModel::class.java]
+
+        plantViewModel.plantJustDied.observe(viewLifecycleOwner) { justDied ->
+            if (justDied) {
+                showPlantDeathDialog()
+                plantViewModel.resetPlantDeathState()
+            }
+        }
+
 
         val plantElephant = Plant(
             name = "Elephant",
@@ -52,6 +65,18 @@ class ChoosePlantFragment : Fragment() {
             showAddPlantDialogFragment(chosenPlant)
         }
         binding.rvChoosePlant.adapter = adapter
+    }
+
+    private fun showPlantDeathDialog() {
+        val dialog = AlertDialog.Builder(requireContext())
+            .setTitle("Your Plant Has Died")
+            .setMessage("Oh no! Your plant couldn't survive. It needed more water and care. Don't worry, you can choose a new plant now!")
+            .setPositiveButton("OK") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .create()
+
+        dialog.show()
     }
 
     private fun showAddPlantDialogFragment(plant: Plant) {
