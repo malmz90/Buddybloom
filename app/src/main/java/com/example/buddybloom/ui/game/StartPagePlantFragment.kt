@@ -50,15 +50,15 @@ class StartPagePlantFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         // Boolean for blinds toggle button.
         var isBlindsVisible = false
-
+        // krashes if gameManager not is her when bugspray button pressed, because
+        // button has if sats that compare if plant if infected or not and shows diffrent gifs
+        // more work needed to remove this
         gameManager = GameManager(
-            scope = viewLifecycleOwner.lifecycleScope, // Använder fragmentets scope
+            scope = viewLifecycleOwner.lifecycleScope, // Use fragments scope
             onPlantEvent = { plant ->
-                // Hantera uppdateringar av plantan (exempelvis uppdatera UI)
                 Log.d("GameManager", "Plant updated: $plant")
             },
             onAutoSave = { plant ->
-                // Hantera autosparning (kan spara till Firestore eller lokalt)
                 Log.d("GameManager", "Auto-saving plant: $plant")
             }
         )
@@ -275,7 +275,6 @@ class StartPagePlantFragment : Fragment() {
         soundPool.release()
     }
 
-
     /**
      * Calculates how old the plant is in days, based on the current time and time of creation.
      */
@@ -288,7 +287,7 @@ class StartPagePlantFragment : Fragment() {
             return 0
         }
     }
-    // Funktion för att visa insekts-GIF när växten är infekterad
+    // function shows infected gif
     private fun showInfectedBugGif() {
         plantViewModel.localSessionPlant.value?.let { currentPlant ->
             if (currentPlant.infected) {
