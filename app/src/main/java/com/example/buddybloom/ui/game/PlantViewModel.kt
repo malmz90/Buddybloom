@@ -20,6 +20,9 @@ class PlantViewModel : ViewModel() {
     private val _localSessionPlant = MutableLiveData<Plant?>()
     val localSessionPlant: LiveData<Plant?> get() = _localSessionPlant
 
+    private val _plantJustDied = MutableLiveData<Boolean>(false)
+    val plantJustDied: LiveData<Boolean> get() = _plantJustDied
+
     //TODO Make sure UI observes these (show a toast?)
     /**
      * Potential error messages from Firestore or GameManager.
@@ -31,6 +34,10 @@ class PlantViewModel : ViewModel() {
         scope = viewModelScope,
         onPlantEvent = { plant ->
             _localSessionPlant.postValue(plant)
+            if (plant == null && _localSessionPlant.value != null) {
+                // The plant was not null before, but now it is - this means it just died
+                _plantJustDied.postValue(true)
+            }
             if (plant == null) {
                 deletePlantFromRemote() // Delete plant when it dies
             } else {
@@ -41,6 +48,10 @@ class PlantViewModel : ViewModel() {
             updateRemotePlant(plant)
         }
     )
+
+    fun resetPlantDeathState() {
+        _plantJustDied.postValue(false)
+    }
 
     /** Delete plant is firestore */
     private fun deletePlantFromRemote() {
