@@ -114,9 +114,13 @@ class PlantViewModel : ViewModel() {
         gameManager.waterPlant()
     }
 
-
     fun fertilizePlant() {
         gameManager.addFertilizer()
+    }
+
+    fun sprayOnBugs() {
+        gameManager.plantGetFreeFromBugs()
+
     }
 
 //    fun getCurrentUserPlant(onPlantFetched: (Plant?) -> Unit) {

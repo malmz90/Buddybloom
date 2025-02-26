@@ -82,6 +82,7 @@ class PlantRepository {
                     "waterLevel" to plant.waterLevel,
                     "fertilizerLevel" to plant.fertilizerLevel,
                     "sunLevel" to plant.sunLevel,
+                    "infected" to plant.infected,
                     "lastUpdated" to Timestamp.now()
                 )
                 val plantDoc =

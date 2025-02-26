@@ -43,6 +43,13 @@
             android:translationZ="10dp"
             android:visibility="invisible"
             app:layout_constraintEnd_toEndOf="@+id/cv_plant" />
+        <ImageView
+            android:id="@+id/iv_infected_bug"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:translationZ="10dp"
+            android:visibility="invisible"
+            app:layout_constraintEnd_toEndOf="@+id/cv_plant" />
     </androidx.cardview.widget.CardView>
 
         <ImageView
