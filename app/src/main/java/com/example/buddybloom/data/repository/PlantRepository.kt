@@ -8,6 +8,7 @@ import com.example.buddybloom.data.model.Plant
 import com.google.firebase.Firebase
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.firestore
 import com.google.firebase.firestore.toObject
 import com.google.firebase.firestore.toObjects
@@ -26,10 +27,41 @@ class PlantRepository {
         private const val HISTORY = "history"
     }
 
+    /**
+     * Saves a dead plant to the user's history collection in Firestore.
+     * This function calculates how many days the plant survived before dying and
+     * creates a PlantHistory record with this information.
+     */
+    suspend fun savePlantToHistory(plant: Plant, onFailure: (Exception) -> Unit) {
+        auth.currentUser?.uid?.let { uid ->
+            try {
+                // Calculate how many days the plant lived
+                val createdAt = plant.createdAt
+                val diedAt = Timestamp.now()
+
+                // Calculate days difference
+                val millisPerDay = 24 * 60 * 60 * 1000
+                val daysDifference = ((diedAt.seconds - createdAt.seconds) * 1000) / millisPerDay
+
+                val plantHistory = PlantHistory(
+                    name = plant.name,
+                    streakCount = daysDifference.toInt(),
+                    timestamp = diedAt
+                )
+
+                db.collection(USERS).document(uid).collection(HISTORY).add(plantHistory).await()
+            } catch (error: Exception) {
+                onFailure(error)
+            }
+        } ?: onFailure(firebaseException)
+    }
+
+
     suspend fun deletePlant(onFailure: (Exception) -> Unit) {
         auth.currentUser?.uid?.let {
             try {
-                db.collection(USERS).document(it).collection(PLANTS).document(PLANT_REF).delete().await()
+                db.collection(USERS).document(it).collection(PLANTS).document(PLANT_REF).delete()
+                    .await()
             } catch (error: Exception) {
                 onFailure(error)
             }
@@ -97,21 +129,34 @@ class PlantRepository {
         } ?: onFailure(firebaseException)
     }
 
-    //TODO se över denna
-    fun getPlantHistoryLiveData(): LiveData<List<PlantHistory>> {
-        val liveData = MutableLiveData<List<PlantHistory>>()
-        userId?.let {
-            db.collection(USERS).document(it).collection(HISTORY)
-                .addSnapshotListener { snapshot, error ->
-                    if (error != null) {
-                        Log.i("PlantRepository", "Error fetching history from Firebase")
-                        return@addSnapshotListener
-                    }
-                    val historyItems = snapshot?.toObjects<PlantHistory>().orEmpty()
-                        .sortedBy { item -> item.timestamp }
-                    liveData.postValue(historyItems)
+    /**
+     * Fetches the user's plant history from Firestore as a one-time operation.
+     * This retrieves all the plants that have died and been saved to history,
+     * ordered from most recent to oldest.
+     */
+    suspend fun getPlantHistory(
+        onSuccess: (List<PlantHistory>) -> Unit,
+        onFailure: (Exception) -> Unit
+    ) {
+        auth.currentUser?.uid?.let { uid ->
+            try {
+                val snapshot = db.collection(USERS).document(uid).collection(HISTORY)
+                    .orderBy("timestamp", Query.Direction.DESCENDING)
+                    .get()
+                    .await()
+
+                val historyList = snapshot.documents.mapNotNull { doc ->
+                    doc.toObject<PlantHistory>()
                 }
+
+                onSuccess(historyList)
+            } catch (error: Exception) {
+                onFailure(error)
+                onSuccess(emptyList())
+            }
+        } ?: run {
+            onFailure(firebaseException)
+            onSuccess(emptyList())
         }
-        return liveData
     }
 }

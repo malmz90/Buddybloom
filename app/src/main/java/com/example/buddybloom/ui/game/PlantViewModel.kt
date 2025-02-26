@@ -34,6 +34,10 @@ class PlantViewModel : ViewModel() {
             if (plant == null && _localSessionPlant.value != null) {
                 // The plant was not null before, but now it is - this means it just died
                 _plantJustDied.postValue(true)
+                // Save the dead plant to history before it's deleted
+                _localSessionPlant.value?.let { deadPlant ->
+                    savePlantToHistoryRemote(deadPlant)
+                }
             }
             if (plant == null) {
                 deletePlantFromRemote() // Delete plant when it dies
@@ -55,6 +59,17 @@ class PlantViewModel : ViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             plantRepository.deletePlant() { error ->
                 _errorMessage.postValue(error.message)
+            }
+        }
+    }
+    /**
+     * Saves the dead plant to history by calling the repository method.
+     * This function is called when a plant dies
+     */
+    private fun savePlantToHistoryRemote(plant: Plant) {
+        viewModelScope.launch(Dispatchers.IO) {
+            plantRepository.savePlantToHistory(plant) { error ->
+                _errorMessage.postValue("Failed to save plant history: ${error.message}")
             }
         }
     }
