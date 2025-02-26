@@ -1,6 +1,5 @@
 package com.example.buddybloom.ui
 
-
 import android.content.Intent
 import android.media.AudioAttributes
 import android.media.SoundPool
@@ -37,7 +36,7 @@ class IntroActivity : AppCompatActivity() {
             startActivity(Intent(this, AuthenticationActivity::class.java))
         }, 3000)
 
-                // Creating Soundpool
+        // Creating Soundpool
         val startMelody = AudioAttributes.Builder()
             .setUsage(AudioAttributes.USAGE_MEDIA)
             .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
@@ -59,13 +58,13 @@ class IntroActivity : AppCompatActivity() {
                 Log.d("Soundpool","Success play sound!")
             }  else {
             Log.d("SoundPool", "Failed to load sound")
-       }
+           }
+            }
         }
-    }
+
     // Cleans up when activity destroys
     override fun onDestroy() {
         super.onDestroy()
         soundPool.release()
     }
-
 }
