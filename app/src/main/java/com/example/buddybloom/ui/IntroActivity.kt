@@ -47,7 +47,7 @@ class IntroActivity : AppCompatActivity() {
             .build()
 
         // Loading sound
-        soundId = soundPool.load(this, R.raw.start_melody, 1)
+        soundId = soundPool.load(this, R.raw.intro_melody, 1)
         Log.d("SoundPool", "Sound ID: $soundId")
 
         soundPool.setOnLoadCompleteListener { _, _, status ->
