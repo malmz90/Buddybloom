@@ -16,6 +16,7 @@
         android:text="@string/about_plant"
         android:textSize="20sp"
         android:textStyle="bold"
+        android:textColor="@color/darkbrown"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"

@@ -177,7 +177,7 @@ class StartPagePlantFragment : Fragment() {
 
             //TODO Connect this to the view model
             imgBtnWaterspray.setOnClickListener {
-                //plantViewModel.checkDifficultyWaterSpray()
+                pvm.waterSpray()
                 Toast.makeText(
                     requireContext(),
                     "You've successfully sprayed water on your plant!",
