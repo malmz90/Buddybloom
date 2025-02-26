@@ -203,12 +203,6 @@ class StartPagePlantFragment : Fragment() {
             }
 
             imgBtnBugspray.setOnClickListener {
-                if (!::gameManager.isInitialized) {
-                    Log.e("BugSpray", "gameManager has not been initialized!")
-                    Toast.makeText(requireContext(), "Game is not ready yet!", Toast.LENGTH_SHORT).show()
-                    return@setOnClickListener
-                }
-                Log.d("BugSpray", "Bug spray button clicked!")
                 // show spray gif
                 val drawable: Drawable? =
                     ContextCompat.getDrawable(requireContext(), R.drawable.gif_waterspray)
@@ -222,13 +216,6 @@ class StartPagePlantFragment : Fragment() {
                         binding.ivAnimationWateringCan.visibility = View.INVISIBLE
                     }, 3000)}
 
-                Log.d("BugSpray", "Plant fetched from GameManager: $testPlant")
-                    if (testPlant == null) {
-                        Log.e("BugSpray", "No plant found in GameManager!")
-                        Toast.makeText(requireContext(), "No plant available!", Toast.LENGTH_SHORT).show()
-                        return@setOnClickListener
-                    } else { //TODO kolla upp denna med null koll på testPlant
-                        Log.d("BugSpray", "Plant infection status: ${testPlant!!.infected}")
                         if (testPlant!!.infected) {
                             Log.d("BugSpray", "Plant is infected, spraying bugs!")
                             pvm.sprayOnBugs()
@@ -240,7 +227,7 @@ class StartPagePlantFragment : Fragment() {
                                 Toast.LENGTH_SHORT
                             ).show()
                         } else {
-                            // show if no bugs found. infection = false
+                            // show gif if no bugs found. infection = false
                             Log.d("PlantStatus", "No infection found")
                             val drawableNoBugs: Drawable? =
                                 ContextCompat.getDrawable(requireContext(), R.drawable.gif_bugspray)
@@ -255,7 +242,6 @@ class StartPagePlantFragment : Fragment() {
                             }
                         }
                     }
-            }
         }
     }
 
