@@ -148,7 +148,6 @@ class PlantViewModel : ViewModel() {
 
     fun sprayOnBugs() {
         gameManager.plantGetFreeFromBugs()
-
     }
 
     /**

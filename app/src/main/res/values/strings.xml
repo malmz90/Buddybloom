@@ -8,7 +8,7 @@
     Your virtual plantapp for every user who just can’t \n
         seem to keep their plants alive at home. \n
         Practice watering, fertilize and generally take care \n
-        of 1 or more plants right here!\n \n
+        of a plant, right here!\n \n
     Check up on it daily or there will be consequences\n
         for your plant... \n\n
     So, \n how many daystreaks will you pass!? \n
@@ -55,11 +55,11 @@
     <string name="desc_elephant">Elephantplant \n Thrives in warm, humid environments with indirect sunlight. \n Prefers well-draining soil and regular watering, but avoid overwatering. \n
 Fertilize monthly during the growing season. \n
 Watch out for root rot, mealybugs, and spider mites!
-\n\nDifficulty: Medium</string>
+\n\nDifficulty: Easy</string>
     <string name="desc_zebra">Zebraplant \n Requires bright, indirect light and consistently moist soil. \n Avoid letting the soil dry out completely.
 Fertilize every two weeks during active growth.\n
 Watch out for leaf browning, powdery mildew, and spider mites!
-\n\nDifficulty: Hard</string>
+\n\nDifficulty: Medium</string>
     <string name="desc_ficus">Ficusplant \n Prefers bright, indirect sunlight but can tolerate some shade. \n Keep soil consistently moist, but avoid waterlogging.
 \n Fertilize once a month during the growing season. \n
 Watch out for leaf drop, spider mites, and scale insects!

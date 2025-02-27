@@ -42,7 +42,7 @@ class ChoosePlantFragment : Fragment() {
         val plantElephant = Plant(
             name = "Elephant",
             info = getString(R.string.desc_elephant),
-            difficulty = "Medium"
+            difficulty = "Easy"
         )
         val plantHibiscus = Plant(
             name = "Hibiscus",
@@ -52,11 +52,23 @@ class ChoosePlantFragment : Fragment() {
         val plantZebra = Plant(
             name = "Zebra",
             info = getString(R.string.desc_zebra),
-            difficulty = "Hard"
+            difficulty = "Medium"
+        )
+        val plantFicus = Plant (
+            name = "Ficus",
+            info = getString(R.string.desc_ficus),
+            difficulty = "Medium"
+        )
+        val plantColeus = Plant (
+            name = "Coleus",
+            info = getString(R.string.desc_colues),
+            difficulty = "Easy"
         )
         plants.add(plantElephant)
         plants.add(plantHibiscus)
         plants.add(plantZebra)
+        plants.add(plantFicus)
+        plants.add(plantColeus)
 
         binding.rvChoosePlant.layoutManager = LinearLayoutManager(requireContext())
         adapter = ChoosePlantRecyclerAdapter(plants) { chosenPlant ->
