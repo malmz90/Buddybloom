@@ -23,7 +23,6 @@ import com.example.buddybloom.data.repository.AccountRepository
 import com.example.buddybloom.databinding.FragmentStartPagePlantBinding
 import com.example.buddybloom.ui.authentication.AccountViewModel
 import com.example.buddybloom.ui.authentication.AccountViewModelFactory
-import com.example.buddybloom.ui.weather.WeatherDialogFragment
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
@@ -33,7 +32,6 @@ class StartPagePlantFragment : Fragment() {
     private lateinit var binding: FragmentStartPagePlantBinding
     private lateinit var pvm: PlantViewModel
     private lateinit var avm : AccountViewModel
-    private lateinit var gameManager: GameManager
     private lateinit var soundPool: SoundPool
     private var waterSpraySound: Int = 0
     private var fertilizeSound: Int = 0

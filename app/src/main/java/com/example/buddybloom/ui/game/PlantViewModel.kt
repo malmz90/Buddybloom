@@ -170,6 +170,7 @@ class PlantViewModel : ViewModel() {
     fun fetchOrCreateDailyReport() {
         weatherRepository.fetchOrCreateDailyReport { report ->
             _currentWeatherReport.postValue(report)
+            gameManager.updateLocalDailyWeather(report)
         }
     }
 

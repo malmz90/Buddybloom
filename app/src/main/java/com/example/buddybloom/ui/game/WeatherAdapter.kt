@@ -34,8 +34,8 @@ class WeatherAdapter(private var dailyWeatherReport: WeatherReport.Daily?) :
         val imageId = when(currentHourlyWeather?.second) {
             WeatherReport.Condition.SUNNY -> R.drawable.icon_sun
             WeatherReport.Condition.CLOUDY -> R.drawable.icon_cloudy
-            WeatherReport.Condition.PARTLY_CLOUDY -> R.drawable.icon_partly_cloudy
             WeatherReport.Condition.NIGHT -> R.drawable.icon_moon
+            WeatherReport.Condition.PARTLY_CLOUDY -> R.drawable.icon_partly_cloudy
             WeatherReport.Condition.RAIN -> R.drawable.icon_rainy
             WeatherReport.Condition.THUNDER -> R.drawable.icon_thunder
             null -> R.drawable.icon_cloudy
