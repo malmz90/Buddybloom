@@ -20,7 +20,6 @@ import com.google.firebase.auth.FirebaseAuth
 class GameActivity : AppCompatActivity() {
     private lateinit var binding: ActivityGameBinding
     private lateinit var pvm: PlantViewModel
-    private lateinit var avm : AccountViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

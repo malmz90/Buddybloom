@@ -21,8 +21,6 @@ class AccountRepository
 
     private val db = Firebase.firestore
 
-    private val userId = auth.currentUser?.uid
-
     private val _loginStatus = MutableLiveData<FirebaseUser?>()
     val loginStatus: LiveData<FirebaseUser?> get() = _loginStatus
 

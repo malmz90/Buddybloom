@@ -16,7 +16,6 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.example.buddybloom.R
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import com.example.buddybloom.data.GameManager
 import com.example.buddybloom.data.model.Plant
 import com.example.buddybloom.data.repository.AccountRepository
@@ -228,7 +227,7 @@ class StartPagePlantFragment : Fragment() {
             imgBtnBugspray.setOnClickListener {
                 // show spray gif
                 val drawable: Drawable? =
-                    ContextCompat.getDrawable(requireContext(), R.drawable.gif_waterspray)
+                    ContextCompat.getDrawable(requireContext(), R.drawable.gif_bugspray)
                 if (drawable is AnimatedImageDrawable) {
                     binding.ivAnimationWateringCan.visibility = View.VISIBLE
                     binding.ivAnimationWateringCan.setImageDrawable(drawable)
@@ -253,7 +252,7 @@ class StartPagePlantFragment : Fragment() {
                             // show gif if no bugs found. infection = false
                             Log.d("PlantStatus", "No infection found")
                             val drawableNoBugs: Drawable? =
-                                ContextCompat.getDrawable(requireContext(), R.drawable.gif_bugspray)
+                                ContextCompat.getDrawable(requireContext(), R.drawable.gif_bug)
                             if (drawableNoBugs is AnimatedImageDrawable) {
                                 binding.ivAnimationWateringCan.visibility = View.VISIBLE
                                 binding.ivAnimationWateringCan.setImageDrawable(drawableNoBugs)
