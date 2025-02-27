@@ -23,6 +23,7 @@
             android:gravity="center"
             android:text="Your plant needs"
             android:textSize="20sp"
+            android:textColor="@color/darkbrown"
             app:layout_constraintBottom_toTopOf="@+id/gold_line"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -48,6 +49,7 @@
             android:drawableStart="@drawable/icon_drop"
             android:text="Water Level: "
             android:textSize="16sp"
+            android:textColor="@color/darkbrown"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/gold_line" />
 
@@ -57,6 +59,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="30dp"
             android:text="100/100"
+            android:textColor="@color/darkbrown"
             app:layout_constraintBottom_toBottomOf="@+id/tv_water_level"
             app:layout_constraintStart_toEndOf="@+id/tv_water_level"
             app:layout_constraintTop_toTopOf="@+id/tv_water_level" />
@@ -70,6 +73,7 @@
             android:drawableStart="@drawable/icon_fertilize"
             android:text="Fertilize Level: "
             android:textSize="16sp"
+            android:textColor="@color/darkbrown"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_water_level" />
 
@@ -79,6 +83,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="17dp"
             android:text="77/100"
+            android:textColor="@color/darkbrown"
             app:layout_constraintBottom_toBottomOf="@+id/tv_fertilize_level"
             app:layout_constraintStart_toEndOf="@+id/tv_fertilize_level"
             app:layout_constraintTop_toTopOf="@+id/tv_fertilize_level" />
@@ -92,6 +97,7 @@
             android:drawableStart="@drawable/icon_sunny"
             android:text="Sun Protect: "
             android:textSize="16sp"
+            android:textColor="@color/darkbrown"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_fertilize_level" />
 
@@ -101,6 +107,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="30dp"
             android:text="100/100"
+            android:textColor="@color/darkbrown"
             app:layout_constraintBottom_toBottomOf="@+id/tv_sun_level"
             app:layout_constraintStart_toEndOf="@+id/tv_sun_level"
             app:layout_constraintTop_toTopOf="@+id/tv_sun_level" />
@@ -112,6 +119,7 @@
             android:layout_marginTop="30dp"
             android:text="Your plant is in need of water!"
             android:textSize="16sp"
+            android:textColor="@color/darkbrown"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_sun_level" />
@@ -151,7 +159,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:text="E"
-                android:textColor="@color/black"
+                android:textColor="@color/darkbrown"
                 android:textSize="18sp" />
         </FrameLayout>
 
