@@ -1,31 +1,24 @@
 package com.example.buddybloom.data.model
 
-import com.google.firebase.Timestamp
+import java.util.Calendar
 
 sealed class WeatherReport {
 
-    data class Hourly(
-        val temperature: Int = 0,
-        val condition: Condition? = null,
-        val timestamp: Timestamp = Timestamp.now(),
-    ) :
-        WeatherReport()
-
     data class Daily(
-        val sunshineDuration: Int = 0,
-        val temperature: Int = 0,
-        val condition: Condition? = null,
-        val hourlyReports: List<Hourly> = listOf(),
-        val timestamp: Timestamp = Timestamp.now(),
-        val weekDay: String? = null
+        val hourlyWeather: List<MyPair>? = null,
+//        val timestamp: Calendar? = null
+        val timestamp: Long = 0L
     ) : WeatherReport()
 
-    data class Weekly(
-        val dailyReports: List<Daily> = listOf(),
-        val lastUpdated: Timestamp = Timestamp.now()
-    ) : WeatherReport()
+    data class MyPair(
+        val first: Int = 0,
+        val second: Condition = Condition.CLOUDY
+    )
 
     enum class Condition {
-        SUNNY, CLOUDY, RAIN
+        SUNNY, CLOUDY, PARTLY_CLOUDY, NIGHT, RAIN, THUNDER
     }
+    /*enum class Night {
+        NIGHT
+    }*/
 }

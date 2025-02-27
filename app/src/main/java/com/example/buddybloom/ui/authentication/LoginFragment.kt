@@ -76,8 +76,8 @@ class LoginFragment : Fragment() {
     }
 
     private fun testFunction() {
-        binding.etEmail.setText("mag20@test.com")
-        binding.etPass.setText("!Magnus1")
+        binding.etEmail.setText("cai@cai.se")
+        binding.etPass.setText("Cai!1234")
     }
 
     private fun loginUser() {

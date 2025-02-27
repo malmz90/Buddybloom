@@ -29,6 +29,7 @@ class GameActivity : AppCompatActivity() {
             insets
         }
         pvm = ViewModelProvider(this)[PlantViewModel::class.java]
+        pvm.fetchOrCreateDailyReport()
 
         // Add this line to check for plant when activity starts
         checkUserPlant()

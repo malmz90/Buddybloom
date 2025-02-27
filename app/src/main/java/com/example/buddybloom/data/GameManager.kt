@@ -2,15 +2,12 @@ package com.example.buddybloom.data
 
 import android.util.Log
 import com.example.buddybloom.data.GameManager.LocalGameState.localPlant
-import com.example.buddybloom.data.GameManager.LocalGameState.localWeatherReport
 import com.example.buddybloom.data.model.Plant
-import com.example.buddybloom.data.model.WeatherReport
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import kotlin.random.Random
 
 /**
  * Handles game logic and modifiers and keeps a local game session running.
@@ -34,7 +31,6 @@ class GameManager
 
     private object LocalGameState {
         var localPlant: Plant? = null
-        var localWeatherReport: WeatherReport.Weekly? = null
     }
 
     companion object {

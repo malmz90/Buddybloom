@@ -7,12 +7,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.buddybloom.data.GameManager
 import com.example.buddybloom.data.model.Plant
+import com.example.buddybloom.data.model.WeatherReport
 import com.example.buddybloom.data.repository.PlantRepository
+import com.example.buddybloom.data.repository.WeatherRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class PlantViewModel : ViewModel() {
     private val plantRepository = PlantRepository()
+    private val weatherRepository = WeatherRepository()
 
     private val _localSessionPlant = MutableLiveData<Plant?>()
     val localSessionPlant: LiveData<Plant?> get() = _localSessionPlant
@@ -151,6 +154,19 @@ class PlantViewModel : ViewModel() {
             plant.waterLevel < 10
         } ?: false
     }
+
+    //--------------------------------------WEATHER STUFF-------------------------------------------
+
+    private val _currentWeatherReport = MutableLiveData<WeatherReport.Daily>()
+    val currentWeatherReport : LiveData<WeatherReport.Daily> get() = _currentWeatherReport
+
+    fun fetchOrCreateDailyReport() {
+        weatherRepository.fetchOrCreateDailyReport { report ->
+            _currentWeatherReport.postValue(report)
+        }
+    }
+
+
 
     //TODO Move this logic into the game engine
     /**
