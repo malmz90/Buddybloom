@@ -92,6 +92,10 @@ class PlantViewModel : ViewModel() {
         syncPlantFromRemote()
     }
 
+    fun refreshPlant() {
+        syncPlantFromRemote()
+    }
+
     /**
      * Fetches the current plant from the remote and checks how many hours have passed since last update.
      * Passes game time for each missing hour and then updates the local game session, live data and on remote.
@@ -137,13 +141,16 @@ class PlantViewModel : ViewModel() {
         gameManager.waterPlant()
     }
 
+    fun waterSpray(){
+        gameManager.sprayWaterPlant()
+    }
+
     fun fertilizePlant() {
         gameManager.addFertilizer()
     }
 
     fun sprayOnBugs() {
         gameManager.plantGetFreeFromBugs()
-
     }
 
     /**
@@ -151,7 +158,7 @@ class PlantViewModel : ViewModel() {
      */
     fun isPlantThirsty(): Boolean {
         return _localSessionPlant.value?.let { plant ->
-            plant.waterLevel < 10
+            plant.waterLevel < 20
         } ?: false
     }
 

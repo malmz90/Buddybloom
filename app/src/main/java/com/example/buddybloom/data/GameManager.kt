@@ -44,7 +44,13 @@ class GameManager
 
         //When the user presses a button in the game
         const val WATER_INCREASE = 10
-        const val FERTILIZER_INCREASE = 10
+        const val WATER_INCREASE_EASY = 8
+        const val WATER_INCREASE_MEDIUM = 5
+        const val WATER_INCREASE_HARD = 2
+
+        const val FERTILIZER_INCREASE_EASY = 15
+        const val FERTILIZER_INCREASE_MEDIUM = 10
+        const val FERTILIZER_INCREASE_HARD = 7
 
         //TODO remake the plant model for easier handling of these?
         private const val WATER_DECREASE_EASY = 7
@@ -170,6 +176,23 @@ class GameManager
     }
 
     /**
+     * When user presses on water spray button and increase waterLevel depending on
+     * difficulty on plant
+     */
+    fun sprayWaterPlant(){
+        localPlant?.let {
+            it.waterLevel = when (it.difficulty.lowercase()) {
+                "medium" -> minOf(100, it.waterLevel + WATER_INCREASE_MEDIUM)
+                "hard" -> minOf(100, it.waterLevel + WATER_INCREASE_HARD)
+                else -> {
+                    minOf(100, it.waterLevel + WATER_INCREASE_EASY)
+                }
+            }
+            onPlantEvent(localPlant)
+        }
+    }
+
+    /**
      * Water decrease in the game loop.
      */
     private fun decreaseWaterLevel() {
@@ -186,11 +209,17 @@ class GameManager
     }
 
     /**
-     * When the user presses the fertilizer button.
+     * When the user presses the fertilizer button. Amount depends on difficulty
      */
     fun addFertilizer() {
         localPlant?.let {
-            it.fertilizerLevel = (minOf(100, it.fertilizerLevel + FERTILIZER_INCREASE))
+            it.fertilizerLevel = when (it.difficulty.lowercase()) {
+                "medium" -> minOf(100, it.fertilizerLevel + FERTILIZER_INCREASE_MEDIUM)
+                "hard" -> minOf(100, it.fertilizerLevel + FERTILIZER_INCREASE_HARD)
+                else -> {
+                    minOf(100, it.fertilizerLevel + FERTILIZER_INCREASE_EASY)
+                }
+            }
             onPlantEvent(localPlant)
         }
     }

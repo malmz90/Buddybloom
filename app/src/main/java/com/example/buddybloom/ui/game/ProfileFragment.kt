@@ -8,11 +8,19 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
+import com.example.buddybloom.R
+import com.example.buddybloom.data.model.User
+import com.example.buddybloom.data.repository.AccountRepository
 import com.example.buddybloom.databinding.FragmentProfileBinding
 import com.example.buddybloom.ui.AboutInfoFragment
 import com.example.buddybloom.ui.authentication.AccountViewModel
+import com.example.buddybloom.ui.authentication.AccountViewModelFactory
 import com.example.buddybloom.ui.authentication.AuthenticationActivity
 import com.example.buddybloom.ui.authentication.DeleteAccountDialogFragment
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 
 class ProfileFragment : Fragment() {
 
@@ -30,7 +38,32 @@ class ProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        avm = ViewModelProvider(this)[AccountViewModel::class.java]
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(getString(R.string.default_web_client_id))
+            .requestEmail()
+            .build()
+
+        val googleSignInClient = GoogleSignIn.getClient(requireActivity(), gso)
+        val accountRepository = AccountRepository(FirebaseAuth.getInstance(), googleSignInClient)
+        val factory = AccountViewModelFactory(accountRepository)
+        avm = ViewModelProvider(this, factory)[AccountViewModel::class.java]
+
+        //Sets current user data in email och username fields
+        avm.currentUserData.observe(viewLifecycleOwner) { user ->
+            if (avm.isSigningOut.value != true) {
+                user?.let {
+                    binding.etEmail2.setText(it.email ?: "")
+                    binding.etUsername.setText(it.name ?: "")
+
+                    binding.tvHello.text =
+                        "BuddyBloom Master, \n ${it.name ?: "User"}! \uD83D\uDC4B"
+                } ?: run {
+                    binding.etEmail2.setText("")
+                    binding.etUsername.setText("")
+                    binding.tvHello.text = "BuddyBloom Master!"
+                }
+            }
+        }
 
         //Clicklistener for user to get popup about deleting their account
         binding.deleteAccountText.setOnClickListener {
@@ -51,15 +84,17 @@ class ProfileFragment : Fragment() {
             val aboutInfoFragment = AboutInfoFragment()
             aboutInfoFragment.show(requireActivity().supportFragmentManager, "AboutInfoFragmentTag")
         }
+
         binding.ibSignout.setOnClickListener {
-            avm.signOutUser { success ->
-                if(success){
-                    Toast.makeText(requireContext(),"Signing out",Toast.LENGTH_SHORT).show()
+            binding.progressBar.visibility = View.VISIBLE
+            Toast.makeText(requireContext(),"Signing out",Toast.LENGTH_SHORT).show()
                     val newIntent = Intent(requireContext(), AuthenticationActivity::class.java)
                     // NEW_TASK starts a new activity and CLEAR_TASK closes activity, so user can not go back without signing in again.
                     newIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                     startActivity(newIntent)
-                } else{
+            avm.signOutUser { success ->
+                binding.progressBar.visibility = View.GONE
+                if(!success){
                     Toast.makeText(requireContext(),"Failed to signout!",Toast.LENGTH_SHORT).show()
                 }
             }

@@ -1,5 +1,6 @@
 package com.example.buddybloom.ui.game
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
@@ -11,7 +12,10 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.buddybloom.R
 import com.example.buddybloom.databinding.ActivityGameBinding
+import com.example.buddybloom.ui.authentication.AccountViewModel
+import com.example.buddybloom.ui.authentication.AuthenticationActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.auth.FirebaseAuth
 
 class GameActivity : AppCompatActivity() {
     private lateinit var binding: ActivityGameBinding
@@ -30,6 +34,12 @@ class GameActivity : AppCompatActivity() {
         }
         pvm = ViewModelProvider(this)[PlantViewModel::class.java]
         pvm.fetchOrCreateDailyReport()
+
+        if(FirebaseAuth.getInstance().currentUser == null) {
+            navigateToLogin()
+            return
+        }
+        pvm.refreshPlant()
 
         // Add this line to check for plant when activity starts
         checkUserPlant()
@@ -62,6 +72,13 @@ class GameActivity : AppCompatActivity() {
         showFragment(StartPagePlantFragment())
     }
 
+    private fun navigateToLogin() {
+        val intent = Intent(this,AuthenticationActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(intent)
+        finish()
+    }
+
     private fun showFragment(fragment: Fragment) {
         supportFragmentManager.beginTransaction()
             .replace(R.id.fvc_game_activity, fragment)
@@ -70,6 +87,11 @@ class GameActivity : AppCompatActivity() {
 
     private fun checkUserPlant() {
         pvm.localSessionPlant.observe(this) { plant ->
+            //Check Authentication status
+            if(FirebaseAuth.getInstance().currentUser == null) {
+                navigateToLogin()
+                return@observe
+            }
             if (plant == null) {
                 binding.navbarMenu.selectedItemId = R.id.nav_home
                 showFragment(ChoosePlantFragment())

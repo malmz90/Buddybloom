@@ -1,19 +1,45 @@
 package com.example.buddybloom.data.repository
 
+import android.content.Intent
 import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.example.buddybloom.data.model.User
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.tasks.Task
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.firestore.firestore
 import kotlinx.coroutines.tasks.await
 
-class AccountRepository {
+class AccountRepository
+    (private val auth : FirebaseAuth = FirebaseAuth.getInstance(),
+     private val googleSignInClient: GoogleSignInClient) {
 
     private val db = Firebase.firestore
-    private val auth = FirebaseAuth.getInstance()
-    private val userId = auth.currentUser?.uid
+
+    private val _loginStatus = MutableLiveData<FirebaseUser?>()
+    val loginStatus: LiveData<FirebaseUser?> get() = _loginStatus
+
+    //To get userdata to fill fields in profilefragment
+    fun getUserData(callback: (User?) -> Unit) {
+        val userId = auth.currentUser?.uid ?: run {
+            callback(null)
+            return
+        }
+        db.collection("users").document(userId).get()
+            .addOnSuccessListener { document ->
+                val user = document.toObject(User::class.java)
+                callback(user)
+            }
+            .addOnFailureListener { e ->
+                Log.e("AccountRepo", "Failed to fetch user data ${e.message}")
+                callback(null)
+            }
+    }
 
     fun loginUser(email: String, password: String, callback: (Boolean) -> Unit) {
         auth.signInWithEmailAndPassword(email, password).addOnCompleteListener { task ->
@@ -74,7 +100,7 @@ class AccountRepository {
     /**
      * Updates userName in fireBase
      */
-    suspend fun updateUserName(newUserName:String):Result<Unit>{
+    suspend fun updateUserName(newUserName: String): Result<Unit> {
         val user = auth.currentUser ?: return Result.failure(Exception("No User has logged in"))
 
         return try {
@@ -131,28 +157,76 @@ class AccountRepository {
 
     //Function to delete account from app
     fun deleteAccount(onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
-        userId?.let { uid ->
-            db.collection("users").document(uid).delete()
-                .addOnSuccessListener {
-                    Log.d("DB", "User deleted from Firestore")
+        val userId = auth.currentUser?.uid ?: run {
+            onFailure(Exception("User ID is null"))
+            return
+        }
+        db.collection("users").document(userId).delete()
+            .addOnSuccessListener {
+                Log.d("DB", "User deleted from Firestore")
 
-                    auth.currentUser?.delete()?.addOnSuccessListener {
-                        Log.d("Auth", "User deleted from Firebase Auth")
+                auth.currentUser?.delete()?.addOnSuccessListener {
+                    Log.d("Auth", "User deleted from Firebase Auth")
+
+                    googleSignInClient.signOut().addOnCompleteListener { signOutTask ->
+                        if (signOutTask.isSuccessful) {
+                            Log.d("GoogleSignIn", "Signed out from google")
+                        } else {
+
+                            Log.d(
+                                "GoogleSignIn",
+                                "Failed to sign out from Google ${signOutTask.exception?.message}"
+                            )
+                        }
+                        auth.signOut()
                         onSuccess()
-                    }?.addOnFailureListener{ exception ->
-                        Log.e("Auth", "Failed to delete from Firebase Auth ${exception.message}")
-                        onFailure(exception)
                     }
-                }
-                .addOnFailureListener { exception ->
-                    Log.e("DB", "Failed to delete from Firestore ${exception.message}")
+                }?.addOnFailureListener { exception ->
+                    Log.e("Auth", "Failed to delete from Firebase Auth ${exception.message}")
                     onFailure(exception)
                 }
-        } ?:onFailure(Exception("User ID is null"))
+            }
+            .addOnFailureListener { exception ->
+                Log.e("DB", "Failed to delete from Firestore ${exception.message}")
+                onFailure(exception)
+            }
     }
 
     fun signOut(callback: (Boolean) -> Unit){
         auth.signOut()
         callback(true)
+    }
+
+    fun signInGoogleIntent(): Intent {
+        return googleSignInClient.signInIntent
+    }
+
+    fun firebaseAuthWithGoogle(idToken:String, onComplete: (Boolean) -> Unit) {
+        val credential = GoogleAuthProvider.getCredential(idToken, null)
+        auth.signInWithCredential(credential)
+            .addOnCompleteListener{ task->
+                if (task.isSuccessful) {
+                    val firebaseUser = auth.currentUser
+                    _loginStatus.postValue(firebaseUser)
+
+                    if(task.result?.additionalUserInfo?.isNewUser == true) {
+                        val user = User(
+                            id = firebaseUser?.uid ?: "",
+                            email = firebaseUser?.email ?: "",
+                            name = firebaseUser?.displayName ?: ""
+                        )
+                        saveUser(user) { success ->
+                            if(!success) {
+                                Log.e("FirebaseGoogle", "Failed to save new Google user to firebase.")
+                            }
+                        }
+                    }
+                    onComplete(true)
+                } else {
+                    _loginStatus.postValue(null)
+                    onComplete(false)
+                }
+            }
+
     }
 }
