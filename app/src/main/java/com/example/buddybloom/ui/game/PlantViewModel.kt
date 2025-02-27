@@ -89,6 +89,10 @@ class PlantViewModel : ViewModel() {
         syncPlantFromRemote()
     }
 
+    fun refreshPlant() {
+        syncPlantFromRemote()
+    }
+
     /**
      * Fetches the current plant from the remote and checks how many hours have passed since last update.
      * Passes game time for each missing hour and then updates the local game session, live data and on remote.

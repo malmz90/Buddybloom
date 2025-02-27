@@ -73,33 +73,35 @@ class PlantRepository {
      */
     //TODO Add retries?
     suspend fun fetchPlant(onFailure: (Exception) -> Unit): Plant? {
-        return auth.currentUser?.uid?.let {
-            try {
-                db.collection(USERS).document(it).collection(PLANTS).document(PLANT_REF).get()
+        val userId = auth.currentUser?.uid ?: run {
+            onFailure(Exception("No authenticated user found"))
+            return null
+        }
+        return try {
+                db.collection(USERS).document(userId).collection(PLANTS).document(PLANT_REF).get()
                     .await().toObject<Plant>()
             } catch (error: Exception) {
                 onFailure(error)
                 null
             }
-        } ?: run {
-            onFailure(firebaseException)
-            null
-        }
     }
 
     /**
      * Overwrites the current plant on Firestore with a new one.
      */
     suspend fun savePlant(plant: Plant, onFailure: (Exception) -> Unit) {
-        auth.currentUser?.uid?.let {
+        val userId = auth.currentUser?.uid ?: run {
+            onFailure(Exception("No authenticated user found"))
+            return
+        }
+        Log.d("PlantRepo", "Saving plant for user: $userId")
             try {
                 val plantDoc =
-                    db.collection(USERS).document(it).collection(PLANTS).document(PLANT_REF)
+                    db.collection(USERS).document(userId).collection(PLANTS).document(PLANT_REF)
                 plantDoc.set(plant).await()
             } catch (error: Exception) {
                 onFailure(error)
             }
-        } ?: onFailure(Exception(firebaseException))
     }
 
     /**
