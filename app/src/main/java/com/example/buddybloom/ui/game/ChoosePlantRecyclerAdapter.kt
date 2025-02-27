@@ -27,6 +27,8 @@ class ChoosePlantRecyclerAdapter(val plants : MutableList<Plant>, val onPlantCli
             "Elephant" -> R.drawable.flower_elefant4
             "Hibiscus" -> R.drawable.flower_hibiscus4
             "Zebra" -> R.drawable.flower_zebra4
+            "Ficus" -> R.drawable.flower_ficus5
+            "Coleus" -> R.drawable.flower_coleus4
             else -> R.drawable.flower_elefant4
         }
         holder.ivChoosePlant.setImageResource(imageResource)
