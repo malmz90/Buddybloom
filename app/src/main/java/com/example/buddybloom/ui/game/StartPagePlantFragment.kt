@@ -16,7 +16,6 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.example.buddybloom.R
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import com.example.buddybloom.data.GameManager
 import com.example.buddybloom.data.model.Plant
 import com.example.buddybloom.databinding.FragmentStartPagePlantBinding
@@ -28,11 +27,12 @@ class StartPagePlantFragment : Fragment() {
     private lateinit var pvm: PlantViewModel
     private lateinit var gameManager: GameManager
     private lateinit var soundPool: SoundPool
-    private var waterSpraySoundId: Int = 0
-    private var fertilizeSoundId: Int = 0
-    private var wateringSoundId: Int = 0
-    private var blindsSoundStartId: Int = 0
-    private var blindsSoundEndId: Int = 0
+    private var waterSpraySound: Int = 0
+    private var fertilizeSound: Int = 0
+    private var wateringSound: Int = 0
+    private var blindsSoundStart: Int = 0
+    private var blindsSoundEnd: Int = 0
+    private var bugSpraySound: Int = 0
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -69,11 +69,12 @@ class StartPagePlantFragment : Fragment() {
         }
 
         soundPool = SoundPool.Builder().setMaxStreams(1).build()
-        waterSpraySoundId = soundPool.load(requireContext(), R.raw.spray_sound, 1)
-        fertilizeSoundId = soundPool.load(requireContext(), R.raw.fertilize_sound, 1)
-        wateringSoundId = soundPool.load(requireContext(), R.raw.watering_sound, 1)
-        blindsSoundStartId = soundPool.load(requireContext(), R.raw.blinds_sound_start, 1)
-        blindsSoundEndId = soundPool.load(requireContext(), R.raw.blinds_sound_end, 1)
+        waterSpraySound = soundPool.load(requireContext(), R.raw.spray_sound, 1)
+        fertilizeSound = soundPool.load(requireContext(), R.raw.fertilize_sound, 1)
+        wateringSound = soundPool.load(requireContext(), R.raw.watering_sound, 1)
+        blindsSoundStart = soundPool.load(requireContext(), R.raw.blinds_sound_start, 1)
+        blindsSoundEnd = soundPool.load(requireContext(), R.raw.blinds_sound_end, 1)
+        bugSpraySound = soundPool.load(requireContext(), R.raw.bugspray_sound, 1)
 
         showInfectedBugGif()
 
@@ -87,7 +88,7 @@ class StartPagePlantFragment : Fragment() {
                 ).show()
 
                 // Play sound
-                soundPool.play(wateringSoundId, 1f, 1f, 0, 0, 1f)
+                soundPool.play(wateringSound, 1f, 1f, 0, 0, 1f)
 
                         // Show the animation of watering can.
                 val drawable: Drawable? =
@@ -123,7 +124,7 @@ class StartPagePlantFragment : Fragment() {
                 ).show()
 
                 // Play sound
-                soundPool.play(fertilizeSoundId, 1f, 1f, 0, 0, 1f)
+                soundPool.play(fertilizeSound, 1f, 1f, 0, 0, 1f)
 
                 //show the animation of fertilizing
                 val drawable: Drawable? =
@@ -147,7 +148,7 @@ class StartPagePlantFragment : Fragment() {
                 binding.ivBlinds.setImageResource(R.drawable.iconimg_blinds)
                 if (isBlindsVisible) {
                     // Play sound
-                    soundPool.play(blindsSoundStartId, 1f, 1f, 0, 0, 1f)
+                    soundPool.play(blindsSoundStart, 1f, 1f, 0, 0, 1f)
 
                     Handler(Looper.getMainLooper()).postDelayed({
                         binding.ivBlinds.visibility = View.VISIBLE
@@ -158,7 +159,7 @@ class StartPagePlantFragment : Fragment() {
                     }, 1000)
                 } else {
                     // Play sound
-                    soundPool.play(blindsSoundEndId, 1f, 1f, 0, 0, 1f)
+                    soundPool.play(blindsSoundEnd, 1f, 1f, 0, 0, 1f)
                     Handler(Looper.getMainLooper()).postDelayed({
                         binding.ivBlinds.visibility = View.INVISIBLE
                         Toast.makeText(
@@ -185,7 +186,7 @@ class StartPagePlantFragment : Fragment() {
                 ).show()
 
                 // Play sound
-                soundPool.play(waterSpraySoundId, 1f, 1f, 0, 0, 1f)
+                soundPool.play(waterSpraySound, 1f, 1f, 0, 0, 1f)
 
                 // show the animation for waterspray
                 val drawable: Drawable? =
@@ -235,6 +236,10 @@ class StartPagePlantFragment : Fragment() {
                                 binding.ivAnimationWateringCan.visibility = View.VISIBLE
                                 binding.ivAnimationWateringCan.setImageDrawable(drawableNoBugs)
                                 drawableNoBugs.start()
+
+                                // Play sound
+                                soundPool.play(bugSpraySound, 1f, 1f, 0, 0, 1f)
+
                                 // Hide the animation after 3 seconds.
                                 Handler(Looper.getMainLooper()).postDelayed({
                                     binding.ivAnimationWateringCan.visibility = View.INVISIBLE
