@@ -134,6 +134,10 @@ class PlantViewModel : ViewModel() {
         gameManager.waterPlant()
     }
 
+    fun waterSpray(){
+        gameManager.sprayWaterPlant()
+    }
+
     fun fertilizePlant() {
         gameManager.addFertilizer()
     }
@@ -148,49 +152,7 @@ class PlantViewModel : ViewModel() {
      */
     fun isPlantThirsty(): Boolean {
         return _localSessionPlant.value?.let { plant ->
-            plant.waterLevel < 10
+            plant.waterLevel < 20
         } ?: false
     }
-
-    //TODO Move this logic into the game engine
-    /**
-     * Checks difficulty on current Plant and increasing water level by different of difficulty
-     */
-//    fun checkDifficultyWaterSpray() {
-//        _currentPlant.value?.let { plant ->
-//            if (plant.difficulty == "Easy") {
-//                increaseWaterLevel(2)
-//                Log.d("PlantVM", "Water level increased by 2")
-//            } else if (plant.difficulty == "Medium") {
-//                increaseWaterLevel(5)
-//                Log.d("PlantVM", "Water level increased by 5")
-//            } else if (plant.difficulty == "Hard") {
-//                increaseWaterLevel(8)
-//                Log.d("PlantVM", "Water level increased by 8")
-//            } else {
-//                Log.d("PlantVM", "No plant Found")
-//            }
-//        }
-//    }
-
-    //TODO Move this logic into the game engine
-    /**
-     * Checks difficulty on current Plant and decrease FertilizerLevel level by different of difficulty
-     */
-//    fun checkDifficultyFertilizeDecrease() {
-//        _currentPlant.value?.let { plant ->
-//            if (plant.difficulty == "Easy") {
-//                plantRepository.decreaseFertilizer(plant, 1)
-//                Log.d("PlantVM", "Nutrition decreases by amount 1")
-//            } else if (plant.difficulty == "Medium") {
-//                plantRepository.decreaseFertilizer(plant, 2)
-//                Log.d("PlantVM", "Nutrition decreases by amount 2")
-//            } else if (plant.difficulty == "Hard") {
-//                plantRepository.decreaseFertilizer(plant, 5)
-//                Log.d("PlantVM", "Nutrition decreases by amount 5")
-//            } else {
-//                Log.d("PlantVM", "No plant Found")
-//            }
-//        }
-//    }
 }
