@@ -61,7 +61,7 @@ class GameManager
         private const val FERTILIZER_DECREASE_EASY = 3
         private const val WATER_DECREASE_MEDIUM = 10
         private const val FERTILIZER_DECREASE_MEDIUM = 5
-        private const val WATER_DECREASE_HARD = 50
+        private const val WATER_DECREASE_HARD = 15
         private const val FERTILIZER_DECREASE_HARD = 8
 
         // *** -------------------------------------------------------- ***
