@@ -153,6 +153,12 @@ class PlantViewModel : ViewModel() {
         gameManager.plantGetFreeFromBugs()
     }
 
+    /*fun toggleBlinds() {
+        gameManager.toggleBlinds()
+    }*/
+
+
+
     /**
      * Takes currentPlant and if waterLevel is under 10 a toast will appear for user
      */

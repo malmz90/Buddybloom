@@ -183,8 +183,11 @@ class StartPagePlantFragment : Fragment() {
             switchBlinds.setOnClickListener {
                 // Toggling between visible/invisible on the blinds.
                 isBlindsVisible = !isBlindsVisible
+
+                Log.d("Blinds", "Button toggled ${testPlant!!.protectedFromSun}")
                 binding.ivBlinds.setImageResource(R.drawable.iconimg_blinds)
                 if (isBlindsVisible) {
+
                     // Play sound
                     soundPool.play(blindsSoundStart, 1f, 1f, 0, 0, 1f)
 

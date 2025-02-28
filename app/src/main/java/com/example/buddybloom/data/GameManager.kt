@@ -204,13 +204,14 @@ class GameManager
      * Water decrease in the game loop.
      */
     private fun decreaseWaterLevel() {
+        val currentHour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
+
         localPlant?.let {
             val baseLevel: Int = when (it.difficulty.lowercase()) {
                 "medium" -> WATER_DECREASE_MEDIUM
                 "hard" -> WATER_DECREASE_HARD
                 else -> { WATER_DECREASE_EASY }
             }
-            val currentHour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
             val sunnyLevel = when (localDailyWeather?.hourlyWeather?.get(currentHour)?.second) {
                 WeatherReport.Condition.SUNNY -> baseLevel * 1.5
                 WeatherReport.Condition.CLOUDY -> baseLevel
@@ -220,11 +221,19 @@ class GameManager
                 WeatherReport.Condition.THUNDER -> baseLevel
                 null -> baseLevel
             }
-            Log.d("GameManager", "Base level: $baseLevel, Sunny level: $sunnyLevel")
+            if(localPlant!!.protectedFromSun) {
+                it.waterLevel = maxOf(0, it.waterLevel - baseLevel)
 
-            it.waterLevel = maxOf(0, it.waterLevel - sunnyLevel.toInt())
+            } else {
+                it.waterLevel = maxOf(0, it.waterLevel - sunnyLevel.toInt())
+            }
+            Log.d("Blinds", "Sun protection ${localPlant!!.protectedFromSun}")
         }
     }
+
+    /*fun toggleBlinds() {
+        localPlant?.protectedFromSun = !localPlant!!.protectedFromSun
+    }*/
 
     /**
      * When the user presses the fertilizer button. Amount depends on difficulty
