@@ -87,6 +87,7 @@ class GameManager
             decreaseWaterLevel()
             decreaseFertilizerLevel()
         }
+        localPlant?.protectedFromSun = false
 
         if (localPlant?.waterLevel == 0) {
             onPlantEvent(null) // Notify ViewModel to delete plant
@@ -226,13 +227,17 @@ class GameManager
             } else {
                 it.waterLevel = maxOf(0, it.waterLevel - sunnyLevel.toInt())
             }
-            Log.d("Blinds", "Sun protection ${localPlant!!.protectedFromSun}")
+            Log.d("!!!", "Sun protection ${localPlant!!.protectedFromSun}")
+            Log.d("!!!", "baseLevel: ${baseLevel} sunnyLevel: ${sunnyLevel}")
         }
     }
 
-    /*fun toggleBlinds() {
-        localPlant?.protectedFromSun = !localPlant!!.protectedFromSun
-    }*/
+    fun toggleBlinds() {
+        localPlant?.let {
+            it.protectedFromSun = !it.protectedFromSun
+            Log.d("!!!", "blinds ${localPlant!!.protectedFromSun}")
+        }
+    }
 
     /**
      * When the user presses the fertilizer button. Amount depends on difficulty

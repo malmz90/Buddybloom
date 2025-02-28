@@ -27,10 +27,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
 
-
-
 class StartPagePlantFragment : Fragment() {
-
 
     private lateinit var binding: FragmentStartPagePlantBinding
     private lateinit var pvm: PlantViewModel
@@ -43,6 +40,7 @@ class StartPagePlantFragment : Fragment() {
     private var blindsSoundEnd: Int = 0
     private var bugSpraySound: Int = 0
     private var errorSound: Int = 0
+    private var testPlant : Plant? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -63,9 +61,7 @@ class StartPagePlantFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        var testPlant : Plant? = null
-        // Boolean for blinds toggle button.
-        var isBlindsVisible = false
+        Log.d("!!!", "PlantFragment onViewCreated")
 
         //Observes if user is logging in so null pic won't show, if slow network progressbar shows instead
         avm.isLoggingIn.observe(viewLifecycleOwner) { isLoggingIn ->
@@ -73,9 +69,15 @@ class StartPagePlantFragment : Fragment() {
             binding.imgFlower.visibility = if (isLoggingIn) View.GONE else View.VISIBLE
         }
 
+        binding.ivBlinds.setImageResource(R.drawable.iconimg_blinds)
+
         pvm.localSessionPlant.observe(viewLifecycleOwner) { plant ->
             //Checks if user is logging in
             testPlant = plant
+
+            binding.switchBlinds.isChecked = testPlant?.protectedFromSun ?: false
+            updateBlindsVisibility(binding.ivBlinds)
+
             if (plant == null) return@observe
             if (avm.isLoggingIn.value != true) {
                 binding.imgFlower.setImageResource(getPlantImageId(plant))
@@ -105,10 +107,11 @@ class StartPagePlantFragment : Fragment() {
                 }
             }
         }
-                if (pvm.isPlantThirsty()) {
-                    Toast.makeText(requireContext(), "Your plant is Thirsty", Toast.LENGTH_SHORT)
-                        .show()
-                }
+
+        if (pvm.isPlantThirsty()) {
+            Toast.makeText(requireContext(), "Your plant is Thirsty", Toast.LENGTH_SHORT)
+                .show()
+        }
 
         soundPool = SoundPool.Builder().setMaxStreams(3).build()
         waterSpraySound = soundPool.load(requireContext(), R.raw.spray_sound, 1)
@@ -121,6 +124,11 @@ class StartPagePlantFragment : Fragment() {
         showInfectedBugGif()// if it`s infected gif shows even if restart app
 
         binding.apply {
+
+
+
+
+//------------------------------------WATER---------------------------------------------------------
             btnWater.setOnClickListener {
                 showInfectedBugGif()
                 Toast.makeText(
@@ -158,6 +166,10 @@ class StartPagePlantFragment : Fragment() {
                 }
             }
 
+
+
+
+//------------------------------------FERTILIZE-------------------------------------------------------
             btnFertilize.setOnClickListener {
                 Toast.makeText(
                     requireContext(),
@@ -184,14 +196,14 @@ class StartPagePlantFragment : Fragment() {
                 }
             }
 
+
+
+
+//------------------------------------BLINDS-------------------------------------------------------
             switchBlinds.setOnClickListener {
-                // Toggling between visible/invisible on the blinds.
-                isBlindsVisible = !isBlindsVisible
+                pvm.toggleBlinds()
 
-                Log.d("Blinds", "Button toggled ${testPlant!!.protectedFromSun}")
-                binding.ivBlinds.setImageResource(R.drawable.iconimg_blinds)
-                if (isBlindsVisible) {
-
+                if (testPlant!!.protectedFromSun) {
                     // Play sound
                     soundPool.play(blindsSoundStart, 1f, 1f, 0, 0, 1f)
 
@@ -216,6 +228,10 @@ class StartPagePlantFragment : Fragment() {
                 }
             }
 
+
+
+
+//------------------------------------WEATHER-------------------------------------------------------
             binding.btnWeather.setOnClickListener {
                 val weatherDialog = WeatherDialogFragment()
                 weatherDialog.show(parentFragmentManager, "WeatherDialogFragment")
@@ -250,6 +266,10 @@ class StartPagePlantFragment : Fragment() {
                 }
             }
 
+
+
+
+//------------------------------------BUGSPRAY-------------------------------------------------------
             imgBtnBugspray.setOnClickListener {
                 //Checks if plant is infected or not
                 pvm.localSessionPlant.value?.let { currentPlant ->
@@ -346,7 +366,15 @@ class StartPagePlantFragment : Fragment() {
             }
         }
     }
-
+//*******************
+    private fun updateBlindsVisibility(myImageView: View) {
+        if (testPlant?.protectedFromSun == true) {
+            myImageView.visibility = View.VISIBLE
+        } else {
+            myImageView.visibility = View.INVISIBLE
+        }
+    }
+//*******************
     /**
      * Returns the correct image based on how old the plant is.
      */

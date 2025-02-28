@@ -115,7 +115,8 @@ class PlantRepository {
                     "fertilizerLevel" to plant.fertilizerLevel,
                     "sunLevel" to plant.sunLevel,
                     "infected" to plant.infected,
-                    "lastUpdated" to Timestamp.now()
+                    "lastUpdated" to Timestamp.now(),
+                    "protectedFromSun" to plant.protectedFromSun
                 )
                 val plantDoc =
                     db.collection(USERS).document(it).collection(PLANTS).document(PLANT_REF)
