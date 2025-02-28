@@ -21,7 +21,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="15dp"
-            android:text="Weekly Weather Report"
+            android:text="Daily Weather Report"
             android:textAlignment="center"
             android:textColor="@color/eggwhite"
             android:textSize="20sp"
@@ -43,14 +43,15 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_weather_dialog"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
             android:layout_marginTop="10dp"
             android:background="@color/lightgreen"
             android:padding="10dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/history_gold_line"
+            app:layout_constraintBottom_toTopOf="@id/btn_history_close"
             tools:layout_editor_absoluteY="20dp"
             tools:listitem="@layout/item_weather" />
 

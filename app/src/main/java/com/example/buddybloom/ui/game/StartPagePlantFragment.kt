@@ -1,5 +1,6 @@
 package com.example.buddybloom.ui.game
 
+import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.drawable.AnimatedImageDrawable
 import android.graphics.drawable.Drawable
@@ -22,7 +23,6 @@ import com.example.buddybloom.data.repository.AccountRepository
 import com.example.buddybloom.databinding.FragmentStartPagePlantBinding
 import com.example.buddybloom.ui.authentication.AccountViewModel
 import com.example.buddybloom.ui.authentication.AccountViewModelFactory
-import com.example.buddybloom.ui.weather.WeatherDialogFragment
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
@@ -75,26 +75,42 @@ class StartPagePlantFragment : Fragment() {
 
         pvm.localSessionPlant.observe(viewLifecycleOwner) { plant ->
             //Checks if user is logging in
+            testPlant = plant
+            if (plant == null) return@observe
             if (avm.isLoggingIn.value != true) {
-                testPlant = plant
                 binding.imgFlower.setImageResource(getPlantImageId(plant))
                 binding.tvDaystreak.text = String.format(getDaysOld(plant).toString())
-                binding.btnPlantNeeds.setOnClickListener {
-                    plant?.let {
-                        val plantNeedsDialog = PlantNeedsDialogFragment.newInstance(plant)
-                        plantNeedsDialog.show(parentFragmentManager, "PlantNeedsDialogFragment")
-                    }
-                }
                 //Progress indicator
                 "${plant?.waterLevel ?: 0}%".also { binding.tvWaterLevel.text = it }
                 binding.progressWater.progress = plant?.waterLevel ?: 0
+
+                if (plant.infected) {
+                    binding.imgBtnBugspray.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#852221"))
+                    binding.imgBtnBugspray.animate()
+                        .alpha(0.5f)
+                        .setDuration(500)
+                        .withEndAction {
+                            binding.imgBtnBugspray.animate().alpha(1f).setDuration(500)
+                                .start()
+                        }
+                        .start()
+                } else {
+                    binding.imgBtnBugspray.clearAnimation()
+                    binding.imgBtnBugspray.background = ContextCompat.getDrawable(requireContext(), R.drawable.border_circle)
+                    binding.imgBtnBugspray.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.turquise))
+                }
+                binding.btnPlantNeeds.setOnClickListener {
+                    val plantNeedsDialog = PlantNeedsDialogFragment.newInstance(plant)
+                    plantNeedsDialog.show(parentFragmentManager, "PlantNeedsDialogFragment")
+                }
             }
         }
-        if (pvm.isPlantThirsty()) {
-            Toast.makeText(requireContext(), "Your plant is Thirsty", Toast.LENGTH_SHORT).show()
-        }
+                if (pvm.isPlantThirsty()) {
+                    Toast.makeText(requireContext(), "Your plant is Thirsty", Toast.LENGTH_SHORT)
+                        .show()
+                }
 
-        soundPool = SoundPool.Builder().setMaxStreams(1).build()
+        soundPool = SoundPool.Builder().setMaxStreams(3).build()
         waterSpraySound = soundPool.load(requireContext(), R.raw.spray_sound, 1)
         fertilizeSound = soundPool.load(requireContext(), R.raw.fertilize_sound, 1)
         wateringSound = soundPool.load(requireContext(), R.raw.watering_sound, 1)
@@ -171,8 +187,11 @@ class StartPagePlantFragment : Fragment() {
             switchBlinds.setOnClickListener {
                 // Toggling between visible/invisible on the blinds.
                 isBlindsVisible = !isBlindsVisible
+
+                Log.d("Blinds", "Button toggled ${testPlant!!.protectedFromSun}")
                 binding.ivBlinds.setImageResource(R.drawable.iconimg_blinds)
                 if (isBlindsVisible) {
+
                     // Play sound
                     soundPool.play(blindsSoundStart, 1f, 1f, 0, 0, 1f)
 
@@ -241,6 +260,7 @@ class StartPagePlantFragment : Fragment() {
                         val mediaPlayer = MediaPlayer.create(requireContext(), R.raw.bugspray_sound)
                         mediaPlayer.setOnCompletionListener { it.release() }
                         mediaPlayer.start()
+                        binding.imgBtnBugspray.setBackgroundColor(Color.TRANSPARENT)
 
                         Log.d("BugSpray", "Plant is infected, spraying bugs!")
                         Toast.makeText(requireContext(), "You've successfully saved your plant from bugs!", Toast.LENGTH_SHORT).show()
@@ -270,7 +290,6 @@ class StartPagePlantFragment : Fragment() {
                 }
             }
         }
-
     }
 
     override fun onDestroy() {
@@ -340,6 +359,8 @@ class StartPagePlantFragment : Fragment() {
                 "elephant" -> R.drawable.flower_elefant5
                 "hibiscus" -> R.drawable.flower_hibiscus5
                 "zebra" -> R.drawable.flower_zebra7
+                "ficus" -> R.drawable.flower_ficus6
+                "coleus" -> R.drawable.flower_coleus7
                 else -> R.drawable.flower_elefant5
             }
         }
@@ -379,6 +400,21 @@ class StartPagePlantFragment : Fragment() {
                 else -> R.drawable.flower_zebra1
             }
 
+            "ficus" -> when (stage) {
+                1 -> R.drawable.flower_ficus1
+                2 -> R.drawable.flower_ficus2
+                3 -> R.drawable.flower_ficus4
+                4 -> R.drawable.flower_ficus5
+                else -> R.drawable.flower_ficus1
+            }
+
+            "coleus" -> when (stage) {
+                1 -> R.drawable.flower_coleus1
+                2 -> R.drawable.flower_coleus2
+                3 -> R.drawable.flower_coleus3
+                4 -> R.drawable.flower_coleus4
+                else -> R.drawable.flower_coleus7
+            }
             else -> R.drawable.flower_elefant1
         }
     }

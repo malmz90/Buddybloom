@@ -1,8 +1,8 @@
 package com.example.buddybloom.data
 
 import android.util.Log
+import com.example.buddybloom.data.GameManager.LocalGameState.localDailyWeather
 import com.example.buddybloom.data.GameManager.LocalGameState.localPlant
-import com.example.buddybloom.data.GameManager.LocalGameState.localWeatherReport
 import com.example.buddybloom.data.model.Plant
 import com.example.buddybloom.data.model.WeatherReport
 import kotlinx.coroutines.CoroutineScope
@@ -10,7 +10,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import kotlin.random.Random
+import java.util.Calendar
 
 /**
  * Handles game logic and modifiers and keeps a local game session running.
@@ -34,7 +34,7 @@ class GameManager
 
     private object LocalGameState {
         var localPlant: Plant? = null
-        var localWeatherReport: WeatherReport.Weekly? = null
+        var localDailyWeather: WeatherReport.Daily? = null
     }
 
     companion object {
@@ -133,6 +133,10 @@ class GameManager
         onPlantEvent(localPlant)
     }
 
+    fun updateLocalDailyWeather(newWeather: WeatherReport.Daily) {
+        localDailyWeather = newWeather
+    }
+
     /**
      * get user plant and if it not already is infected by bugs it randomly pix a number
      * and if it lower than 10 it will be infected and a bug gif will show on screen,
@@ -199,17 +203,36 @@ class GameManager
      * Water decrease in the game loop.
      */
     private fun decreaseWaterLevel() {
+        val currentHour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
+
         localPlant?.let {
-            val newLevel: Int = when (it.difficulty.lowercase()) {
-                "medium" -> maxOf(0, it.waterLevel - WATER_DECREASE_MEDIUM)
-                "hard" -> maxOf(0, it.waterLevel - WATER_DECREASE_HARD)
-                else -> {
-                    maxOf(0, it.waterLevel - WATER_DECREASE_EASY)
-                }
+            val baseLevel: Int = when (it.difficulty.lowercase()) {
+                "medium" -> WATER_DECREASE_MEDIUM
+                "hard" -> WATER_DECREASE_HARD
+                else -> { WATER_DECREASE_EASY }
             }
-            it.waterLevel = newLevel
+            val sunnyLevel = when (localDailyWeather?.hourlyWeather?.get(currentHour)?.second) {
+                WeatherReport.Condition.SUNNY -> baseLevel * 1.5
+                WeatherReport.Condition.CLOUDY -> baseLevel
+                WeatherReport.Condition.NIGHT -> baseLevel
+                WeatherReport.Condition.PARTLY_CLOUDY -> baseLevel * 1.2
+                WeatherReport.Condition.RAIN -> baseLevel
+                WeatherReport.Condition.THUNDER -> baseLevel
+                null -> baseLevel
+            }
+            if(localPlant!!.protectedFromSun) {
+                it.waterLevel = maxOf(0, it.waterLevel - baseLevel)
+
+            } else {
+                it.waterLevel = maxOf(0, it.waterLevel - sunnyLevel.toInt())
+            }
+            Log.d("Blinds", "Sun protection ${localPlant!!.protectedFromSun}")
         }
     }
+
+    /*fun toggleBlinds() {
+        localPlant?.protectedFromSun = !localPlant!!.protectedFromSun
+    }*/
 
     /**
      * When the user presses the fertilizer button. Amount depends on difficulty

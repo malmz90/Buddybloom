@@ -2,34 +2,36 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cv_text"
-        android:layout_width="0dp"
+        android:layout_width="30dp"
         android:layout_height="wrap_content"
-        app:cardCornerRadius="5dp"
         android:layout_marginHorizontal="0.5dp"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:cardCornerRadius="5dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/iv_weather"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.5"
         tools:backgroundTint="@color/day_blue">
 
         <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/tv_day"
-            android:paddingTop="4dp"
-            android:layout_width="wrap_content"
+            android:id="@+id/tv_hour"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingHorizontal="5dp"
             android:layout_gravity="center"
             android:fontFamily="@font/manjari"
             android:gravity="center"
-            android:text="MON"
-            android:textColor="@color/white"
+            android:paddingTop="4dp"
+            android:text="00"
+            android:textColor="@color/black"
             android:textSize="14sp"
-            android:textStyle="bold"
-            />
+            android:textStyle="bold" />
     </androidx.cardview.widget.CardView>
 
     <ImageView
@@ -37,24 +39,12 @@
         android:layout_width="35dp"
         android:layout_height="35dp"
         android:paddingHorizontal="2dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cv_text"
+        app:layout_constraintStart_toEndOf="@+id/cv_text"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.5"
         app:srcCompat="@drawable/icon_sunny" />
-
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/tv_temp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/manjari"
-        android:gravity="center"
-        android:text=" 24°C"
-        android:textSize="14sp"
-        android:textColor="@color/darkbrown"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/iv_weather" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
