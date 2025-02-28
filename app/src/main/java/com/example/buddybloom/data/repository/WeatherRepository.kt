@@ -1,12 +1,14 @@
 package com.example.buddybloom.data.repository
 
-import android.util.Log
 import com.example.buddybloom.data.model.User
 import com.example.buddybloom.data.model.WeatherReport
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.firestore
 import com.google.firebase.firestore.toObject
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 import java.util.Calendar
 
 //TODO Remake this so it triggers somewhere in the game loop, or create a new timer for weather.
@@ -14,16 +16,18 @@ import java.util.Calendar
 class WeatherRepository {
     private val db = Firebase.firestore
     private val auth = FirebaseAuth.getInstance()
-    private val userId = auth.currentUser?.uid
+    private val currentUserId get() = auth.currentUser?.uid
 
 
-    fun generateDailyReport(): WeatherReport.Daily {
+    private fun generateDailyReport(): WeatherReport.Daily {
         val morningHours = (0..6).toList()
         val availableHours = (7..21).toList()
         val nightHours = (22 until 24).toList()
 
         val dayConditions = availableHours.map { hour ->
-            val randomCondition = WeatherReport.Condition.entries.toTypedArray().filter { it != WeatherReport.Condition.NIGHT }.random() //Condition.values().random()
+            val randomCondition = WeatherReport.Condition.entries.toTypedArray()
+                .filter { it != WeatherReport.Condition.NIGHT }
+                .random() //Condition.values().random()
             WeatherReport.MyPair(hour, randomCondition)
         }
         val morningConditions = morningHours.map { hour ->
@@ -40,7 +44,6 @@ class WeatherRepository {
             .plus(nightConditions)
             .sortedBy { it.first }
 
-
         val dailyReport = WeatherReport.Daily(
             hourlyWeather = weatherConditions,
 //            timestamp = Calendar.getInstance()
@@ -49,39 +52,33 @@ class WeatherRepository {
         return dailyReport
     }
 
-    fun fetchOrCreateDailyReport(onReportFetched : (WeatherReport.Daily) -> Unit) {
-        val now = Calendar.getInstance()
-        val convertTimestamp = Calendar.getInstance()
-
-        userId?.let { uid ->
-            db.collection("users").document(uid).get().addOnSuccessListener { snapshot ->
-                val storedDailyReport = snapshot.toObject<User>()?.dailyWeatherReport
+    suspend fun fetchOrCreateDailyReport(): Result<WeatherReport.Daily> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val userId = currentUserId
+                    ?: return@withContext Result.failure(Exception("Firebase authentication error: User id is null."))
+                val storedDailyReport = db.collection("users").document(userId).get().await()
+                    .toObject<User>()?.dailyWeatherReport
                 if (storedDailyReport != null) {
+                    val now = Calendar.getInstance()
+                    val convertTimestamp = Calendar.getInstance()
                     convertTimestamp.timeInMillis = storedDailyReport.timestamp
-                    if(convertTimestamp.get(Calendar.DAY_OF_YEAR) != now.get(Calendar.DAY_OF_YEAR)) {
+                    if (convertTimestamp.get(Calendar.DAY_OF_YEAR) != now.get(Calendar.DAY_OF_YEAR)) {
                         val newDailyReport = generateDailyReport()
-                        db.collection("users").document(uid).update("dailyWeatherReport", newDailyReport)
-                            .addOnSuccessListener {
-                                onReportFetched(newDailyReport)
-                            }
-                            .addOnFailureListener {
-                                Log.e("Weather repo","Error updating daily weather report", it)
-                            }
+                        db.collection("users").document(userId)
+                            .update("dailyWeatherReport", newDailyReport).await()
+                        Result.success(newDailyReport)
                     } else {
-                        onReportFetched(storedDailyReport)
+                        Result.success(storedDailyReport)
                     }
                 } else {
                     val newDailyReport = generateDailyReport()
-                    db.collection("users").document(uid).update("dailyWeatherReport", newDailyReport)
-                        .addOnSuccessListener {
-                            onReportFetched(newDailyReport)
-                        }
-                        .addOnFailureListener {
-                            Log.e("Weather repo","Error updating daily weather report", it)
-                        }
+                    db.collection("users").document(userId)
+                        .update("dailyWeatherReport", newDailyReport).await()
+                    Result.success(newDailyReport)
                 }
-            }.addOnFailureListener {
-                Log.e("Weather repo","Error fetching daily weather report", it)
+            } catch (error: Exception) {
+                Result.failure(error)
             }
         }
     }
@@ -105,7 +102,7 @@ class WeatherRepository {
     }*/
 
     fun updateWeatherReport(weeklyWeatherReport: WeatherReport.Daily) {
-        userId?.let {
+        currentUserId?.let {
             db.collection("users").document(it).update("weeklyWeatherReport", weeklyWeatherReport)
         }
     }

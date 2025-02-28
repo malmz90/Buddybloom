@@ -66,8 +66,7 @@ class PlantViewModel : ViewModel() {
     /** Delete plant on Firestore */
     private fun deletePlantFromRemote() {
         viewModelScope.launch(Dispatchers.IO) {
-            val result = plantRepository.deletePlant()
-            result.onFailure { error ->
+            plantRepository.deletePlant().onFailure { error ->
                 _errorMessage.postValue(error.message)
             }
         }
@@ -177,17 +176,23 @@ class PlantViewModel : ViewModel() {
     val currentWeatherReport: LiveData<WeatherReport.Daily> get() = _currentWeatherReport
 
     fun fetchOrCreateDailyReport() {
-        weatherRepository.fetchOrCreateDailyReport { report ->
-            _currentWeatherReport.postValue(report)
-            gameManager.updateLocalDailyWeather(report)
+        viewModelScope.launch(Dispatchers.IO) {
+            weatherRepository.fetchOrCreateDailyReport()
+                .onSuccess { report ->
+                    _currentWeatherReport.postValue(report)
+                    gameManager.updateLocalDailyWeather(report)
+                }.onFailure { error ->
+                    _errorMessage.postValue(error.message)
+                }
         }
     }
+}
 
 
-    //TODO Move this logic into the game engine
-    /**
-     * Checks difficulty on current Plant and increasing water level by different of difficulty
-     */
+//TODO Move this logic into the game engine
+/**
+ * Checks difficulty on current Plant and increasing water level by different of difficulty
+ */
 //    fun checkDifficultyWaterSpray() {
 //        _currentPlant.value?.let { plant ->
 //            if (plant.difficulty == "Easy") {
@@ -205,10 +210,10 @@ class PlantViewModel : ViewModel() {
 //        }
 //    }
 
-    //TODO Move this logic into the game engine
-    /**
-     * Checks difficulty on current Plant and decrease FertilizerLevel level by different of difficulty
-     */
+//TODO Move this logic into the game engine
+/**
+ * Checks difficulty on current Plant and decrease FertilizerLevel level by different of difficulty
+ */
 //    fun checkDifficultyFertilizeDecrease() {
 //        _currentPlant.value?.let { plant ->
 //            if (plant.difficulty == "Easy") {
@@ -225,4 +230,3 @@ class PlantViewModel : ViewModel() {
 //            }
 //        }
 //    }
-}
