@@ -4,5 +4,5 @@ data class User(
     var id: String = "",
     var email: String = "",
     var name: String = "",
-    val weeklyWeatherReport: WeatherReport.Weekly? = null
+    val dailyWeatherReport: WeatherReport.Daily? = null
 )

@@ -33,6 +33,7 @@ class GameActivity : AppCompatActivity() {
             insets
         }
         pvm = ViewModelProvider(this)[PlantViewModel::class.java]
+        pvm.fetchOrCreateDailyReport()
 
         if(FirebaseAuth.getInstance().currentUser == null) {
             navigateToLogin()
