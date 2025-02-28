@@ -138,7 +138,7 @@ class GameManager
      * and if it lower than 10 it will be infected and a bug gif will show on screen,
      * user needs to press bug spray button to get plant healthy again.
      */
-    fun startRandomInfection() {
+    private fun startRandomInfection() {
         localPlant?.let { plant ->
             if (plant.infected) {
                 Log.d("GameManager", "Plant is already infected, skipping random check")
@@ -156,17 +156,17 @@ class GameManager
     }
 
     /**
-     * plant gets healhty after been infected by bugs
+     * plant gets healthy after been infected by bugs
      */
     fun plantGetFreeFromBugs() {
         localPlant?.let { plant ->
             if (plant.infected) {
                 plant.infected = false
                 onPlantEvent(localPlant) // Update
-                Log.d("GameManager", "Plant is now healthy!")
             }
         }
     }
+
     /**
      * When the user presses the water button.
      */
@@ -175,7 +175,6 @@ class GameManager
             it.waterLevel = (minOf(100, it.waterLevel + WATER_INCREASE))
             startRandomInfection()
             onPlantEvent(localPlant)
-
         }
     }
 

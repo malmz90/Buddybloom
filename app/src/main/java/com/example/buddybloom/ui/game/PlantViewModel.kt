@@ -150,13 +150,12 @@ class PlantViewModel : ViewModel() {
         gameManager.plantGetFreeFromBugs()
 
     }
-
     /**
      * Takes currentPlant and if waterLevel is under 10 a toast will appear for user
      */
     fun isPlantThirsty(): Boolean {
         return _localSessionPlant.value?.let { plant ->
-            plant.waterLevel < 20
+            plant.waterLevel < 30
         } ?: false
     }
 }

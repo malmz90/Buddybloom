@@ -3,6 +3,7 @@ package com.example.buddybloom.ui.game
 import android.graphics.Color
 import android.graphics.drawable.AnimatedImageDrawable
 import android.graphics.drawable.Drawable
+import android.media.MediaPlayer
 import android.media.SoundPool
 import android.os.Bundle
 import android.os.Handler
@@ -16,7 +17,6 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.example.buddybloom.R
 import androidx.lifecycle.ViewModelProvider
-import com.example.buddybloom.data.GameManager
 import com.example.buddybloom.data.model.Plant
 import com.example.buddybloom.data.repository.AccountRepository
 import com.example.buddybloom.databinding.FragmentStartPagePlantBinding
@@ -27,12 +27,14 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
 
+
+
 class StartPagePlantFragment : Fragment() {
+
 
     private lateinit var binding: FragmentStartPagePlantBinding
     private lateinit var pvm: PlantViewModel
     private lateinit var avm : AccountViewModel
-    private lateinit var gameManager: GameManager
     private lateinit var soundPool: SoundPool
     private var waterSpraySound: Int = 0
     private var fertilizeSound: Int = 0
@@ -40,6 +42,7 @@ class StartPagePlantFragment : Fragment() {
     private var blindsSoundStart: Int = 0
     private var blindsSoundEnd: Int = 0
     private var bugSpraySound: Int = 0
+    private var errorSound: Int = 0
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -99,7 +102,7 @@ class StartPagePlantFragment : Fragment() {
         blindsSoundEnd = soundPool.load(requireContext(), R.raw.blinds_sound_end, 1)
         bugSpraySound = soundPool.load(requireContext(), R.raw.bugspray_sound, 1)
 
-        showInfectedBugGif()
+        showInfectedBugGif()// if it`s infected gif shows even if restart app
 
         binding.apply {
             btnWater.setOnClickListener {
@@ -199,17 +202,17 @@ class StartPagePlantFragment : Fragment() {
                 weatherDialog.show(parentFragmentManager, "WeatherDialogFragment")
             }
 
-            //TODO Connect this to the view model
+
             imgBtnWaterspray.setOnClickListener {
-                pvm.waterSpray()
+                // Play sound
+                soundPool.play(waterSpraySound, 1f, 1f, 0, 0, 1f)
+
+
                 Toast.makeText(
                     requireContext(),
                     "You've successfully sprayed water on your plant!",
                     Toast.LENGTH_SHORT
                 ).show()
-
-                // Play sound
-                soundPool.play(waterSpraySound, 1f, 1f, 0, 0, 1f)
 
                 // show the animation for waterspray
                 val drawable: Drawable? =
@@ -223,54 +226,51 @@ class StartPagePlantFragment : Fragment() {
                     Handler(Looper.getMainLooper()).postDelayed({
                         binding.ivAnimationWateringCan.visibility = View.INVISIBLE
                     }, 3000)
+
+                    pvm.waterSpray()
                 }
             }
 
             imgBtnBugspray.setOnClickListener {
-                // show spray gif
-                val drawable: Drawable? =
-                    ContextCompat.getDrawable(requireContext(), R.drawable.gif_bugspray)
-                if (drawable is AnimatedImageDrawable) {
-                    binding.ivAnimationWateringCan.visibility = View.VISIBLE
-                    binding.ivAnimationWateringCan.setImageDrawable(drawable)
-                    drawable.start()
+                //Checks if plant is infected or not
+                pvm.localSessionPlant.value?.let { currentPlant ->
+                    if (currentPlant.infected) {
+                        // If plant is infected show buggspray-gif
+                        showbugspray()
+                        // Play sound
+                        val mediaPlayer = MediaPlayer.create(requireContext(), R.raw.bugspray_sound)
+                        mediaPlayer.setOnCompletionListener { it.release() }
+                        mediaPlayer.start()
 
-                    // Hide the animation after 3 seconds.
-                    Handler(Looper.getMainLooper()).postDelayed({
-                        binding.ivAnimationWateringCan.visibility = View.INVISIBLE
-                    }, 3000)}
+                        Log.d("BugSpray", "Plant is infected, spraying bugs!")
+                        Toast.makeText(requireContext(), "You've successfully saved your plant from bugs!", Toast.LENGTH_SHORT).show()
 
-                        if (testPlant!!.infected) {
-                            Log.d("BugSpray", "Plant is infected, spraying bugs!")
-                            pvm.sprayOnBugs()
-                            // if plant gets infected and button pressed bug gif be gone
-                            binding.ivInfectedBug.visibility = View.GONE
-                            Toast.makeText(
-                                requireContext(),
-                                "You've successfully saved your plant from bugs!",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        } else {
-                            // show gif if no bugs found. infection = false
-                            Log.d("PlantStatus", "No infection found")
-                            val drawableNoBugs: Drawable? =
-                                ContextCompat.getDrawable(requireContext(), R.drawable.gif_bug)
-                            if (drawableNoBugs is AnimatedImageDrawable) {
-                                binding.ivAnimationWateringCan.visibility = View.VISIBLE
-                                binding.ivAnimationWateringCan.setImageDrawable(drawableNoBugs)
-                                drawableNoBugs.start()
+                    } else {
+                        // If plant not is infected show NoBug gif
+                        Toast.makeText(requireContext(), "There are no bugs!", Toast.LENGTH_SHORT).show()
+                        Log.d("PlantStatus", "No infection found")
+                        //Play Sound
+                        val mediaPlayer = MediaPlayer.create(requireContext(), R.raw.error_sound)
+                        mediaPlayer.setOnCompletionListener { it.release() }
+                        mediaPlayer.start()
 
-                                // Play sound
-                                soundPool.play(bugSpraySound, 1f, 1f, 0, 0, 1f)
+                        // If plant not is infected show NoBug gif
+                        val drawableNoBugs: Drawable? = ContextCompat.getDrawable(requireContext(), R.drawable.gif_bug)
+                        if (drawableNoBugs is AnimatedImageDrawable) {
+                            binding.ivAnimationWateringCan.visibility = View.VISIBLE
+                            binding.ivAnimationWateringCan.setImageDrawable(drawableNoBugs)
+                            drawableNoBugs.start()
 
-                                // Hide the animation after 3 seconds.
-                                Handler(Looper.getMainLooper()).postDelayed({
-                                    binding.ivAnimationWateringCan.visibility = View.INVISIBLE
-                                }, 3000)
-                            }
+                            // Hide gif after 3 seconds
+                            Handler(Looper.getMainLooper()).postDelayed({
+                                binding.ivAnimationWateringCan.visibility = View.INVISIBLE
+                            }, 3000)
                         }
                     }
+                }
+            }
         }
+
     }
 
     override fun onDestroy() {
@@ -290,7 +290,28 @@ class StartPagePlantFragment : Fragment() {
             return 0
         }
     }
-    // function shows infected gif
+    /**
+     * shows bugSprayGif and hides infected gif and sets infected to false
+     */
+    private fun showbugspray(){
+        val drawableBugSpray: Drawable? =
+            ContextCompat.getDrawable(requireContext(), R.drawable.gif_bugspray)
+        if (drawableBugSpray is AnimatedImageDrawable) {
+            binding.ivAnimationWateringCan.setImageDrawable(drawableBugSpray)
+            binding.ivAnimationWateringCan.visibility = View.VISIBLE
+            drawableBugSpray.start()}
+
+        Handler(Looper.getMainLooper()).postDelayed({
+            binding.ivAnimationWateringCan.visibility = View.INVISIBLE
+            pvm.sprayOnBugs()
+            binding.ivInfectedBug.visibility = View.INVISIBLE
+        }, 3000)
+
+    }
+
+    /**
+     *  function shows infected gif
+      */
     private fun showInfectedBugGif() {
         pvm.localSessionPlant.value?.let { currentPlant ->
             if (currentPlant.infected) {
