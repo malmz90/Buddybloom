@@ -1,6 +1,5 @@
 package com.example.buddybloom.data.repository
 
-import android.util.Log
 import com.example.buddybloom.data.model.PlantHistory
 import com.example.buddybloom.data.model.Plant
 import com.google.firebase.Firebase
@@ -9,7 +8,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.firestore
 import com.google.firebase.firestore.toObject
-import com.google.firebase.firestore.toObjects
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
@@ -18,7 +16,8 @@ class PlantRepository {
     private val db = Firebase.firestore
     private val auth = FirebaseAuth.getInstance()
     private val currentUserId get() = auth.currentUser?.uid
-    private val userIdException = Exception("Firebase authentication error.")
+    private val userIdException =
+        Exception("Firebase authentication error: FirebaseUser id is null.")
 
     companion object {
         private const val USERS = "users"
@@ -58,7 +57,6 @@ class PlantRepository {
             }
         }
     }
-
 
     suspend fun deletePlant(): Result<Unit> {
         return withContext(Dispatchers.IO) {
@@ -111,8 +109,7 @@ class PlantRepository {
     /**
      * Updates only the specified fields of the current plant on Firestore.
      */
-
-    suspend fun updateRemotePlant(plant: Plant): Result<Unit> {
+    suspend fun updatePlant(plant: Plant): Result<Unit> {
         return withContext(Dispatchers.IO) {
             try {
                 val userId = currentUserId ?: return@withContext Result.failure(userIdException)
@@ -130,7 +127,6 @@ class PlantRepository {
                     plantDoc.update(updates).await()
                 }
                 Result.success(Unit)
-
             } catch (error: Exception) {
                 Result.failure(error)
             }
