@@ -44,8 +44,6 @@ class PlantViewModel : ViewModel() {
             }
             if (plant == null) {
                 deletePlantFromRemote() // Delete plant when it dies
-            } else {
-                updateRemotePlant(plant)
             }
         },
         onAutoSave = { plant ->
@@ -153,9 +151,9 @@ class PlantViewModel : ViewModel() {
         gameManager.plantGetFreeFromBugs()
     }
 
-    /*fun toggleBlinds() {
+    fun toggleBlinds() {
         gameManager.toggleBlinds()
-    }*/
+    }
 
     /**
      * Takes currentPlant and if waterLevel is under 10 a toast will appear for user
