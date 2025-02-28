@@ -120,38 +120,4 @@ class GameActivity : AppCompatActivity() {
 //        }
 //    }
 
-    /**
-Sets up a Schedule for plants works that should run in background and
- updates firestore, functions that runs is placed in Plant-class and PlantWorker-class.
- */
-//    private fun plantWorksSchedule() {
-//        val workManager = WorkManager.getInstance(this)
-//
-//        workManager.getWorkInfosForUniqueWorkLiveData("PlantWateringWork")
-//            .observe(this, Observer { workInfos ->
-//                val isJobRunning = workInfos.any {
-//                    it.state == WorkInfo.State.ENQUEUED || it.state == WorkInfo.State.RUNNING
-//                }
-//
-//                if (!isJobRunning) {
-//                    val workRequest = PeriodicWorkRequestBuilder<PlantWorker>(
-//                        15, TimeUnit.MINUTES
-//                    ).setConstraints(
-//                        Constraints.Builder()
-//                            .setRequiredNetworkType(NetworkType.CONNECTED) //Drives only with InternetService
-//                            .build()
-//                    ).build()
-//
-//                    workManager.enqueueUniquePeriodicWork(
-//                        "PlantWateringWork",
-//                        ExistingPeriodicWorkPolicy.UPDATE,
-//                        workRequest
-//                    )
-//
-//                    Log.d("WorkManager", "WorkManager schemalagd!")
-//                } else {
-//                    Log.d("WorkManager", "Jobb är redan schemalagt och körs.")
-//                }
-//            })
-//    }
 }
