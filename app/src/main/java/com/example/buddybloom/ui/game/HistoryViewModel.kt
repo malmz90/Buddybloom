@@ -24,19 +24,12 @@ class HistoryViewModel : ViewModel() {
      * This function fetches the history data from Firestore and updates the LiveData objects.
      */
     fun loadHistory() {
-
-
         viewModelScope.launch(Dispatchers.IO) {
-            plantRepo.getPlantHistory(
-                onSuccess = { historyList ->
-                    _historyItems.postValue(historyList)
-
-                },
-                onFailure = { error ->
-                    _errorMessage.postValue("Error loading history: ${error.message}")
-
-                }
-            )
+            plantRepo.getPlantHistory().onSuccess { historyList ->
+                _historyItems.postValue(historyList)
+            }.onFailure { error ->
+                _errorMessage.postValue("Error loading history: ${error.message}")
+            }
         }
     }
 }

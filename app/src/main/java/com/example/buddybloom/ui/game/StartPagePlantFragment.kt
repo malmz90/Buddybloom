@@ -63,6 +63,13 @@ class StartPagePlantFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         Log.d("!!!", "PlantFragment onViewCreated")
 
+        pvm.errorMessage.observe(viewLifecycleOwner){message ->
+            message?.let {
+                Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                pvm.resetErrorMessage()
+            }
+        }
+
         //Observes if user is logging in so null pic won't show, if slow network progressbar shows instead
         avm.isLoggingIn.observe(viewLifecycleOwner) { isLoggingIn ->
             binding.loadingProgressBar.visibility = if (isLoggingIn) View.VISIBLE else View.GONE
