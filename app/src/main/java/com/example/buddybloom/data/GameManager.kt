@@ -52,17 +52,17 @@ class GameManager
         const val WATER_INCREASE_MEDIUM = 5
         const val WATER_INCREASE_HARD = 2
 
-        const val FERTILIZER_INCREASE_EASY = 15
-        const val FERTILIZER_INCREASE_MEDIUM = 10
-        const val FERTILIZER_INCREASE_HARD = 7
+        const val FERTILIZER_INCREASE_EASY = 10
+        const val FERTILIZER_INCREASE_MEDIUM = 5
+        const val FERTILIZER_INCREASE_HARD = 3
 
         //TODO remake the plant model for easier handling of these?
         private const val WATER_DECREASE_EASY = 7
-        private const val FERTILIZER_DECREASE_EASY = 7
+        private const val FERTILIZER_DECREASE_EASY = 3
         private const val WATER_DECREASE_MEDIUM = 10
-        private const val FERTILIZER_DECREASE_MEDIUM = 10
+        private const val FERTILIZER_DECREASE_MEDIUM = 5
         private const val WATER_DECREASE_HARD = 15
-        private const val FERTILIZER_DECREASE_HARD = 15
+        private const val FERTILIZER_DECREASE_HARD = 8
 
         // *** -------------------------------------------------------- ***
 
@@ -89,7 +89,7 @@ class GameManager
         }
         localPlant?.protectedFromSun = false
 
-        if (localPlant?.waterLevel == 0) {
+        if (localPlant?.waterLevel == 0 || localPlant?.fertilizerLevel == 0) {
             onPlantEvent(null) // Notify ViewModel to delete plant
         } else {
             onPlantEvent(localPlant)
@@ -146,16 +146,13 @@ class GameManager
     private fun startRandomInfection() {
         localPlant?.let { plant ->
             if (plant.infected) {
-                Log.d("GameManager", "Plant is already infected, skipping random check")
                 return
             }
             val randomValue = (0..50).random()
-            Log.d("GameManager", "Random value: $randomValue")
 
             if (randomValue <= 10) {
                 plant.infected = true
                 onPlantEvent(localPlant) // Update
-                Log.d("GameManager", "Plant is now infected!")
             }
         }
     }

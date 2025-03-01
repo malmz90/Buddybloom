@@ -130,7 +130,7 @@ class ProfileFragment : Fragment() {
                }
                newMail.isNotEmpty() -> { avm.updateUserEmail(newMail) }
                else -> Toast.makeText(requireContext(),
-                   " At least one field needs to be filled!",Toast.LENGTH_SHORT).show()
+                   " At least one field needs to be filled!", Toast.LENGTH_SHORT).show()
            }
         }
     }
