@@ -35,7 +35,14 @@ class GameActivity : AppCompatActivity() {
         pvm = ViewModelProvider(this)[PlantViewModel::class.java]
         pvm.fetchOrCreateDailyReport()
 
-        if(FirebaseAuth.getInstance().currentUser == null) {
+        //Displays a toast when an error occurs
+        pvm.errorMessage.observe(this) {
+            it?.let { message ->
+                Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        if (FirebaseAuth.getInstance().currentUser == null) {
             navigateToLogin()
             return
         }
@@ -49,7 +56,7 @@ class GameActivity : AppCompatActivity() {
         bottomNavigationView.setOnItemSelectedListener { item ->
             //unable to press plant page and profile unless you've chosen a plant first
             val hasPlant = pvm.localSessionPlant.value != null
-            if(!hasPlant && (item.itemId == R.id.nav_profile || item.itemId == R.id.nav_plant)) {
+            if (!hasPlant && (item.itemId == R.id.nav_profile || item.itemId == R.id.nav_plant)) {
                 Toast.makeText(this, "Choose a plant first!", Toast.LENGTH_SHORT).show()
                 return@setOnItemSelectedListener false
             }
@@ -58,14 +65,17 @@ class GameActivity : AppCompatActivity() {
                     showFragment(ProfileFragment())
                     true
                 }
+
                 R.id.nav_plant -> {
                     showFragment(StartPagePlantFragment())
                     true
                 }
+
                 R.id.nav_home -> {
                     showFragment(ChoosePlantFragment())
                     true
                 }
+
                 else -> false
             }
         }
@@ -73,7 +83,7 @@ class GameActivity : AppCompatActivity() {
     }
 
     private fun navigateToLogin() {
-        val intent = Intent(this,AuthenticationActivity::class.java)
+        val intent = Intent(this, AuthenticationActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
         finish()
@@ -88,7 +98,7 @@ class GameActivity : AppCompatActivity() {
     private fun checkUserPlant() {
         pvm.localSessionPlant.observe(this) { plant ->
             //Check Authentication status
-            if(FirebaseAuth.getInstance().currentUser == null) {
+            if (FirebaseAuth.getInstance().currentUser == null) {
                 navigateToLogin()
                 return@observe
             }
@@ -121,9 +131,9 @@ class GameActivity : AppCompatActivity() {
 //    }
 
     /**
-Sets up a Schedule for plants works that should run in background and
- updates firestore, functions that runs is placed in Plant-class and PlantWorker-class.
- */
+    Sets up a Schedule for plants works that should run in background and
+    updates firestore, functions that runs is placed in Plant-class and PlantWorker-class.
+     */
 //    private fun plantWorksSchedule() {
 //        val workManager = WorkManager.getInstance(this)
 //

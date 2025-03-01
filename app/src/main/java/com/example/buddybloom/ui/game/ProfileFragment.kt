@@ -48,6 +48,8 @@ class ProfileFragment : Fragment() {
         val factory = AccountViewModelFactory(accountRepository)
         avm = ViewModelProvider(this, factory)[AccountViewModel::class.java]
 
+        avm.loadUserData()
+
         //Sets current user data in email och username fields
         avm.currentUserData.observe(viewLifecycleOwner) { user ->
             if (avm.isSigningOut.value != true) {
@@ -87,17 +89,13 @@ class ProfileFragment : Fragment() {
 
         binding.ibSignout.setOnClickListener {
             binding.progressBar.visibility = View.VISIBLE
+            avm.signOutUser()
             Toast.makeText(requireContext(),"Signing out",Toast.LENGTH_SHORT).show()
                     val newIntent = Intent(requireContext(), AuthenticationActivity::class.java)
                     // NEW_TASK starts a new activity and CLEAR_TASK closes activity, so user can not go back without signing in again.
                     newIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                     startActivity(newIntent)
-            avm.signOutUser { success ->
                 binding.progressBar.visibility = View.GONE
-                if(!success){
-                    Toast.makeText(requireContext(),"Failed to signout!",Toast.LENGTH_SHORT).show()
-                }
-            }
         }
 
         binding.btnHistoryCheck.setOnClickListener {

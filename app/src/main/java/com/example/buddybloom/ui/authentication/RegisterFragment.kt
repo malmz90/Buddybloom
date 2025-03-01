@@ -16,8 +16,8 @@ import com.google.firebase.auth.FirebaseAuth
 
 class RegisterFragment : Fragment() {
 
-    lateinit var binding : FragmentRegisterBinding
-    private lateinit var avm : AccountViewModel
+    lateinit var binding: FragmentRegisterBinding
+    private lateinit var avm: AccountViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -39,7 +39,13 @@ class RegisterFragment : Fragment() {
         val googleSignInClient = GoogleSignIn.getClient(requireActivity(), gso)
         val accountRepository = AccountRepository(FirebaseAuth.getInstance(), googleSignInClient)
         val factory = AccountViewModelFactory(accountRepository)
-        avm = ViewModelProvider(this, factory)[AccountViewModel::class.java]
+        avm = ViewModelProvider(requireActivity(), factory)[AccountViewModel::class.java]
+
+        avm.errorMessage.observe(viewLifecycleOwner) {
+            it?.let { message ->
+                Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+            }
+        }
 
         //sets back button visible when register new user
         val activity = requireActivity() as? AuthenticationActivity
@@ -59,10 +65,7 @@ class RegisterFragment : Fragment() {
         avm.registerResult.observe(viewLifecycleOwner) { success ->
             binding.progressBar.visibility = View.GONE
             if (success) {
-                Toast.makeText(context, "Registration succeeded!", Toast.LENGTH_SHORT).show()
                 removeFragment()
-            } else {
-                Toast.makeText(context, "Registration failed!", Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -86,7 +89,7 @@ class RegisterFragment : Fragment() {
         val name = binding.tietUsername.text.toString().trim()
 
         // Check that the fields are not empty
-        if (email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()|| name.isEmpty()) {
+        if (email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty() || name.isEmpty()) {
             Toast.makeText(context, "Fill in all fields!", Toast.LENGTH_SHORT).show()
             return
         }
@@ -99,9 +102,11 @@ class RegisterFragment : Fragment() {
 
         // Check if the password meets security
         if (!isPasswordStrong(password)) {
-            Toast.makeText(context, "The password must be at least 8 characters long " +
-                    "and contain an uppercase letter, lowercase letter, number and special character!",
-                Toast.LENGTH_LONG).show()
+            Toast.makeText(
+                context, "The password must be at least 8 characters long " +
+                        "and contain an uppercase letter, lowercase letter, number and special character!",
+                Toast.LENGTH_LONG
+            ).show()
             return
         }
 
@@ -114,7 +119,7 @@ class RegisterFragment : Fragment() {
     }
 
     private fun removeFragment() {
-        parentFragmentManager.beginTransaction().apply{
+        parentFragmentManager.beginTransaction().apply {
             replace(R.id.fcv_home, AuthenticationFragment())
             commit()
         }

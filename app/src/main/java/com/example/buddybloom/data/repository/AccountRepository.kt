@@ -64,8 +64,8 @@ class AccountRepository
     ): Result<Unit> {
         return withContext(Dispatchers.IO) {
             try {
-                val userId = currentUser?.uid ?: return@withContext Result.failure(userException)
                 auth.createUserWithEmailAndPassword(email, password).await()
+                val userId = currentUser?.uid ?: return@withContext Result.failure(userException)
                 val newUser = User(
                     id = userId, email = email, name = name
                 )
@@ -176,9 +176,9 @@ class AccountRepository
     suspend fun firebaseAuthWithGoogle(idToken: String): Result<Unit> {
         return withContext(Dispatchers.IO) {
             try {
-                val firebaseUser = currentUser ?: return@withContext Result.failure(userException)
                 val credential = GoogleAuthProvider.getCredential(idToken, null)
                 val authResult = auth.signInWithCredential(credential).await()
+                val firebaseUser = currentUser ?: return@withContext Result.failure(userException)
                 if (authResult.additionalUserInfo?.isNewUser == true) {
                     val user = User(
                         id = firebaseUser.uid,
