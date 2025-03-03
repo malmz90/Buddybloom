@@ -60,10 +60,6 @@ class PlantViewModel : ViewModel() {
         _plantJustDied.postValue(false)
     }
 
-    fun resetErrorMessage() {
-        _errorMessage.postValue(null)
-    }
-
     /** Delete plant on Firestore */
     private fun deletePlantFromRemote() {
         viewModelScope.launch(Dispatchers.IO) {

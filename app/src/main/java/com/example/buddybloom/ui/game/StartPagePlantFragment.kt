@@ -66,7 +66,6 @@ class StartPagePlantFragment : Fragment() {
         pvm.errorMessage.observe(viewLifecycleOwner) { message ->
             message?.let {
                 Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
-                pvm.resetErrorMessage()
             }
         }
 
@@ -79,6 +78,7 @@ class StartPagePlantFragment : Fragment() {
         binding.ivBlinds.setImageResource(R.drawable.iconimg_blinds)
 
         pvm.localSessionPlant.observe(viewLifecycleOwner) { plant ->
+
             //Checks if user is logging in
             testPlant = plant
 
@@ -91,7 +91,7 @@ class StartPagePlantFragment : Fragment() {
                 binding.tvDaystreak.text = String.format(getDaysOld(plant).toString())
                 //Progress indicator
                 "${plant.waterLevel}%".also { binding.tvWaterLevel.text = it }
-                binding.progressWater.progress = plant.waterLevel ?: 0
+                binding.progressWater.progress = plant.waterLevel
 
                 if (plant.infected) {
                     binding.imgBtnBugspray.backgroundTintList =
@@ -226,14 +226,14 @@ class StartPagePlantFragment : Fragment() {
 
 //------------------------------------BLINDS-------------------------------------------------------
             switchBlinds.setOnClickListener {
-
+                pvm.toggleBlinds()
                 if (testPlant!!.protectedFromSun) {
                     // Play sound
                     soundPool.play(blindsSoundStart, 1f, 1f, 0, 0, 1f)
 
                     Handler(Looper.getMainLooper()).postDelayed({
                         binding.ivBlinds.visibility = View.VISIBLE
-                        pvm.toggleBlinds()
+
                     }, 1000)
                 } else {
                     // Play sound
