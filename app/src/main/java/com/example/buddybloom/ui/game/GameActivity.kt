@@ -102,9 +102,8 @@ class GameActivity : AppCompatActivity() {
     }
 
     private fun checkUserPlant() {
-        pvm.localSessionPlant.observe(this) {
-            plant ->
-            val currentFragment = supportFragmentManager.findFragmentById(R.id.fvc_game_activity)
+        pvm.localSessionPlant.observe(this) { plant ->
+
             //Check Authentication status
             if (FirebaseAuth.getInstance().currentUser == null) {
                 navigateToLogin()
@@ -115,9 +114,10 @@ class GameActivity : AppCompatActivity() {
                 showFragment(ChoosePlantFragment())
 
             } else {
+                val currentFragment = supportFragmentManager.findFragmentById(R.id.fvc_game_activity)
                 binding.navbarMenu.selectedItemId = R.id.nav_plant
-                if(currentFragment?.javaClass != profileFragment.javaClass)
-                showFragment(StartPagePlantFragment())
+                if (currentFragment?.javaClass != profileFragment.javaClass)
+                    showFragment(StartPagePlantFragment())
             }
         }
     }
