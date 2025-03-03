@@ -32,6 +32,7 @@ class PlantViewModel : ViewModel() {
 
     init {
         syncPlantFromRemote()
+        fetchOrCreateDailyReport()
     }
 
     private val gameManager = GameManager(
@@ -93,11 +94,6 @@ class PlantViewModel : ViewModel() {
                 _errorMessage.postValue(error.message)
             }
         }
-    }
-
-
-    fun refreshPlant() {
-        syncPlantFromRemote()
     }
 
     /**
@@ -175,7 +171,7 @@ class PlantViewModel : ViewModel() {
     private val _currentWeatherReport = MutableLiveData<WeatherReport.Daily>()
     val currentWeatherReport: LiveData<WeatherReport.Daily> get() = _currentWeatherReport
 
-    fun fetchOrCreateDailyReport() {
+    private fun fetchOrCreateDailyReport() {
         viewModelScope.launch(Dispatchers.IO) {
             weatherRepository.fetchOrCreateDailyReport()
                 .onSuccess { report ->

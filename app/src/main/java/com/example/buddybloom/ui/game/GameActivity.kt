@@ -20,6 +20,10 @@ import com.google.firebase.auth.FirebaseAuth
 class GameActivity : AppCompatActivity() {
     private lateinit var binding: ActivityGameBinding
     private lateinit var pvm: PlantViewModel
+    private val profileFragment = ProfileFragment()
+    private val startPagePlantFragment = StartPagePlantFragment()
+    private val choosePlantFragment = ChoosePlantFragment()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,7 +37,6 @@ class GameActivity : AppCompatActivity() {
             insets
         }
         pvm = ViewModelProvider(this)[PlantViewModel::class.java]
-        pvm.fetchOrCreateDailyReport()
 
         //Displays a toast when an error occurs
         pvm.errorMessage.observe(this) {
@@ -46,7 +49,6 @@ class GameActivity : AppCompatActivity() {
             navigateToLogin()
             return
         }
-        pvm.refreshPlant()
 
         // Add this line to check for plant when activity starts
         checkUserPlant()
@@ -56,30 +58,31 @@ class GameActivity : AppCompatActivity() {
         bottomNavigationView.setOnItemSelectedListener { item ->
             //unable to press plant page and profile unless you've chosen a plant first
             val hasPlant = pvm.localSessionPlant.value != null
+            Log.i("!!!", "GameActivity hasPlant = $hasPlant")
             if (!hasPlant && (item.itemId == R.id.nav_profile || item.itemId == R.id.nav_plant)) {
                 Toast.makeText(this, "Choose a plant first!", Toast.LENGTH_SHORT).show()
                 return@setOnItemSelectedListener false
             }
             when (item.itemId) {
                 R.id.nav_profile -> {
-                    showFragment(ProfileFragment())
+                    showFragment(profileFragment)
                     true
                 }
 
                 R.id.nav_plant -> {
-                    showFragment(StartPagePlantFragment())
+                    showFragment(startPagePlantFragment)
                     true
                 }
 
                 R.id.nav_home -> {
-                    showFragment(ChoosePlantFragment())
+                    showFragment(choosePlantFragment)
                     true
                 }
 
                 else -> false
             }
         }
-        showFragment(StartPagePlantFragment())
+        // showFragment(startPagePlantFragment)
     }
 
     private fun navigateToLogin() {
@@ -90,13 +93,19 @@ class GameActivity : AppCompatActivity() {
     }
 
     private fun showFragment(fragment: Fragment) {
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.fvc_game_activity, fragment)
-            .commit()
+        val currentFragment = supportFragmentManager.findFragmentById(R.id.fvc_game_activity)
+        if (currentFragment?.javaClass != fragment.javaClass) {
+            Log.i("!!!", "GameActivity showFragment() $fragment")
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.fvc_game_activity, fragment)
+                .commit()
+        }
     }
 
     private fun checkUserPlant() {
-        pvm.localSessionPlant.observe(this) { plant ->
+        pvm.localSessionPlant.observe(this) {
+            plant ->
+            val currentFragment = supportFragmentManager.findFragmentById(R.id.fvc_game_activity)
             //Check Authentication status
             if (FirebaseAuth.getInstance().currentUser == null) {
                 navigateToLogin()
@@ -108,7 +117,7 @@ class GameActivity : AppCompatActivity() {
 
             } else {
                 binding.navbarMenu.selectedItemId = R.id.nav_plant
-                Log.d("GameAct", "User already has a plant")
+                if(currentFragment?.javaClass != profileFragment.javaClass)
                 showFragment(StartPagePlantFragment())
             }
         }

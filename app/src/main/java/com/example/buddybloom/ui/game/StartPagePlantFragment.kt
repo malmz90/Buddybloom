@@ -31,7 +31,7 @@ class StartPagePlantFragment : Fragment() {
 
     private lateinit var binding: FragmentStartPagePlantBinding
     private lateinit var pvm: PlantViewModel
-    private lateinit var avm : AccountViewModel
+    private lateinit var avm: AccountViewModel
     private lateinit var soundPool: SoundPool
     private var waterSpraySound: Int = 0
     private var fertilizeSound: Int = 0
@@ -40,12 +40,13 @@ class StartPagePlantFragment : Fragment() {
     private var blindsSoundEnd: Int = 0
     private var bugSpraySound: Int = 0
     private var errorSound: Int = 0
-    private var testPlant : Plant? = null
+    private var testPlant: Plant? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        Log.i("!!!", "PlantFragment onCreateView")
         binding = FragmentStartPagePlantBinding.inflate(inflater, container, false)
         pvm = ViewModelProvider(requireActivity())[PlantViewModel::class.java]
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -63,7 +64,7 @@ class StartPagePlantFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         Log.d("!!!", "PlantFragment onViewCreated")
 
-        pvm.errorMessage.observe(viewLifecycleOwner){message ->
+        pvm.errorMessage.observe(viewLifecycleOwner) { message ->
             message?.let {
                 Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
                 pvm.resetErrorMessage()
@@ -90,11 +91,12 @@ class StartPagePlantFragment : Fragment() {
                 binding.imgFlower.setImageResource(getPlantImageId(plant))
                 binding.tvDaystreak.text = String.format(getDaysOld(plant).toString())
                 //Progress indicator
-                "${plant?.waterLevel ?: 0}%".also { binding.tvWaterLevel.text = it }
-                binding.progressWater.progress = plant?.waterLevel ?: 0
+                "${plant.waterLevel}%".also { binding.tvWaterLevel.text = it }
+                binding.progressWater.progress = plant.waterLevel ?: 0
 
                 if (plant.infected) {
-                    binding.imgBtnBugspray.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#852221"))
+                    binding.imgBtnBugspray.backgroundTintList =
+                        ColorStateList.valueOf(Color.parseColor("#852221"))
                     binding.imgBtnBugspray.animate()
                         .alpha(0.5f)
                         .setDuration(500)
@@ -105,8 +107,14 @@ class StartPagePlantFragment : Fragment() {
                         .start()
                 } else {
                     binding.imgBtnBugspray.clearAnimation()
-                    binding.imgBtnBugspray.background = ContextCompat.getDrawable(requireContext(), R.drawable.border_circle)
-                    binding.imgBtnBugspray.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.turquise))
+                    binding.imgBtnBugspray.background =
+                        ContextCompat.getDrawable(requireContext(), R.drawable.border_circle)
+                    binding.imgBtnBugspray.backgroundTintList = ColorStateList.valueOf(
+                        ContextCompat.getColor(
+                            requireContext(),
+                            R.color.turquise
+                        )
+                    )
                 }
                 binding.btnPlantNeeds.setOnClickListener {
                     val plantNeedsDialog = PlantNeedsDialogFragment.newInstance(plant)
@@ -133,8 +141,6 @@ class StartPagePlantFragment : Fragment() {
         binding.apply {
 
 
-
-
 //------------------------------------WATER---------------------------------------------------------
             btnWater.setOnClickListener {
                 showInfectedBugGif()
@@ -147,7 +153,7 @@ class StartPagePlantFragment : Fragment() {
                 // Play sound
                 soundPool.play(wateringSound, 1f, 1f, 0, 0, 1f)
 
-                        // Show the animation of watering can.
+                // Show the animation of watering can.
                 val drawable: Drawable? =
                     ContextCompat.getDrawable(requireContext(), R.drawable.gif_water)
                 if (drawable is AnimatedImageDrawable) {
@@ -168,12 +174,10 @@ class StartPagePlantFragment : Fragment() {
                         binding.btnWater.setBackgroundColor(Color.parseColor("#F6F1DE"))
                         binding.btnWater.setTextColor(Color.parseColor("#246246"))
                         binding.btnWater.isEnabled = true
-                        pvm.waterPlant() }
-                        , 3000)
+                        pvm.waterPlant()
+                    }, 3000)
                 }
             }
-
-
 
 
 //------------------------------------FERTILIZE-------------------------------------------------------
@@ -202,8 +206,6 @@ class StartPagePlantFragment : Fragment() {
                     }, 3000)
                 }
             }
-
-
 
 
 //------------------------------------BLINDS-------------------------------------------------------
@@ -236,8 +238,6 @@ class StartPagePlantFragment : Fragment() {
             }
 
 
-
-
 //------------------------------------WEATHER-------------------------------------------------------
             binding.btnWeather.setOnClickListener {
                 val weatherDialog = WeatherDialogFragment()
@@ -250,11 +250,11 @@ class StartPagePlantFragment : Fragment() {
                 soundPool.play(waterSpraySound, 1f, 1f, 0, 0, 1f)
 
 
-                Toast.makeText(
-                    requireContext(),
-                    "You've successfully sprayed water on your plant!",
-                    Toast.LENGTH_SHORT
-                ).show()
+//                Toast.makeText(
+//                    requireContext(),
+//                    "You've successfully sprayed water on your plant!",
+//                    Toast.LENGTH_SHORT
+//                ).show()
 
                 // show the animation for waterspray
                 val drawable: Drawable? =
@@ -274,8 +274,6 @@ class StartPagePlantFragment : Fragment() {
             }
 
 
-
-
 //------------------------------------BUGSPRAY-------------------------------------------------------
             imgBtnBugspray.setOnClickListener {
                 //Checks if plant is infected or not
@@ -290,11 +288,16 @@ class StartPagePlantFragment : Fragment() {
                         binding.imgBtnBugspray.setBackgroundColor(Color.TRANSPARENT)
 
                         Log.d("BugSpray", "Plant is infected, spraying bugs!")
-                        Toast.makeText(requireContext(), "You've successfully saved your plant from bugs!", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            requireContext(),
+                            "You've successfully saved your plant from bugs!",
+                            Toast.LENGTH_SHORT
+                        ).show()
 
                     } else {
                         // If plant not is infected show NoBug gif
-                        Toast.makeText(requireContext(), "There are no bugs!", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), "There are no bugs!", Toast.LENGTH_SHORT)
+                            .show()
                         Log.d("PlantStatus", "No infection found")
                         //Play Sound
                         val mediaPlayer = MediaPlayer.create(requireContext(), R.raw.error_sound)
@@ -302,7 +305,8 @@ class StartPagePlantFragment : Fragment() {
                         mediaPlayer.start()
 
                         // If plant not is infected show NoBug gif
-                        val drawableNoBugs: Drawable? = ContextCompat.getDrawable(requireContext(), R.drawable.gif_bug)
+                        val drawableNoBugs: Drawable? =
+                            ContextCompat.getDrawable(requireContext(), R.drawable.gif_bug)
                         if (drawableNoBugs is AnimatedImageDrawable) {
                             binding.ivAnimationWateringCan.visibility = View.VISIBLE
                             binding.ivAnimationWateringCan.setImageDrawable(drawableNoBugs)
@@ -322,6 +326,7 @@ class StartPagePlantFragment : Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         soundPool.release()
+        Log.d("!!!", "PlantFragment onDestroyView")
     }
 
     /**
@@ -336,16 +341,18 @@ class StartPagePlantFragment : Fragment() {
             return 0
         }
     }
+
     /**
      * shows bugSprayGif and hides infected gif and sets infected to false
      */
-    private fun showbugspray(){
+    private fun showbugspray() {
         val drawableBugSpray: Drawable? =
             ContextCompat.getDrawable(requireContext(), R.drawable.gif_bugspray)
         if (drawableBugSpray is AnimatedImageDrawable) {
             binding.ivAnimationWateringCan.setImageDrawable(drawableBugSpray)
             binding.ivAnimationWateringCan.visibility = View.VISIBLE
-            drawableBugSpray.start()}
+            drawableBugSpray.start()
+        }
 
         Handler(Looper.getMainLooper()).postDelayed({
             binding.ivAnimationWateringCan.visibility = View.INVISIBLE
@@ -357,7 +364,7 @@ class StartPagePlantFragment : Fragment() {
 
     /**
      *  function shows infected gif
-      */
+     */
     private fun showInfectedBugGif() {
         pvm.localSessionPlant.value?.let { currentPlant ->
             if (currentPlant.infected) {
@@ -373,7 +380,8 @@ class StartPagePlantFragment : Fragment() {
             }
         }
     }
-//*******************
+
+    //*******************
     private fun updateBlindsVisibility(myImageView: View) {
         if (testPlant?.protectedFromSun == true) {
             myImageView.visibility = View.VISIBLE
@@ -450,6 +458,7 @@ class StartPagePlantFragment : Fragment() {
                 4 -> R.drawable.flower_coleus4
                 else -> R.drawable.flower_coleus7
             }
+
             else -> R.drawable.flower_elefant1
         }
     }
