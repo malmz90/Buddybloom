@@ -1,11 +1,15 @@
 package com.example.buddybloom.ui.game
 
 import AddPlantDialogFragment
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
+import android.widget.Button
 import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -78,13 +82,22 @@ class ChoosePlantFragment : Fragment() {
     }
 
     private fun showPlantDeathDialog() {
-        val dialog = AlertDialog.Builder(requireContext())
-            .setTitle("Your Plant Has Died")
-            .setMessage("Oh no! Your plant couldn't survive. It needed more water and care. Don't worry, you can choose a new plant now!")
-            .setPositiveButton("OK") { dialog, _ ->
-                dialog.dismiss()
-            }
+        val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_dead_plant, null)
+            val dialog = AlertDialog.Builder(requireContext())
+            .setView(dialogView)
+//            .setCancelable(false)
             .create()
+
+        val btnYes = dialogView.findViewById<Button>(R.id.btn_yes_pls)
+        btnYes.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.window?.setLayout(
+            WindowManager.LayoutParams.MATCH_PARENT,
+            WindowManager.LayoutParams.WRAP_CONTENT
+        )
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
         dialog.show()
     }

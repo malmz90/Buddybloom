@@ -167,6 +167,7 @@ class AccountRepository
 
     fun signOut() {
         auth.signOut()
+        googleSignInClient.signOut()
     }
 
     fun signInGoogleIntent(): Intent {

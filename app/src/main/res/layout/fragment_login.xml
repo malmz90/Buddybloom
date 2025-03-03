@@ -74,23 +74,6 @@
         android:textColor="#4CAF50"
         app:backgroundTint="@color/whiteish" />
 
-    <!-- Google Sign In Button -->
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btn_google"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:backgroundTint="#B8D9D9D9"
-        android:textColor="@color/greenish"
-        android:elevation="1dp"
-        android:translationZ="1dp"
-        android:stateListAnimator="@null"
-        android:text="@string/google"
-        app:icon="@drawable/google"
-        app:iconGravity="textStart"
-        app:iconTint="@null"
-        app:cornerRadius="18dp" />
-
     <ProgressBar
         android:id="@+id/progressBar"
         android:layout_width="wrap_content"

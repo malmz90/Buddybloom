@@ -5,6 +5,5 @@
     <solid android:color="@color/whiteish"/>
     <corners android:radius="45dp"/>
     <elevation android:height="45dp"/>
-    <stroke android:color="@color/gold" android:width="2dp"/>
 
 </shape>
