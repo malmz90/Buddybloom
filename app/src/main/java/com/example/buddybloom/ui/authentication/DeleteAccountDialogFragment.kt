@@ -28,7 +28,7 @@ class DeleteAccountDialogFragment : DialogFragment(R.layout.dialog_delete_accoun
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         // Creates a dialog box with custom design
         val builder = AlertDialog.Builder(requireContext())
-        val inflater =  requireActivity().layoutInflater
+        val inflater = requireActivity().layoutInflater
         val view = inflater.inflate(R.layout.dialog_delete_account, null)
 
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -44,8 +44,8 @@ class DeleteAccountDialogFragment : DialogFragment(R.layout.dialog_delete_accoun
         builder.setView(view)
 
         //variables for buttons
-        val btnNo : MaterialButton = view.findViewById(R.id.btn_no)
-        val btnYes : MaterialButton = view.findViewById(R.id.btn_yes)
+        val btnNo: MaterialButton = view.findViewById(R.id.btn_no)
+        val btnYes: MaterialButton = view.findViewById(R.id.btn_yes)
 
         btnNo.setOnClickListener {
             dismiss()
@@ -65,17 +65,13 @@ class DeleteAccountDialogFragment : DialogFragment(R.layout.dialog_delete_accoun
 
     //gets function from viewmodel to delete account and exits the app if deleted
     private fun deleteAccount() {
-        avm.deleteAccount(
-            onSuccess = {
-                Toast.makeText(requireContext(), "Account deleted", Toast.LENGTH_SHORT).show()
-                val intent = Intent(requireActivity(), AuthenticationActivity::class.java)
-                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                startActivity(intent)
-                requireActivity().finish()
-                dismiss()
-            },
-            onFailure = { exception ->
-                Toast.makeText(requireContext(), "Failed to delete account: ${exception.message}", Toast.LENGTH_SHORT).show()
-            })
+        avm.deleteAccount(onSuccess = {
+            Toast.makeText(requireContext(), "Account deleted", Toast.LENGTH_SHORT).show()
+            val intent = Intent(requireActivity(), AuthenticationActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            startActivity(intent)
+            requireActivity().finish()
+            dismiss()
+        })
     }
 }

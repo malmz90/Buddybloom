@@ -30,6 +30,11 @@ class PlantViewModel : ViewModel() {
     private val _errorMessage = MutableLiveData<String?>()
     val errorMessage: LiveData<String?> get() = _errorMessage
 
+    init {
+        syncPlantFromRemote()
+        fetchOrCreateDailyReport()
+    }
+
     private val gameManager = GameManager(
         scope = viewModelScope,
         onPlantEvent = { plant ->
@@ -55,22 +60,23 @@ class PlantViewModel : ViewModel() {
         _plantJustDied.postValue(false)
     }
 
-    /** Delete plant is firestore */
+    /** Delete plant on Firestore */
     private fun deletePlantFromRemote() {
         viewModelScope.launch(Dispatchers.IO) {
-            plantRepository.deletePlant() { error ->
+            plantRepository.deletePlant().onFailure { error ->
                 _errorMessage.postValue(error.message)
             }
         }
     }
+
     /**
      * Saves the dead plant to history by calling the repository method.
      * This function is called when a plant dies
      */
     private fun savePlantToHistoryRemote(plant: Plant) {
         viewModelScope.launch(Dispatchers.IO) {
-            plantRepository.savePlantToHistory(plant) { error ->
-                _errorMessage.postValue("Failed to save plant history: ${error.message}")
+            plantRepository.savePlantToHistory(plant).onFailure { error ->
+                _errorMessage.postValue(error.message)
             }
         }
     }
@@ -80,18 +86,10 @@ class PlantViewModel : ViewModel() {
      */
     private fun updateRemotePlant(plant: Plant) {
         viewModelScope.launch(Dispatchers.IO) {
-            plantRepository.updateRemotePlant(plant, onFailure = { error ->
+            plantRepository.updatePlant(plant).onFailure { error ->
                 _errorMessage.postValue(error.message)
-            })
+            }
         }
-    }
-
-    init {
-        syncPlantFromRemote()
-    }
-
-    fun refreshPlant() {
-        syncPlantFromRemote()
     }
 
     /**
@@ -102,9 +100,9 @@ class PlantViewModel : ViewModel() {
     private fun syncPlantFromRemote() {
         viewModelScope.launch(Dispatchers.IO) {
             //Get the plant currently stored on Firebase
-            val fetchedPlant = plantRepository.fetchPlant { error ->
+            val fetchedPlant = plantRepository.fetchPlant().onFailure { error ->
                 _errorMessage.postValue(error.message)
-            }
+            }.getOrNull()
             //Update the (local) session data
             gameManager.updateLocalPlant(fetchedPlant)
             fetchedPlant?.let {
@@ -115,7 +113,7 @@ class PlantViewModel : ViewModel() {
                 if (hoursSinceLastUpdate > 0) {
                     gameManager.runGameLoop(hoursSinceLastUpdate)
                     //Update the plant on Firestore again
-                    plantRepository.updateRemotePlant(it) { error ->
+                    plantRepository.updatePlant(it).onFailure { error ->
                         _errorMessage.postValue(error.message)
                     }
                 }
@@ -128,7 +126,7 @@ class PlantViewModel : ViewModel() {
      */
     fun savePlantToRemote(plant: Plant) {
         viewModelScope.launch(Dispatchers.IO) {
-            plantRepository.savePlant(plant) { error ->
+            plantRepository.savePlant(plant).onFailure { error ->
                 _errorMessage.postValue(error.message)
             }
             gameManager.updateLocalPlant(plant)
@@ -139,7 +137,7 @@ class PlantViewModel : ViewModel() {
         gameManager.waterPlant()
     }
 
-    fun waterSpray(){
+    fun waterSpray() {
         gameManager.sprayWaterPlant()
     }
 
@@ -167,12 +165,17 @@ class PlantViewModel : ViewModel() {
     //--------------------------------------WEATHER STUFF-------------------------------------------
 
     private val _currentWeatherReport = MutableLiveData<WeatherReport.Daily>()
-    val currentWeatherReport : LiveData<WeatherReport.Daily> get() = _currentWeatherReport
+    val currentWeatherReport: LiveData<WeatherReport.Daily> get() = _currentWeatherReport
 
-    fun fetchOrCreateDailyReport() {
-        weatherRepository.fetchOrCreateDailyReport { report ->
-            _currentWeatherReport.postValue(report)
-            gameManager.updateLocalDailyWeather(report)
+    private fun fetchOrCreateDailyReport() {
+        viewModelScope.launch(Dispatchers.IO) {
+            weatherRepository.fetchOrCreateDailyReport()
+                .onSuccess { report ->
+                    _currentWeatherReport.postValue(report)
+                    gameManager.updateLocalDailyWeather(report)
+                }.onFailure { error ->
+                    _errorMessage.postValue(error.message)
+                }
         }
     }
 

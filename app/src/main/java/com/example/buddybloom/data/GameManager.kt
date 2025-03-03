@@ -39,7 +39,7 @@ class GameManager
 
     companion object {
         //Set auto save timer
-        private const val AUTO_SAVE_MINUTES = 1
+        private const val AUTO_SAVE_MINUTES = 2
 
         //Set game loop timer
         private const val GAME_LOOP_MINUTES = 1

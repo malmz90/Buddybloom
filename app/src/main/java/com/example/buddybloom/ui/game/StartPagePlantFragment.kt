@@ -30,7 +30,7 @@ class StartPagePlantFragment : Fragment() {
 
     private lateinit var binding: FragmentStartPagePlantBinding
     private lateinit var pvm: PlantViewModel
-    private lateinit var avm : AccountViewModel
+    private lateinit var avm: AccountViewModel
     private lateinit var soundPool: SoundPool
     private var waterSpraySound: Int = 0
     private var fertilizeSound: Int = 0
@@ -39,12 +39,13 @@ class StartPagePlantFragment : Fragment() {
     private var blindsSoundEnd: Int = 0
     private var bugSpraySound: Int = 0
     private var errorSound: Int = 0
-    private var testPlant : Plant? = null
+    private var testPlant: Plant? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        Log.i("!!!", "PlantFragment onCreateView")
         binding = FragmentStartPagePlantBinding.inflate(inflater, container, false)
         pvm = ViewModelProvider(requireActivity())[PlantViewModel::class.java]
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -62,6 +63,12 @@ class StartPagePlantFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         Log.d("!!!", "PlantFragment onViewCreated")
 
+        pvm.errorMessage.observe(viewLifecycleOwner) { message ->
+            message?.let {
+                Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+            }
+        }
+
         //Observes if user is logging in so null pic won't show, if slow network progressbar shows instead
         avm.isLoggingIn.observe(viewLifecycleOwner) { isLoggingIn ->
             binding.loadingProgressBar.visibility = if (isLoggingIn) View.VISIBLE else View.GONE
@@ -71,6 +78,7 @@ class StartPagePlantFragment : Fragment() {
         binding.ivBlinds.setImageResource(R.drawable.iconimg_blinds)
 
         pvm.localSessionPlant.observe(viewLifecycleOwner) { plant ->
+
             //Checks if user is logging in
             testPlant = plant
 
@@ -82,11 +90,12 @@ class StartPagePlantFragment : Fragment() {
                 binding.imgFlower.setImageResource(getPlantImageId(plant))
                 binding.tvDaystreak.text = String.format(getDaysOld(plant).toString())
                 //Progress indicator
-                "${plant?.waterLevel ?: 0}%".also { binding.tvWaterLevel.text = it }
-                binding.progressWater.progress = plant?.waterLevel ?: 0
+                "${plant.waterLevel}%".also { binding.tvWaterLevel.text = it }
+                binding.progressWater.progress = plant.waterLevel
 
                 if (plant.infected) {
-                    binding.imgBtnBugspray.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#852221"))
+                    binding.imgBtnBugspray.backgroundTintList =
+                        ColorStateList.valueOf(Color.parseColor("#852221"))
                     binding.imgBtnBugspray.animate()
                         .alpha(0.5f)
                         .setDuration(500)
@@ -97,8 +106,14 @@ class StartPagePlantFragment : Fragment() {
                         .start()
                 } else {
                     binding.imgBtnBugspray.clearAnimation()
-                    binding.imgBtnBugspray.background = ContextCompat.getDrawable(requireContext(), R.drawable.border_circle)
-                    binding.imgBtnBugspray.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.turquise))
+                    binding.imgBtnBugspray.background =
+                        ContextCompat.getDrawable(requireContext(), R.drawable.border_circle)
+                    binding.imgBtnBugspray.backgroundTintList = ColorStateList.valueOf(
+                        ContextCompat.getColor(
+                            requireContext(),
+                            R.color.turquise
+                        )
+                    )
                 }
                 binding.btnPlantNeeds.setOnClickListener {
                     val plantNeedsDialog = PlantNeedsDialogFragment.newInstance(plant)
@@ -211,14 +226,14 @@ class StartPagePlantFragment : Fragment() {
 
 //------------------------------------BLINDS-------------------------------------------------------
             switchBlinds.setOnClickListener {
-
+                pvm.toggleBlinds()
                 if (testPlant!!.protectedFromSun) {
                     // Play sound
                     soundPool.play(blindsSoundStart, 1f, 1f, 0, 0, 1f)
 
                     Handler(Looper.getMainLooper()).postDelayed({
                         binding.ivBlinds.visibility = View.VISIBLE
-                        pvm.toggleBlinds()
+
                     }, 1000)
                 } else {
                     // Play sound
@@ -289,6 +304,7 @@ class StartPagePlantFragment : Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         soundPool.release()
+        Log.d("!!!", "PlantFragment onDestroyView")
     }
 
     /**
@@ -399,6 +415,7 @@ class StartPagePlantFragment : Fragment() {
                 4 -> R.drawable.flower_coleus4
                 else -> R.drawable.flower_coleus7
             }
+
             else -> R.drawable.flower_elefant1
         }
     }

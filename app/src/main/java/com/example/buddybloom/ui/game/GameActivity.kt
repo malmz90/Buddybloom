@@ -12,7 +12,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.buddybloom.R
 import com.example.buddybloom.databinding.ActivityGameBinding
-import com.example.buddybloom.ui.authentication.AccountViewModel
 import com.example.buddybloom.ui.authentication.AuthenticationActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
@@ -20,9 +19,14 @@ import com.google.firebase.auth.FirebaseAuth
 class GameActivity : AppCompatActivity() {
     private lateinit var binding: ActivityGameBinding
     private lateinit var pvm: PlantViewModel
+    private val profileFragment = ProfileFragment()
+    private val startPagePlantFragment = StartPagePlantFragment()
+    private val choosePlantFragment = ChoosePlantFragment()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Log.i("GameActivity", "onCreate() called")
         enableEdgeToEdge()
         binding = ActivityGameBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -33,13 +37,18 @@ class GameActivity : AppCompatActivity() {
             insets
         }
         pvm = ViewModelProvider(this)[PlantViewModel::class.java]
-        pvm.fetchOrCreateDailyReport()
 
-        if(FirebaseAuth.getInstance().currentUser == null) {
+        //Displays a toast when an error occurs
+        pvm.errorMessage.observe(this) {
+            it?.let { message ->
+                Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        if (FirebaseAuth.getInstance().currentUser == null) {
             navigateToLogin()
             return
         }
-        pvm.refreshPlant()
 
         // Add this line to check for plant when activity starts
         checkUserPlant()
@@ -49,75 +58,69 @@ class GameActivity : AppCompatActivity() {
         bottomNavigationView.setOnItemSelectedListener { item ->
             //unable to press plant page and profile unless you've chosen a plant first
             val hasPlant = pvm.localSessionPlant.value != null
-            if(!hasPlant && (item.itemId == R.id.nav_profile || item.itemId == R.id.nav_plant)) {
+            if (!hasPlant && (item.itemId == R.id.nav_profile || item.itemId == R.id.nav_plant)) {
                 Toast.makeText(this, "Choose a plant first!", Toast.LENGTH_SHORT).show()
                 return@setOnItemSelectedListener false
             }
             when (item.itemId) {
                 R.id.nav_profile -> {
-                    showFragment(ProfileFragment())
+                    showFragment(profileFragment)
                     true
                 }
+
                 R.id.nav_plant -> {
-                    showFragment(StartPagePlantFragment())
+                    showFragment(startPagePlantFragment)
                     true
                 }
+
                 R.id.nav_home -> {
-                    showFragment(ChoosePlantFragment())
+                    showFragment(choosePlantFragment)
                     true
                 }
+
                 else -> false
             }
         }
-        showFragment(StartPagePlantFragment())
     }
 
     private fun navigateToLogin() {
-        val intent = Intent(this,AuthenticationActivity::class.java)
+        val intent = Intent(this, AuthenticationActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
         finish()
     }
 
     private fun showFragment(fragment: Fragment) {
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.fvc_game_activity, fragment)
-            .commit()
+        val currentFragment = supportFragmentManager.findFragmentById(R.id.fvc_game_activity)
+        if (currentFragment?.javaClass != fragment.javaClass) {
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.fvc_game_activity, fragment)
+                .commit()
+        }
     }
 
     private fun checkUserPlant() {
         pvm.localSessionPlant.observe(this) { plant ->
             //Check Authentication status
-            if(FirebaseAuth.getInstance().currentUser == null) {
+            if (FirebaseAuth.getInstance().currentUser == null) {
                 navigateToLogin()
                 return@observe
             }
             if (plant == null) {
                 binding.navbarMenu.selectedItemId = R.id.nav_home
-                showFragment(ChoosePlantFragment())
-
+                showFragment(choosePlantFragment)
             } else {
-                binding.navbarMenu.selectedItemId = R.id.nav_plant
-                Log.d("GameAct", "User already has a plant")
-                showFragment(StartPagePlantFragment())
+                val currentFragment =
+                    supportFragmentManager.findFragmentById(R.id.fvc_game_activity)
+                if (currentFragment?.javaClass != profileFragment.javaClass) {
+                    binding.navbarMenu.selectedItemId = R.id.nav_plant
+                    showFragment(startPagePlantFragment)
+                }
             }
         }
     }
 
     //TODO få in en loadingbar när man byter mellan fragment
 
-//    private fun checkUserPlant() {
-//        plantViewModel.currentPlant.observe(this) { plant ->
-//            if (plant == null) {
-//                binding.navbarMenu.selectedItemId = R.id.nav_home
-//                showFragment(ChoosePlantFragment())
-//
-//            } else {
-//                binding.navbarMenu.selectedItemId = R.id.nav_plant
-//                Log.d("GameAct", "User already has a plant")
-//                showFragment(StartPagePlantFragment())
-//            }
-//        }
-//    }
 
 }

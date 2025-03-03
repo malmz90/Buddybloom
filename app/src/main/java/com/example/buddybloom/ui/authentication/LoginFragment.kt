@@ -35,13 +35,13 @@ class LoginFragment : Fragment() {
     ) { result ->
         val data = result.data
         val task = GoogleSignIn.getSignedInAccountFromIntent(data)
-
         avm.authenticateWithGoogle(task) { success ->
             if (success) {
-                Toast.makeText(requireContext(), "Google sign-in successful!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Google sign-in successful!", Toast.LENGTH_SHORT)
+                    .show()
                 navigateToGameActivity()
             } else {
-                Toast.makeText(requireContext(), "Google sign-in failed", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Google sign-in failed", Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -66,7 +66,13 @@ class LoginFragment : Fragment() {
         val googleSignInClient = GoogleSignIn.getClient(requireActivity(), gso)
         val accountRepository = AccountRepository(FirebaseAuth.getInstance(), googleSignInClient)
         val factory = AccountViewModelFactory(accountRepository)
-        avm = ViewModelProvider(this, factory)[AccountViewModel::class.java]
+        avm = ViewModelProvider(requireActivity(), factory)[AccountViewModel::class.java]
+
+        avm.errorMessage.observe(viewLifecycleOwner) {
+            it?.let { message ->
+                Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+            }
+        }
 
         //shows back button on loginpage
         val activity = requireActivity() as? AuthenticationActivity
@@ -107,10 +113,15 @@ class LoginFragment : Fragment() {
 
         avm.loginStatus.observe(viewLifecycleOwner) { user ->
             if (user != null) {
-                Toast.makeText(requireContext(), "Logged in as ${user.displayName}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    requireContext(),
+                    "Logged in as ${user.displayName}",
+                    Toast.LENGTH_SHORT
+                ).show()
                 navigateToGameActivity()
             } else {
-                Toast.makeText(requireContext(), "Failed to log in with Google", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Failed to log in with Google", Toast.LENGTH_SHORT)
+                    .show()
             }
         }
 
@@ -124,8 +135,8 @@ class LoginFragment : Fragment() {
     }
 
     private fun testFunction() {
-        binding.etEmail.setText("cai@cai.se")
-        binding.etPass.setText("Cai!1234")
+        binding.etEmail.setText("mag30@test.com")
+        binding.etPass.setText("!Magnus1")
     }
 
     private fun loginUser() {
@@ -148,11 +159,11 @@ class LoginFragment : Fragment() {
         }
         if (!isValid) return
 
-        if(!Patterns.EMAIL_ADDRESS.matcher(email).matches()){
+        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             binding.textinputEtLayout.error = "Please enter a valid Email address"
             return
         }
-        if(password.length < 8) {
+        if (password.length < 8) {
             binding.textinputPwLayout.error = "The password must be at least 8 characters long " +
                     "and contain an uppercase letter, lowercase letter, number and special character!"
             return
@@ -183,9 +194,9 @@ class LoginFragment : Fragment() {
         view.findViewById<Button>(R.id.btn_reset).setOnClickListener {
             val email = userEmail?.text.toString().trim()
 
-            if(email.isEmpty() || !Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            if (email.isEmpty() || !Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
                 Toast.makeText(requireContext(), "Enter a valid Email", Toast.LENGTH_SHORT).show()
-            }else {
+            } else {
                 avm.sendPasswordResetEmail(email)
                 dialog.dismiss()
             }

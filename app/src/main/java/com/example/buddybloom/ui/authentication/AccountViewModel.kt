@@ -14,15 +14,18 @@ import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
-class AccountViewModel(private val accountRepository :AccountRepository) : ViewModel() {
+class AccountViewModel(private val accountRepository: AccountRepository) : ViewModel() {
 
-    val loginStatus : LiveData<FirebaseUser?> = accountRepository.loginStatus
+    private val _loginStatus = MutableLiveData<FirebaseUser?>()
+    val loginStatus: LiveData<FirebaseUser?> get() = _loginStatus
 
     // Livedata for the registration result, updated in registerUser below and observed in RegisterFragment.
     private val _registerResult = MutableLiveData<Boolean>()
-    val registerResult : LiveData<Boolean> get() = _registerResult
+    val registerResult: LiveData<Boolean> get() = _registerResult
 
     private val _loginResult = MutableLiveData<Boolean>()
     val loginResult: LiveData<Boolean> get() = _loginResult
@@ -49,15 +52,20 @@ class AccountViewModel(private val accountRepository :AccountRepository) : ViewM
     private val _isLoggingIn = MutableLiveData(false)
     val isLoggingIn: LiveData<Boolean> get() = _isLoggingIn
 
-    init {
-        loadUserData()
-    }
+    private val _errorMessage = MutableLiveData<String?>()
+    val errorMessage: LiveData<String?> get() = _errorMessage
 
-    private fun loadUserData() {
-        accountRepository.getUserData { user ->
-            if (isSigningOut.value != true) {
-                _currentUserData.postValue(user)
-            }
+    fun loadUserData() {
+        viewModelScope.launch(Dispatchers.IO) {
+            accountRepository.getUserData()
+                .onSuccess { user ->
+                    if (isSigningOut.value != true) {
+                        _currentUserData.postValue(user)
+                    }
+                }
+                .onFailure { error ->
+                    _errorMessage.postValue(error.message)
+                }
         }
     }
 
@@ -65,65 +73,89 @@ class AccountViewModel(private val accountRepository :AccountRepository) : ViewM
      * Calls upon function in AccountRepo to register user
      * Callback is used to set the registration result (livedata)
      */
-    fun registerUser(email : String, password : String, name : String) {
-        accountRepository.registerUser(email, password, name) { success ->
-            _registerResult.value = success
-            if(success) loadUserData()
+    fun registerUser(email: String, password: String, name: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            accountRepository.registerUser(email, password, name)
+                .onSuccess {
+                    _registerResult.postValue(true)
+                    loadUserData()
+                }
+                .onFailure { error ->
+                    _registerResult.postValue(false)
+                    _errorMessage.postValue(error.message)
+                }
         }
     }
 
     fun loginUser(email: String, password: String) {
-        _isLoggingIn.value = true
-        accountRepository.loginUser(email, password) { success ->
-            _loginResult.value = success
-            if(success) loadUserData()
-            _isLoggingIn.value = false
+        _isLoggingIn.postValue(true)
+        viewModelScope.launch(Dispatchers.IO) {
+            accountRepository.loginUser(email, password)
+                .onSuccess {
+                    _loginResult.postValue(true)
+                    loadUserData()
+                    _isLoggingIn.postValue(false)
+                }
+                .onFailure { error ->
+                    _errorMessage.postValue(error.message)
+                }
         }
     }
 
     //Sends reset password email if user forgot password, updates reset password to true if the email is sent successfully
-    fun sendPasswordResetEmail(email: String){
-        if(email.isBlank()){
-            _resetPasswordResult.value =false
+    fun sendPasswordResetEmail(email: String) {
+        if (email.isBlank()) {
+            _resetPasswordResult.postValue(false)
             return
         }
-        accountRepository.sendPasswordResetEmail(email).addOnCompleteListener { task ->
-            _resetPasswordResult.value = task.isSuccessful
+        viewModelScope.launch(Dispatchers.IO) {
+            accountRepository.sendPasswordResetEmail(email)
+                .onSuccess {
+                    _resetPasswordResult.postValue(true)
+                }
+                .onFailure { error ->
+                    _errorMessage.postValue(error.message)
+                }
         }
     }
 
     //function if user wants to delete their account, calls from accountrepo. OnSuccess if deletion is successful or onFailure if it fails
-    fun deleteAccount(onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
-        accountRepository.deleteAccount(onSuccess = {
-            _currentUserData.postValue(null)
-            onSuccess()
-        }, onFailure = onFailure)
+    fun deleteAccount(onSuccess: () -> Unit) {
+        viewModelScope.launch(Dispatchers.IO) {
+            accountRepository.deleteAccount()
+                .onSuccess {
+                    _currentUserData.postValue(null)
+                    onSuccess()
+                }
+                .onFailure { error ->
+                    _errorMessage.postValue("Failed to delete account: ${error.message}")
+                }
+        }
     }
 
-    fun signOutUser(callback: (Boolean) -> Unit){
-        _isSigningOut.value = true
-        accountRepository.signOut { success ->
-            if (success) {
-                _currentUserData.postValue(null)
-        }
-         _isSigningOut.value = false
-            callback(success)
-        }
+    fun signOutUser() {
+        _isSigningOut.postValue(true)
+        accountRepository.signOut()
+        _currentUserData.postValue(null)
     }
 
     fun updateUserEmail(newEmail: String) {
-    viewModelScope.launch {
-        val result = accountRepository.updateUserEmail(newEmail)
-        _updateEmailStatus.postValue(result)
-        if(result.isSuccess) loadUserData()
+        viewModelScope.launch(Dispatchers.IO) {
+            val result = accountRepository.updateUserEmail(newEmail)
+                .onSuccess {
+                    loadUserData()
+                }
+            _updateEmailStatus.postValue(result)
         }
     }
 
-    fun updateUserName(newUserName:String){
-        viewModelScope.launch {
+    fun updateUserName(newUserName: String) {
+        viewModelScope.launch(Dispatchers.IO) {
             val result = accountRepository.updateUserName(newUserName)
+                .onSuccess {
+                    loadUserData()
+                }
             _usernameUpdateStatus.postValue(result)
-            if(result.isSuccess) loadUserData()
         }
     }
 
@@ -132,24 +164,29 @@ class AccountViewModel(private val accountRepository :AccountRepository) : ViewM
     }
 
     fun authenticateWithGoogle(task: Task<GoogleSignInAccount>, callback: (Boolean) -> Unit) {
-        try {
-            _isLoggingIn.value = true
-            val account = task.getResult(ApiException::class.java)
-            val idToken = account.idToken ?: run {
-                Log.e("GoogleSignIn", "Google sign-in account is null")
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                _isLoggingIn.postValue(true)
+                val account = task.getResult(ApiException::class.java)
+                val idToken = account.idToken ?: run {
+                    Log.e("GoogleSignIn", "Google sign-in account is null")
+                    callback(false)
+                    return@launch
+                }
+                accountRepository.firebaseAuthWithGoogle(idToken)
+                    .onSuccess {
+                        loadUserData()
+                        _isLoggingIn.postValue(false)
+                        withContext(Dispatchers.Main) { callback(true) }
+                    }
+                    .onFailure { error ->
+                        _errorMessage.postValue(error.message)
+                    }
+            } catch (e: ApiException) {
+                Log.e("GoogleSignIn", "Google sign-in failed: ${e.statusCode}", e)
+                _isLoggingIn.postValue(false)
                 callback(false)
-                return
             }
-
-            accountRepository.firebaseAuthWithGoogle(idToken) { success ->
-                if(success) loadUserData()
-                _isLoggingIn.value = false
-                callback(success)
-            }
-        } catch (e: ApiException) {
-            Log.e("GoogleSignIn", "Google sign-in failed: ${e.statusCode}", e)
-            _isLoggingIn.value = false
-            callback(false)
         }
     }
 }
