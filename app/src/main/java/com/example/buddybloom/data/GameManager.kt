@@ -78,7 +78,7 @@ class GameManager
         startAutoSave()
         startGameLoop()
     }
-
+    val maxWaterLevel = 100
     /**
     This is whatever happens on each game tick (every hour). Use this to control game events.
      */
@@ -90,10 +90,22 @@ class GameManager
         localPlant?.protectedFromSun = false
 
         if (localPlant?.waterLevel == 0 || localPlant?.fertilizerLevel == 0) {
-            onPlantEvent(null) // Notify ViewModel to delete plant
+            Log.d("GameManager", "Plant died due to lack of water or fertilizer.")
+            localPlant?.deathCause = "dehydration" //  Lägg till dödsorsak
+            onPlantEvent(null)
+        } else if ((localPlant?.waterLevel ?: 0) > maxWaterLevel) {
+            Log.d("GameManager", " Plant died due to overwatering.")
+            localPlant?.deathCause = "overwatering" //  Lägg till dödsorsak
+            onPlantEvent(null)
         } else {
             onPlantEvent(localPlant)
         }
+
+//        if (localPlant?.waterLevel == 0 || localPlant?.fertilizerLevel == 0) {
+//            onPlantEvent(null) // Notify ViewModel to delete plant
+//        } else {
+//            onPlantEvent(localPlant)
+//        }
     }
 
     /**
@@ -174,7 +186,7 @@ class GameManager
      */
     fun waterPlant() {
         localPlant?.let {
-            it.waterLevel = (minOf(100, it.waterLevel + WATER_INCREASE))
+            it.waterLevel = (minOf(120, it.waterLevel + WATER_INCREASE))
             startRandomInfection()
             onPlantEvent(localPlant)
         }

@@ -12,5 +12,6 @@ data class Plant(
     var lastUpdated: Timestamp = Timestamp.now(),
     val difficulty: String = "Easy",
     var infected: Boolean = false,
-    var protectedFromSun : Boolean = false
+    var protectedFromSun : Boolean = false,
+    var deathCause : String = ""
 )

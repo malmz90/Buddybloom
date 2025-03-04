@@ -32,10 +32,17 @@ class ChoosePlantFragment : Fragment() {
 
         pvm = ViewModelProvider(requireActivity())[PlantViewModel::class.java]
 
+        pvm.plantDiedFromOverWatering.observe(viewLifecycleOwner) { isDead ->
+            if (isDead) {
+                showOverWateringDialog()
+                pvm.resetOverWateringDeathState() // Reset Plant
+            }
+        }
+
         pvm.plantJustDied.observe(viewLifecycleOwner) { justDied ->
             if (justDied) {
                 showPlantDeathDialog()
-                pvm.resetPlantDeathState()
+                pvm.resetPlantDeathState()  // Reset Plant
             }
         }
 
@@ -77,10 +84,21 @@ class ChoosePlantFragment : Fragment() {
         binding.rvChoosePlant.adapter = adapter
     }
 
+    private fun showOverWateringDialog() {
+        val dialog = AlertDialog.Builder(requireContext())
+            .setTitle("Your Plant Has Died")
+            .setMessage("Oh no! Your plant drowned. You watered it to much. Don't worry, you can choose a new plant now!")
+            .setPositiveButton("OK") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .create()
+
+        dialog.show()
+    }
     private fun showPlantDeathDialog() {
         val dialog = AlertDialog.Builder(requireContext())
             .setTitle("Your Plant Has Died")
-            .setMessage("Oh no! Your plant couldn't survive. It needed more water and care. Don't worry, you can choose a new plant now!")
+            .setMessage("Oh no! Your plant couldn't survive. It needed more water or care. Don't worry, you can choose a new plant now!")
             .setPositiveButton("OK") { dialog, _ ->
                 dialog.dismiss()
             }

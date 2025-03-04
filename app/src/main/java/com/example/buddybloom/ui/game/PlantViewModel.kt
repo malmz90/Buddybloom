@@ -23,6 +23,9 @@ class PlantViewModel : ViewModel() {
     private val _plantJustDied = MutableLiveData(false)
     val plantJustDied: LiveData<Boolean> get() = _plantJustDied
 
+    private val _plantDiedFromOverWatering = MutableLiveData(false)
+    val plantDiedFromOverWatering: LiveData<Boolean> get() = _plantDiedFromOverWatering
+
     //TODO Make sure UI observes these (show a toast?)
     /**
      * Potential error messages from Firestore or GameManager.
@@ -39,17 +42,40 @@ class PlantViewModel : ViewModel() {
         scope = viewModelScope,
         onPlantEvent = { plant ->
             _localSessionPlant.postValue(plant)
+
             if (plant == null && _localSessionPlant.value != null) {
-                // The plant was not null before, but now it is - this means it just died
-                _plantJustDied.postValue(true)
-                // Save the dead plant to history before it's deleted
+
+                val lastWaterLevel = _localSessionPlant.value?.waterLevel ?: 0
+                val maxWaterLevel = 100
+
+                if (lastWaterLevel > maxWaterLevel) {
+                    Log.d("PlantViewModel", " Plant died from overwatering!")
+                    _plantDiedFromOverWatering.value = false // Force Updating
+                    _plantDiedFromOverWatering.value = true
+                } else {
+                    Log.d("PlantViewModel", " Plant died from lack of water or nutrients!")
+                    _plantJustDied.value = false // Force Updating
+                    _plantJustDied.value = true
+                }
+
                 _localSessionPlant.value?.let { deadPlant ->
                     savePlantToHistoryRemote(deadPlant)
                 }
+
+                deletePlantFromRemote()
             }
-            if (plant == null) {
-                deletePlantFromRemote() // Delete plant when it dies
-            }
+//            _localSessionPlant.postValue(plant)
+//            if (plant == null && _localSessionPlant.value != null) {
+//                // The plant was not null before, but now it is - this means it just died
+//                _plantJustDied.postValue(true)
+//                // Save the dead plant to history before it's deleted
+//                _localSessionPlant.value?.let { deadPlant ->
+//                    savePlantToHistoryRemote(deadPlant)
+//                }
+//            }
+//            if (plant == null) {
+//                deletePlantFromRemote() // Delete plant when it dies
+//            }
         },
         onAutoSave = { plant ->
             updateRemotePlant(plant)
@@ -58,6 +84,9 @@ class PlantViewModel : ViewModel() {
 
     fun resetPlantDeathState() {
         _plantJustDied.postValue(false)
+    }
+    fun resetOverWateringDeathState() {
+        _plantDiedFromOverWatering.postValue(false)
     }
 
     /** Delete plant on Firestore */
