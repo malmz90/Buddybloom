@@ -12,7 +12,8 @@
     Check up on it daily or there will be consequences\n
         for your plant... \n\n
     So, \n how many daystreaks will you pass!? \n
-        Try it out and share with your friends!</string>
+        Try it out and share with your friends! \n\n
+    🤖 We use AI generated pictures in this app 🤖</string>
     <string name="forgot_password">Forgot Password?</string>
     <string name="reset_link">A reset link will be sent \n to your email!</string>
     <string name="confirm">CONFIRM</string>
@@ -48,6 +49,9 @@
     <string name="add_plant">ADD PLANT</string>
     <string name="replace_plant">Are you sure you want to replace your current plant?</string>
     <string name="flower">Flower</string>
+    <string name="add_plant_caps">ADD PLANT</string>
+    <string name="info_dead_plant">Oh no! Your plant couldn\'t survive. \n It needed more water and care. \n Don\'t worry, you can choose a new plant now!</string>
+    <string name="yes_please">YES. PLEASE!</string>
 
     <!--Flower descriptions-->
     <string name="desc_hibiscus">Hibiscus \n Loves sun and temperatures around 15-32°. Should be kept moist but not soggy. \nNeeds fertilizing every few weeks.
@@ -69,4 +73,5 @@ Watch out for leaf drop, spider mites, and scale insects!
         \n\nDifficulty: Easy</string>
 
     <string name="default_web_client_id">252935872818-gssfq5e5j2t58fujfss3p8htsjevbio7.apps.googleusercontent.com</string>
+    <string name="buddybloom_master">BuddyBloom Master!</string>
 </resources>

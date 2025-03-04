@@ -30,22 +30,6 @@ class LoginFragment : Fragment() {
     private lateinit var binding: FragmentLoginBinding
     private lateinit var avm: AccountViewModel
 
-    private val googleSignInLauncher = registerForActivityResult(
-        ActivityResultContracts.StartActivityForResult()
-    ) { result ->
-        val data = result.data
-        val task = GoogleSignIn.getSignedInAccountFromIntent(data)
-        avm.authenticateWithGoogle(task) { success ->
-            if (success) {
-                Toast.makeText(context, "Google sign-in successful!", Toast.LENGTH_SHORT)
-                    .show()
-                navigateToGameActivity()
-            } else {
-                Toast.makeText(context, "Google sign-in failed", Toast.LENGTH_SHORT).show()
-            }
-        }
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -79,13 +63,12 @@ class LoginFragment : Fragment() {
         activity?.binding?.btnBack?.visibility = View.VISIBLE
 
         //hides keyboard
-        //TODO testa
         view.setOnClickListener {
             activity?.hideKeyboard()
         }
 
         //TODO remove after testing.
-        testFunction()
+//        testFunction()
 
         binding.tvForgot.setOnClickListener {
             forgotPassword()
@@ -93,12 +76,6 @@ class LoginFragment : Fragment() {
         binding.btnLogin.setOnClickListener {
             loginUser()
         }
-
-        binding.btnGoogle.setOnClickListener {
-            val signInIntent = avm.getGoogleSignInIntent()
-            googleSignInLauncher.launch(signInIntent)
-        }
-
 
         avm.loginResult.observe(viewLifecycleOwner) { success ->
             binding.progressBar.visibility = View.GONE
@@ -134,10 +111,10 @@ class LoginFragment : Fragment() {
         }
     }
 
-    private fun testFunction() {
-        binding.etEmail.setText("mag30@test.com")
-        binding.etPass.setText("!Magnus1")
-    }
+//    private fun testFunction() {
+//        binding.etEmail.setText("cai@cai.se")
+//        binding.etPass.setText("Cai!1234")
+//    }
 
     private fun loginUser() {
         val email = binding.etEmail.text.toString().trim()

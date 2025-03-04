@@ -6,16 +6,16 @@ import android.widget.TextView
 import androidx.lifecycle.ViewModelProvider
 import com.example.buddybloom.R
 import com.example.buddybloom.data.model.Plant
+import com.example.buddybloom.databinding.DialogAddPlantBinding
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import com.example.buddybloom.databinding.FragmentDialogAddPlantBinding
 import com.example.buddybloom.ui.game.PlantViewModel
 import com.example.buddybloom.ui.game.ReplacePlantDialogFragment
 
 class AddPlantDialogFragment(private val newPlant: Plant) :
-    BottomSheetDialogFragment(R.layout.fragment_dialog_add_plant) {
+    BottomSheetDialogFragment(R.layout.dialog_add_plant) {
 
     private lateinit var pvm: PlantViewModel
-    private var _binding: FragmentDialogAddPlantBinding? = null
+    private var _binding: DialogAddPlantBinding? = null
     private val binding get() = _binding!!
 
     override fun onCreateView(
@@ -24,7 +24,7 @@ class AddPlantDialogFragment(private val newPlant: Plant) :
         savedInstanceState: Bundle?
     ): View {
         pvm = ViewModelProvider(requireActivity())[PlantViewModel::class.java]
-        _binding = FragmentDialogAddPlantBinding.inflate(inflater, container, false)
+        _binding = DialogAddPlantBinding.inflate(inflater, container, false)
         return binding.root
     }
 
