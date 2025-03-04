@@ -5,12 +5,12 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingVertical="10dp">
-<!-- TODO: Change to correct icon -->
+
     <ImageView
         android:id="@+id/iv_history_icon"
         android:layout_width="34dp"
         android:layout_height="34dp"
-        android:src="@drawable/icon_obs"
+        android:src="@drawable/icon_day_count"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -26,6 +26,6 @@
         app:layout_constraintStart_toEndOf="@+id/iv_history_icon"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.5"
-        tools:text="You managed to keep your hibiscus alive for 7 days!" />
+        tools:text="@string/managed_alive" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

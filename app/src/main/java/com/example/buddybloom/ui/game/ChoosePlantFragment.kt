@@ -81,6 +81,7 @@ class ChoosePlantFragment : Fragment() {
         binding.rvChoosePlant.adapter = adapter
     }
 
+    //dead plant dialog
     private fun showPlantDeathDialog() {
         val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_dead_plant, null)
             val dialog = AlertDialog.Builder(requireContext())
@@ -102,6 +103,7 @@ class ChoosePlantFragment : Fragment() {
         dialog.show()
     }
 
+    //add plant dialog
     private fun showAddPlantDialogFragment(plant: Plant) {
         parentFragmentManager.beginTransaction().apply {
             show(AddPlantDialogFragment(plant))
