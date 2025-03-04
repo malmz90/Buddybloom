@@ -28,7 +28,7 @@
             android:fontFamily="@font/manjari"
             android:gravity="center"
             android:paddingTop="4dp"
-            android:text="00"
+            android:text="@string/_00"
             android:textColor="@color/black"
             android:textSize="14sp"
             android:textStyle="bold" />

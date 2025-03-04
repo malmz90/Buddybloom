@@ -79,7 +79,7 @@
             android:layout_marginLeft="115dp"
             android:layout_marginTop="7dp"
             android:elevation="12dp"
-            android:text="3"
+            android:text="@string/_3"
             android:textColor="@color/darkbrown"
             android:textSize="28sp"
             android:textStyle="bold"
@@ -242,7 +242,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
-                    android:text="Water Level"
+                    android:text="@string/water_level_"
                     android:textColor="@color/darkgreen"
                     android:textSize="14sp" />
 
@@ -251,7 +251,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
-                    android:text="100%"
+                    android:text="@string/_100"
                     android:textColor="@color/darkgreen"
                     android:textSize="16sp"
                     android:textStyle="bold" />
@@ -272,20 +272,6 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/linearLayout_waterbar" />
-
-<!--            <ImageButton-->
-<!--                android:id="@+id/btn_refresh"-->
-<!--                android:layout_width="40dp"-->
-<!--                android:layout_height="40dp"-->
-<!--                android:background="@drawable/border_circle"-->
-<!--                android:backgroundTint="@color/turquise"-->
-<!--                android:padding="8dp"-->
-<!--                android:scaleType="fitCenter"-->
-<!--                android:src="@drawable/icon_refresh"-->
-<!--                app:layout_constraintBottom_toBottomOf="parent"-->
-<!--                app:layout_constraintEnd_toEndOf="parent"-->
-<!--                app:layout_constraintStart_toEndOf="@+id/progress_water"-->
-<!--                app:layout_constraintTop_toTopOf="parent" />-->
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <ImageButton
