@@ -73,6 +73,7 @@
     <string name="profile">Profile</string>
     <string name="plant">Plant</string>
     <string name="home">Home</string>
+    <string name="overwatering">Oh no! Your plant couldn\'t survive. \nYou watered it too much. Don\'t worry, you can choose a new plant now!</string>
 
     <!--Flower descriptions-->
     <string name="desc_hibiscus">Hibiscus \n Loves sun and temperatures around 15-32°. Should be kept moist but not soggy. \nNeeds fertilizing every few weeks.
