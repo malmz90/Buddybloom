@@ -26,7 +26,6 @@ class ChoosePlantFragment : Fragment() {
     private lateinit var adapter: ChoosePlantRecyclerAdapter
     private val plants = mutableListOf<Plant>()
     private lateinit var pvm: PlantViewModel
-
     private lateinit var soundPool: SoundPool
     private var gameOver: Int = 0
 
@@ -54,7 +53,6 @@ class ChoosePlantFragment : Fragment() {
             .build()
 
         gameOver = soundPool.load(requireContext(), R.raw.game_over, 1)
-
 
         pvm.plantDiedFromOverWatering.observe(viewLifecycleOwner) { justDrowned ->
             if (justDrowned) {
@@ -108,7 +106,6 @@ class ChoosePlantFragment : Fragment() {
         binding.rvChoosePlant.adapter = adapter
     }
 
-
     private fun showOverWateringDialog() {
         playDeadSound()
         val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_dead_plant, null)
@@ -131,7 +128,6 @@ class ChoosePlantFragment : Fragment() {
 
         dialog.show()
     }
-
 
     //dead plant dialog
     private fun showPlantDeathDialog() {

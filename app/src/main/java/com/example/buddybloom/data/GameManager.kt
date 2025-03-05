@@ -30,7 +30,6 @@ class GameManager
      * Choose what should happen when the auto save timer triggers.
      */
     private val onAutoSave: (Plant) -> Unit
-    //TODO Add onError callback?
 ) {
 
     private object LocalGameState {
@@ -43,27 +42,26 @@ class GameManager
         private const val AUTO_SAVE_MINUTES = 2
 
         //Set game loop timer
-        private const val GAME_LOOP_MINUTES = 1
+        private const val GAME_LOOP_MINUTES = 60
 
         // *** --- Game modifiers. Tune these to balance the game. --- ***
 
         //When the user presses a button in the game
         const val WATER_INCREASE = 10
-        const val WATER_INCREASE_EASY = 8
-        const val WATER_INCREASE_MEDIUM = 5
-        const val WATER_INCREASE_HARD = 2
+        const val WATERSPRAY_INCREASE_EASY = 8
+        const val WATERSPRAY_INCREASE_MEDIUM = 5
+        const val WATERSPRAY_INCREASE_HARD = 2
 
-        const val FERTILIZER_INCREASE_EASY = 10
+        const val FERTILIZER_INCREASE_EASY = 8
         const val FERTILIZER_INCREASE_MEDIUM = 5
         const val FERTILIZER_INCREASE_HARD = 3
 
-        //TODO remake the plant model for easier handling of these?
-        private const val WATER_DECREASE_EASY = 7
-        private const val FERTILIZER_DECREASE_EASY = 3
-        private const val WATER_DECREASE_MEDIUM = 10
-        private const val FERTILIZER_DECREASE_MEDIUM = 5
-        private const val WATER_DECREASE_HARD = 15
-        private const val FERTILIZER_DECREASE_HARD = 8
+        private const val WATER_DECREASE_EASY = 4
+        private const val FERTILIZER_DECREASE_EASY = 1
+        private const val WATER_DECREASE_MEDIUM = 7
+        private const val FERTILIZER_DECREASE_MEDIUM = 3
+        private const val WATER_DECREASE_HARD = 10
+        private const val FERTILIZER_DECREASE_HARD = 5
 
         // *** -------------------------------------------------------- ***
 
@@ -73,8 +71,6 @@ class GameManager
         //Do not modify these
         private const val AUTO_SAVE_TIMER = (AUTO_SAVE_MINUTES * 60 * 1000).toLong()
         private const val GAME_LOOP_TIMER = (GAME_LOOP_MINUTES * 60 * 1000).toLong()
-
-        //TODO Add weather modifiers
     }
 
     init {
@@ -100,7 +96,7 @@ class GameManager
                 onPlantEvent(null)  // Notify viewmodel plant is dead
                 return  // Abort loop
             }
-            else if ((localPlant?.waterLevel ?: 0) > 100) {
+            else if ((localPlant?.waterLevel ?: 0) > 120) {
                 Log.d("GameManager", "Plant died due to overwatering.")
                 isPlantDead = true
                 onPlantEvent(null)  // Notify plant is dead
@@ -195,12 +191,12 @@ class GameManager
      */
     fun waterPlant() {
         localPlant?.let {
-            it.waterLevel = (minOf(120, it.waterLevel + WATER_INCREASE))
+            it.waterLevel = (minOf(140, it.waterLevel + WATER_INCREASE))
             startRandomInfection()
             onPlantEvent(localPlant)
             // triggers to kill plant if overWatering plant when user presses watering button,
             // instead of waiting for loop
-            if (it.waterLevel > 100) {
+            if (it.waterLevel > 120) {
                 onPlantEvent(null)
             } else {
                 onPlantEvent(localPlant)
@@ -215,10 +211,10 @@ class GameManager
     fun sprayWaterPlant(){
         localPlant?.let {
             it.waterLevel = when (it.difficulty.lowercase()) {
-                "medium" -> minOf(100, it.waterLevel + WATER_INCREASE_MEDIUM)
-                "hard" -> minOf(100, it.waterLevel + WATER_INCREASE_HARD)
+                "medium" -> minOf(100, it.waterLevel + WATERSPRAY_INCREASE_MEDIUM)
+                "hard" -> minOf(100, it.waterLevel + WATERSPRAY_INCREASE_HARD)
                 else -> {
-                    minOf(100, it.waterLevel + WATER_INCREASE_EASY)
+                    minOf(100, it.waterLevel + WATERSPRAY_INCREASE_EASY)
                 }
             }
             onPlantEvent(localPlant)
@@ -252,15 +248,12 @@ class GameManager
             } else {
                 it.waterLevel = maxOf(0, it.waterLevel - sunnyLevel.toInt())
             }
-            Log.d("!!!", "Sun protection ${localPlant!!.protectedFromSun}")
-            Log.d("!!!", "baseLevel: ${baseLevel} sunnyLevel: ${sunnyLevel}")
         }
     }
 
     fun toggleBlinds() {
         localPlant?.let {
             it.protectedFromSun = !it.protectedFromSun
-            Log.d("!!!", "blinds ${localPlant!!.protectedFromSun}")
         }
     }
 

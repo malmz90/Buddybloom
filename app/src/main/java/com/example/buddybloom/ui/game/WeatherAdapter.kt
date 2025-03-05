@@ -12,7 +12,6 @@ import com.example.buddybloom.data.model.WeatherReport
 class WeatherAdapter(private var dailyWeatherReport: WeatherReport.Daily?) :
     RecyclerView.Adapter<WeatherAdapter.WeatherViewHolder>() {
     inner class WeatherViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-//        val textCardView: CardView = itemView.findViewById(R.id.cv_text)
         val tvHour: TextView = itemView.findViewById(R.id.tv_hour)
         val weatherIcon: ImageView = itemView.findViewById(R.id.iv_weather)
     }
@@ -41,39 +40,6 @@ class WeatherAdapter(private var dailyWeatherReport: WeatherReport.Daily?) :
             null -> R.drawable.icon_cloudy
         }
         holder.weatherIcon.setImageResource(imageId)
-
-
-        /*val currentWeather = dailyWeatherReport?.dailyReports?.get(position)
-        currentWeather?.let {
-            holder.dayText.text = it.weekDay?.uppercase() ?: "---"
-            val background = GradientDrawable().apply {
-                cornerRadius = 7f
-                color = ColorStateList.valueOf(
-                    if (position == 0) {
-                        holder.itemView.context.getColor(R.color.day_green)
-                    } else {
-                        when (currentWeather.weekDay?.uppercase()) {
-                            "SAT", "SUN" -> holder.itemView.context.getColor(R.color.day_red)
-                            else -> {
-                                holder.itemView.context.getColor(R.color.day_blue)
-                            }
-                        }
-                    }
-                )
-            }
-            holder.textCardView.background = background
-            holder.weatherIcon.setImageResource(
-                when (it.condition) {
-                    WeatherReport.Condition.SUNNY -> R.drawable.icon_sunny
-                    //TODO Add the correct icons when they are added to the project!
-                    WeatherReport.Condition.CLOUDY -> R.drawable.icon_obs
-                    WeatherReport.Condition.RAIN -> R.drawable.icon_obs
-                    null -> R.drawable.icon_obs
-                }
-            )
-            val tempString = "${it.temperature}°C"
-            holder.tempText.text = tempString
-        }*/
     }
 
     fun updateAdapter(newReport: WeatherReport.Daily) {

@@ -1,7 +1,6 @@
 package com.example.buddybloom.ui.authentication
 
 import android.content.Intent
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -9,10 +8,8 @@ import androidx.lifecycle.viewModelScope
 import com.example.buddybloom.data.model.User
 import com.example.buddybloom.data.repository.AccountRepository
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
-import com.google.android.gms.auth.api.signin.GoogleSignInOptionsExtension
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -37,10 +34,6 @@ class AccountViewModel(private val accountRepository: AccountRepository) : ViewM
     // LiveData for update Email
     private val _updateEmailStatus = MutableLiveData<Result<Unit>>()
     val updateEmailStatus: LiveData<Result<Unit>> get() = _updateEmailStatus
-
-    // LiveData for updateUserName
-    private val _usernameUpdateStatus = MutableLiveData<Result<Unit>>()
-    val usernameUpdateStatus: LiveData<Result<Unit>> = _usernameUpdateStatus
 
     //LiveData for Username and Email
     private val _currentUserData = MutableLiveData<User?>()
@@ -151,11 +144,10 @@ class AccountViewModel(private val accountRepository: AccountRepository) : ViewM
 
     fun updateUserName(newUserName: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            val result = accountRepository.updateUserName(newUserName)
+           accountRepository.updateUserName(newUserName)
                 .onSuccess {
                     loadUserData()
                 }
-            _usernameUpdateStatus.postValue(result)
         }
     }
 
@@ -170,7 +162,6 @@ class AccountViewModel(private val accountRepository: AccountRepository) : ViewM
                 _isLoggingIn.postValue(true)
                 val account = task.getResult(ApiException::class.java)
                 val idToken = account.idToken ?: run {
-                    Log.e("GoogleSignIn", "Google sign-in account is null")
                     callback(false)
                     return@launch
                 }
@@ -184,7 +175,6 @@ class AccountViewModel(private val accountRepository: AccountRepository) : ViewM
                         _errorMessage.postValue(error.message)
                     }
             } catch (e: ApiException) {
-                Log.e("GoogleSignIn", "Google sign-in failed: ${e.statusCode}", e)
                 _isLoggingIn.postValue(false)
                 callback(false)
             }

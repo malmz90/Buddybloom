@@ -1,6 +1,5 @@
 package com.example.buddybloom.ui.game
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -26,9 +25,8 @@ class PlantViewModel : ViewModel() {
     private val _plantDiedFromOverWatering = MutableLiveData(false)
     val plantDiedFromOverWatering: LiveData<Boolean> get() = _plantDiedFromOverWatering
 
-    private val maxWaterLevel = 100
+    private val maxWaterLevel = 120
 
-    //TODO Make sure UI observes these (show a toast?)
     /**
      * Potential error messages from Firestore or GameManager.
      */
@@ -43,33 +41,16 @@ class PlantViewModel : ViewModel() {
     private val gameManager = GameManager(
         scope = viewModelScope,
         onPlantEvent = { plant ->
-//-------------------how it was before----------------------------
-//            _localSessionPlant.postValue(plant)
-//            if (plant == null && _localSessionPlant.value != null) {
-//                // The plant was not null before, but now it is - this means it just died
-//                _plantJustDied.postValue(true)
-//                // Save the dead plant to history before it's deleted
-//                _localSessionPlant.value?.let { deadPlant ->
-//                    savePlantToHistoryRemote(deadPlant)
-//                }
-//            }
-//            if (plant == null) {
-//                deletePlantFromRemote() // Delete plant when it dies
-//            }
-
-// -------------- new to kill and save plant when it dies by different cause
             _localSessionPlant.postValue(plant)
             if (plant == null && _localSessionPlant.value != null) {
                 val lastWaterLevel = _localSessionPlant.value?.waterLevel ?: 0
                 if (lastWaterLevel > maxWaterLevel) {
-                    Log.d("PlantViewModel", "Plant died from overwatering!")
                     _plantDiedFromOverWatering.postValue(true)
                     _localSessionPlant.value?.let { deadPlant ->
                         savePlantToHistoryRemote(deadPlant)
                         deletePlantFromRemote() // Delete plant when it dies
                     }
                 } else {
-                    Log.d("PlantViewModel", "Plant died from lack of water or nutrients!")
                     // The plant was not null before, but now it is - this means it just died
                     _plantJustDied.postValue(true)
                     _localSessionPlant.value?.let { deadPlant ->
@@ -77,10 +58,6 @@ class PlantViewModel : ViewModel() {
                         deletePlantFromRemote() // Delete plant when it dies
                     }
                 }
-//                _localSessionPlant.value?.let { deadPlant ->
-//                    savePlantToHistoryRemote(deadPlant)
-//                    deletePlantFromRemote() // Delete plant when it dies
-//                }
             }
         },
         onAutoSave = { plant ->
@@ -124,7 +101,7 @@ class PlantViewModel : ViewModel() {
     /**
      * Updates the fields of the current plant on Firestore.
      */
-    private fun updateRemotePlant(plant: Plant) {
+     fun updateRemotePlant(plant: Plant) {
         viewModelScope.launch(Dispatchers.IO) {
             plantRepository.updatePlant(plant).onFailure { error ->
                 _errorMessage.postValue(error.message)
@@ -136,7 +113,6 @@ class PlantViewModel : ViewModel() {
      * Fetches the current plant from the remote and checks how many hours have passed since last update.
      * Passes game time for each missing hour and then updates the local game session, live data and on remote.
      */
-    //TODO Move as much as possible of this into the game engine?
     private fun syncPlantFromRemote() {
         viewModelScope.launch(Dispatchers.IO) {
             //Get the plant currently stored on Firebase
@@ -148,7 +124,6 @@ class PlantViewModel : ViewModel() {
             fetchedPlant?.let {
                 val hoursSinceLastUpdate =
                     ((System.currentTimeMillis() - (it.lastUpdated.seconds * 1000)) / (1000 * 60 * 60)).toInt()
-                Log.i("GameEngine", "Hours since last update: $hoursSinceLastUpdate")
                 //Calculate game events since last session
                 if (hoursSinceLastUpdate > 0) {
                     gameManager.runGameLoop(hoursSinceLastUpdate)
@@ -230,5 +205,4 @@ class PlantViewModel : ViewModel() {
                 }
         }
     }
-
 }

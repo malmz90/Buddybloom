@@ -2,14 +2,12 @@ package com.example.buddybloom.ui.authentication
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.ViewModelProvider
 import com.example.buddybloom.ui.AboutInfoFragment
 import com.example.buddybloom.R
@@ -17,7 +15,6 @@ import com.example.buddybloom.data.repository.AccountRepository
 import com.example.buddybloom.databinding.FragmentAuthenticationBinding
 import com.example.buddybloom.ui.game.GameActivity
 import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
 
@@ -34,10 +31,12 @@ class AuthenticationFragment : Fragment() {
 
         avm.authenticateWithGoogle(task) { success ->
             if (success) {
-                Toast.makeText(requireContext(), "Google sign-in successful!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(),
+                    getString(R.string.google_sign_in_successful), Toast.LENGTH_SHORT).show()
                 navigateToGameActivity()
             } else {
-                Toast.makeText(requireContext(), "Google sign-in failed", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(),
+                    getString(R.string.google_sign_in_failed), Toast.LENGTH_SHORT).show()
             }
         }
     }

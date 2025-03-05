@@ -1,14 +1,10 @@
 package com.example.buddybloom.data.repository
 
 import android.content.Intent
-import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import com.example.buddybloom.data.model.User
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.firestore.firestore
@@ -54,8 +50,6 @@ class AccountRepository
 
     /**
      * Registers a new user with the provided email and password.
-     * Callback with a boolean indicating success or failure.
-     * Callback is called upon in the viewmodel to set the registration result (livedata).
      */
     suspend fun registerUser(
         email: String,
@@ -110,7 +104,7 @@ class AccountRepository
                     .setDisplayName(newUserName)
                     .build()
                 user.updateProfile(profileUpdates).await()
-                // Uppdatera Firestore
+                // Update Firestore
                 val userRef = db.collection("users").document(user.uid)
                 userRef.update("name", newUserName).await()
                 Result.success(Unit)

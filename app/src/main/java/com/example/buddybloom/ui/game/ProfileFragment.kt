@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import com.example.buddybloom.R
-import com.example.buddybloom.data.model.User
 import com.example.buddybloom.data.repository.AccountRepository
 import com.example.buddybloom.databinding.FragmentProfileBinding
 import com.example.buddybloom.ui.AboutInfoFragment
@@ -20,7 +19,6 @@ import com.example.buddybloom.ui.authentication.DeleteAccountDialogFragment
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
 
 class ProfileFragment : Fragment() {
 
@@ -62,7 +60,7 @@ class ProfileFragment : Fragment() {
                 } ?: run {
                     binding.etEmail2.setText("")
                     binding.etUsername.setText("")
-                    binding.tvHello.text = "BuddyBloom Master!"
+                    binding.tvHello.text = getString(R.string.buddybloom)
                 }
             }
         }
@@ -74,10 +72,12 @@ class ProfileFragment : Fragment() {
         }
         binding.dailyNotificationsSwitch.setOnCheckedChangeListener{ _,isChecked ->
             if(isChecked){
-                Toast.makeText(requireContext(),"Notifications ON!!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(),
+                    getString(R.string.notifications_on), Toast.LENGTH_SHORT).show()
             }
             else{
-                Toast.makeText(requireContext(),"Notifications OFF!",Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(),
+                    getString(R.string.notifications_off),Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -90,7 +90,7 @@ class ProfileFragment : Fragment() {
         binding.ibSignout.setOnClickListener {
             binding.progressBar.visibility = View.VISIBLE
             avm.signOutUser()
-            Toast.makeText(requireContext(),"Signing out",Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), getString(R.string.signing_out),Toast.LENGTH_SHORT).show()
                     val newIntent = Intent(requireContext(), AuthenticationActivity::class.java)
                     // NEW_TASK starts a new activity and CLEAR_TASK closes activity, so user can not go back without signing in again.
                     newIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
@@ -105,7 +105,8 @@ class ProfileFragment : Fragment() {
         // Need for Update Email
         avm.updateEmailStatus.observe(viewLifecycleOwner) { result ->
             result.onSuccess {
-                Toast.makeText(requireContext(), "Update Success! Verfify before signing in!!.", Toast.LENGTH_LONG).show()
+                Toast.makeText(requireContext(),
+                    getString(R.string.update_success_verify_before_signing_in), Toast.LENGTH_LONG).show()
 
                 //Navigates to Login page
                 val intent = Intent(requireContext(), AuthenticationActivity::class.java)
@@ -124,11 +125,11 @@ class ProfileFragment : Fragment() {
            when{
                newUserName.isNotEmpty() -> { avm.updateUserName(newUserName)
                    Toast.makeText(requireContext(),
-                       "User name updated!",Toast.LENGTH_SHORT).show()
+                       getString(R.string.user_name_updated),Toast.LENGTH_SHORT).show()
                }
                newMail.isNotEmpty() -> { avm.updateUserEmail(newMail) }
                else -> Toast.makeText(requireContext(),
-                   " At least one field needs to be filled!", Toast.LENGTH_SHORT).show()
+                   getString(R.string.at_least_one_field_needs_to_be_filled), Toast.LENGTH_SHORT).show()
            }
         }
     }

@@ -4,7 +4,6 @@ import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.util.Log
 import android.util.Patterns
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -14,14 +13,12 @@ import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import com.example.buddybloom.databinding.FragmentLoginBinding
 import android.widget.Button
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import com.example.buddybloom.ui.game.GameActivity
 import com.example.buddybloom.R
 import com.example.buddybloom.data.repository.AccountRepository
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.gms.common.api.ApiException
 import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.auth.FirebaseAuth
 
@@ -67,9 +64,6 @@ class LoginFragment : Fragment() {
             activity?.hideKeyboard()
         }
 
-        //TODO remove after testing.
-//        testFunction()
-
         binding.tvForgot.setOnClickListener {
             forgotPassword()
         }
@@ -80,10 +74,11 @@ class LoginFragment : Fragment() {
         avm.loginResult.observe(viewLifecycleOwner) { success ->
             binding.progressBar.visibility = View.GONE
             if (success) {
-                Toast.makeText(context, "Login successful!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, getString(R.string.login_successful), Toast.LENGTH_SHORT).show()
                 navigateToGameActivity()
             } else {
-                Toast.makeText(context, "Login failed! Check your fields", Toast.LENGTH_SHORT)
+                Toast.makeText(context,
+                    getString(R.string.login_failed_check_your_fields), Toast.LENGTH_SHORT)
                     .show()
             }
         }
@@ -97,24 +92,22 @@ class LoginFragment : Fragment() {
                 ).show()
                 navigateToGameActivity()
             } else {
-                Toast.makeText(requireContext(), "Failed to log in with Google", Toast.LENGTH_SHORT)
+                Toast.makeText(requireContext(),
+                    getString(R.string.failed_to_log_in_with_google), Toast.LENGTH_SHORT)
                     .show()
             }
         }
 
         avm.resetPasswordResult.observe(viewLifecycleOwner) { success ->
             if (success) {
-                Toast.makeText(requireContext(), "Check your Email!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(),
+                    getString(R.string.check_your_email), Toast.LENGTH_SHORT).show()
             } else {
-                Toast.makeText(requireContext(), "Invalid Email", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(),
+                    getString(R.string.invalid_email), Toast.LENGTH_SHORT).show()
             }
         }
     }
-
-//    private fun testFunction() {
-//        binding.etEmail.setText("cai@cai.se")
-//        binding.etPass.setText("Cai!1234")
-//    }
 
     private fun loginUser() {
         val email = binding.etEmail.text.toString().trim()
@@ -127,22 +120,21 @@ class LoginFragment : Fragment() {
         var isValid = true
 
         if (email.isEmpty()) {
-            binding.textinputEtLayout.error = "Email is required!"
+            binding.textinputEtLayout.error = getString(R.string.email_is_required)
             isValid = false
         }
         if (password.isEmpty()) {
-            binding.textinputPwLayout.error = "Password is required!"
+            binding.textinputPwLayout.error = getString(R.string.password_is_required)
             isValid = false
         }
         if (!isValid) return
 
         if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            binding.textinputEtLayout.error = "Please enter a valid Email address"
+            binding.textinputEtLayout.error = getString(R.string.enter_a_valid_email)
             return
         }
         if (password.length < 8) {
-            binding.textinputPwLayout.error = "The password must be at least 8 characters long " +
-                    "and contain an uppercase letter, lowercase letter, number and special character!"
+            binding.textinputPwLayout.error = getString(R.string.password_contains)
             return
         }
 
@@ -172,7 +164,8 @@ class LoginFragment : Fragment() {
             val email = userEmail?.text.toString().trim()
 
             if (email.isEmpty() || !Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                Toast.makeText(requireContext(), "Enter a valid Email", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(),
+                    getString(R.string.enter_a_valid_email), Toast.LENGTH_SHORT).show()
             } else {
                 avm.sendPasswordResetEmail(email)
                 dialog.dismiss()

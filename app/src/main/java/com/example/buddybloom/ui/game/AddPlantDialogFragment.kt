@@ -42,7 +42,6 @@ class AddPlantDialogFragment(private val newPlant: Plant) :
                 if (currentPlant == null) {
                     pvm.savePlantToRemote(newPlant)
                     pvm.resetPlantDeath()
-
                     dismiss()
                 } else {
                     ReplacePlantDialogFragment(newPlant).show(parentFragmentManager, null)

@@ -4,8 +4,6 @@ import android.content.Intent
 import android.media.AudioAttributes
 import android.media.SoundPool
 import android.os.Bundle
-import android.os.Looper.prepare
-import android.util.Log
 import android.widget.ImageView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -48,19 +46,14 @@ class IntroActivity : AppCompatActivity() {
 
         // Loading sound
         soundId = soundPool.load(this, R.raw.intro_melody, 1)
-        Log.d("SoundPool", "Sound ID: $soundId")
 
         soundPool.setOnLoadCompleteListener { _, _, status ->
-            Log.d("SoundPool", "Load status: $status")
             if (status == 0) {
                 // Playing sound
                 soundPool.play(soundId, 1f, 1f, 0, 0, 1f)
-                Log.d("Soundpool","Success play sound!")
-            }  else {
-            Log.d("SoundPool", "Failed to load sound")
-           }
             }
         }
+    }
 
     // Cleans up when activity destroys
     override fun onDestroy() {
