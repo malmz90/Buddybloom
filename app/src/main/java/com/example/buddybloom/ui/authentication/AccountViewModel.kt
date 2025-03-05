@@ -160,6 +160,7 @@ class AccountViewModel(private val accountRepository: AccountRepository) : ViewM
     }
 
     fun getGoogleSignInIntent(): Intent {
+        _isLoggingIn.value = true
         return accountRepository.signInGoogleIntent()
     }
 

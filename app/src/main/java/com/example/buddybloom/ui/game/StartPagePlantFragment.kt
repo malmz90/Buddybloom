@@ -61,7 +61,6 @@ class StartPagePlantFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Log.d("!!!", "PlantFragment onViewCreated")
 
         pvm.errorMessage.observe(viewLifecycleOwner) { message ->
             message?.let {
@@ -76,6 +75,13 @@ class StartPagePlantFragment : Fragment() {
         }
 
         binding.ivBlinds.setImageResource(R.drawable.iconimg_blinds)
+
+        pvm.plantJustDied.observe(viewLifecycleOwner) { justDied ->
+            if(justDied) {
+                checkPlantDeath()
+                pvm.resetPlantDeathState()
+            }
+        }
 
         pvm.localSessionPlant.observe(viewLifecycleOwner) { plant ->
 
@@ -139,9 +145,6 @@ class StartPagePlantFragment : Fragment() {
 
         binding.apply {
 
-
-
-
 //------------------------------------WATER---------------------------------------------------------
             btnWater.setOnClickListener {
 
@@ -170,6 +173,7 @@ class StartPagePlantFragment : Fragment() {
                         binding.btnWater.setTextColor(Color.parseColor("#246246"))
                         binding.btnWater.isEnabled = true
                         pvm.waterPlant()
+                        checkPlantDeath()
                         showInfectedBugGif()}
                         , 3000)
                 }
@@ -191,13 +195,12 @@ class StartPagePlantFragment : Fragment() {
                     Handler(Looper.getMainLooper()).postDelayed({
                         binding.ivAnimationWateringCan.visibility = View.INVISIBLE
                         pvm.waterSpray()
+                        checkPlantDeath()
                     }, 3000)
 
 
                 }
             }
-
-
 
 
 //------------------------------------FERTILIZE-------------------------------------------------------
@@ -218,10 +221,10 @@ class StartPagePlantFragment : Fragment() {
                     Handler(Looper.getMainLooper()).postDelayed({
                         binding.ivAnimationWateringCan.visibility = View.INVISIBLE
                         pvm.fertilizePlant()
+                        checkPlantDeath()
                     }, 3000)
                 }
             }
-
 
 
 //------------------------------------BLINDS-------------------------------------------------------
@@ -245,14 +248,11 @@ class StartPagePlantFragment : Fragment() {
             }
 
 
-
-
 //------------------------------------WEATHER-------------------------------------------------------
             binding.btnWeather.setOnClickListener {
                 val weatherDialog = WeatherDialogFragment()
                 weatherDialog.show(parentFragmentManager, "WeatherDialogFragment")
             }
-
 
 
 //------------------------------------BUGSPRAY-------------------------------------------------------
@@ -347,21 +347,76 @@ class StartPagePlantFragment : Fragment() {
         }
     }
 //*******************
+
+    private fun getPlantStage(plant:Plant):Int {
+        val daysOld = ((System.currentTimeMillis() - (plant.createdAt.seconds * 1000)) / (1000 * 60 * 60 * 24))
+
+        return when {
+            daysOld >= 5 -> 6
+            daysOld >= 4 -> 5
+            daysOld >= 3 -> 4
+            daysOld >= 2 -> 3
+            daysOld >= 1 -> 2
+            else -> 1
+        }
+    }
+
     /**
-     * Returns the correct image based on how old the plant is.
+     * Returns the correct image based on how old the plant is and in which stage it dies.
      */
-    private fun getPlantImageId(plant: Plant?): Int {
+    private fun getPlantImageId(plant: Plant?, deathStage: Int? = null): Int {
         if (plant == null) return R.drawable.icon_obs
 
         // Check if plant is dried (water level below 30)
         if (plant.waterLevel < 30) {
+            val stage = deathStage ?: getPlantStage(plant)
             return when (plant.name.lowercase()) {
-                "elephant" -> R.drawable.flower_elefant5
-                "hibiscus" -> R.drawable.flower_hibiscus5
-                "zebra" -> R.drawable.flower_zebra7
-                "ficus" -> R.drawable.flower_ficus6
-                "coleus" -> R.drawable.flower_coleus7
-                else -> R.drawable.flower_elefant5
+                "elephant" ->  when(stage) {
+                    1 -> R.drawable.flower_elephant_dead1_2
+                    2 -> R.drawable.flower_elephant_dead1_2
+                    3 -> R.drawable.flower_elephant_dead3
+                    4 -> R.drawable.flower_elephant_dead4
+                    5 -> R.drawable.flower_elephant_dead5
+                    6 -> R.drawable.flower_elephant_dead6
+                    else -> R.drawable.flower_elephant_dead1_2
+                }
+                "hibiscus" -> when(stage) {
+                    1 -> R.drawable.flower_hibiscus_dead1
+                    2 -> R.drawable.flower_hibiscus_dead2_3
+                    3 -> R.drawable.flower_hibiscus_dead2_3
+                    4 -> R.drawable.flower_hibiscus_dead4
+                    5 -> R.drawable.flower_hibiscus_dead5
+                    6 -> R.drawable.flower_hibiscus_dead5
+                    else -> R.drawable.flower_hibiscus_dead1
+                }
+                "zebra" -> when(stage) {
+                    1 -> R.drawable.flower_zebra_dead1
+                    2 -> R.drawable.flower_zebra_dead2
+                    3 -> R.drawable.flower_zebra_dead3
+                    4 -> R.drawable.flower_zebra_dead4
+                    5 -> R.drawable.flower_zebra_dead5
+                    6 -> R.drawable.flower_zebra_dead6
+                    else -> R.drawable.flower_zebra_dead1
+                }
+                "ficus" -> when(stage) {
+                    1 -> R.drawable.flower_ficus_dead1_2
+                    2 -> R.drawable.flower_ficus_dead1_2
+                    3 -> R.drawable.flower_ficus_dead3
+                    4 -> R.drawable.flower_ficus_dead4
+                    5 -> R.drawable.flower_ficus_dead5
+                    6 -> R.drawable.flower_ficus_dead6
+                    else -> R.drawable.flower_ficus_dead1_2
+                }
+                "coleus" -> when(stage) {
+                    1 -> R.drawable.flower_coleus_dead1
+                    2 -> R.drawable.flower_coleus_dead2
+                    3 -> R.drawable.flower_coleus_dead3
+                    4 -> R.drawable.flower_coleus_dead4
+                    5 -> R.drawable.flower_coleus_dead5
+                    6 -> R.drawable.flower_coleus_dead5
+                    else -> R.drawable.flower_coleus_dead1
+                }
+                else -> R.drawable.flower_elephant_dead1_2
             }
         }
 
@@ -369,19 +424,24 @@ class StartPagePlantFragment : Fragment() {
             ((System.currentTimeMillis() - (plant.createdAt.seconds * 1000)) / (1000 * 60 * 60 * 24))
 
         val stage = when {
-            daysOld >= 6 -> 4
-            daysOld >= 4 -> 3
-            daysOld >= 2 -> 2
-            else -> 1
+                daysOld >= 5 -> 6
+                daysOld >= 4 -> 5
+                daysOld >= 3 -> 4
+                daysOld >= 2 -> 3
+                daysOld >= 1 -> 2
+                else -> 1
         }
 
+        //sets the growing plant pitures
         return when (plant.name.lowercase()) {
             "elephant" -> when (stage) {
-                1 -> R.drawable.flower_elefant1
-                2 -> R.drawable.flower_elefant2
-                3 -> R.drawable.flower_elefant3
-                4 -> R.drawable.flower_elefant4
-                else -> R.drawable.flower_elefant1
+                1 -> R.drawable.flower_elephant1
+                2 -> R.drawable.flower_elephant2
+                3 -> R.drawable.flower_elephant3
+                4 -> R.drawable.flower_elephant4
+                5 -> R.drawable.flower_elephant5
+                6 -> R.drawable.flower_elephant6
+                else -> R.drawable.flower_elephant1
             }
 
             "hibiscus" -> when (stage) {
@@ -389,6 +449,8 @@ class StartPagePlantFragment : Fragment() {
                 2 -> R.drawable.flower_hibiscus2
                 3 -> R.drawable.flower_hibiscus3
                 4 -> R.drawable.flower_hibiscus4
+                5 -> R.drawable.flower_hibiscus5
+                6 -> R.drawable.flower_hibiscus5
                 else -> R.drawable.flower_hibiscus1
             }
 
@@ -397,14 +459,18 @@ class StartPagePlantFragment : Fragment() {
                 2 -> R.drawable.flower_zebra2
                 3 -> R.drawable.flower_zebra3
                 4 -> R.drawable.flower_zebra4
+                5 -> R.drawable.flower_zebra5
+                6 -> R.drawable.flower_zebra6
                 else -> R.drawable.flower_zebra1
             }
 
             "ficus" -> when (stage) {
                 1 -> R.drawable.flower_ficus1
                 2 -> R.drawable.flower_ficus2
-                3 -> R.drawable.flower_ficus4
-                4 -> R.drawable.flower_ficus5
+                3 -> R.drawable.flower_ficus3
+                4 -> R.drawable.flower_ficus4
+                5 -> R.drawable.flower_ficus5
+                6 -> R.drawable.flower_ficus6
                 else -> R.drawable.flower_ficus1
             }
 
@@ -413,10 +479,24 @@ class StartPagePlantFragment : Fragment() {
                 2 -> R.drawable.flower_coleus2
                 3 -> R.drawable.flower_coleus3
                 4 -> R.drawable.flower_coleus4
-                else -> R.drawable.flower_coleus7
+                5 -> R.drawable.flower_coleus5
+                6 -> R.drawable.flower_coleus5
+                else -> R.drawable.flower_coleus1
             }
 
-            else -> R.drawable.flower_elefant1
+            else -> R.drawable.flower_elephant1
+        }
+    }
+
+    //Checks if plant is dead and sets right picture based on stage
+    private fun checkPlantDeath() {
+        pvm.localSessionPlant.value?.let { plant ->
+            if(plant.waterLevel < 30) {
+                val deathStage = getPlantStage(plant)
+
+                binding.imgFlower.setImageResource(getPlantImageId(plant, deathStage))
+                pvm.resetPlantDeathState()
+            }
         }
     }
 }

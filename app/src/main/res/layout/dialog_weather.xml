@@ -21,7 +21,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="15dp"
-            android:text="Daily Weather Report"
+            android:text="@string/daily_weather_report"
             android:textAlignment="center"
             android:textColor="@color/eggwhite"
             android:textSize="20sp"

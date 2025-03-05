@@ -18,14 +18,13 @@
 
         <ImageView
             android:id="@+id/iv_choose_plant"
-            android:src="@drawable/flower_elefant4"
+            android:src="@drawable/flower_elephant6"
             android:background="@drawable/border_circle"
             android:clipToOutline="true"
-            android:scaleType="fitCenter"
-            android:scaleX="1.7"
+            android:scaleType="fitXY"
+            android:scaleX="1.1"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
 
     </androidx.cardview.widget.CardView>
-
 </androidx.constraintlayout.widget.ConstraintLayout>
