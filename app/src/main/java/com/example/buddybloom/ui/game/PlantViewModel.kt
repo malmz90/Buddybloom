@@ -23,6 +23,11 @@ class PlantViewModel : ViewModel() {
     private val _plantJustDied = MutableLiveData(false)
     val plantJustDied: LiveData<Boolean> get() = _plantJustDied
 
+    private val _plantDiedFromOverWatering = MutableLiveData(false)
+    val plantDiedFromOverWatering: LiveData<Boolean> get() = _plantDiedFromOverWatering
+
+    private val maxWaterLevel = 100
+
     //TODO Make sure UI observes these (show a toast?)
     /**
      * Potential error messages from Firestore or GameManager.
@@ -38,32 +43,67 @@ class PlantViewModel : ViewModel() {
     private val gameManager = GameManager(
         scope = viewModelScope,
         onPlantEvent = { plant ->
+//-------------------how it was before----------------------------
+//            _localSessionPlant.postValue(plant)
+//            if (plant == null && _localSessionPlant.value != null) {
+//                // The plant was not null before, but now it is - this means it just died
+//                _plantJustDied.postValue(true)
+//                // Save the dead plant to history before it's deleted
+//                _localSessionPlant.value?.let { deadPlant ->
+//                    savePlantToHistoryRemote(deadPlant)
+//                }
+//            }
+//            if (plant == null) {
+//                deletePlantFromRemote() // Delete plant when it dies
+//            }
+
+// -------------- new to kill and save plant when it dies by different cause
             _localSessionPlant.postValue(plant)
             if (plant == null && _localSessionPlant.value != null) {
-                // The plant was not null before, but now it is - this means it just died
-                _plantJustDied.postValue(true)
-                // Save the dead plant to history before it's deleted
-                _localSessionPlant.value?.let { deadPlant ->
-                    savePlantToHistoryRemote(deadPlant)
+                val lastWaterLevel = _localSessionPlant.value?.waterLevel ?: 0
+                if (lastWaterLevel > maxWaterLevel) {
+                    Log.d("PlantViewModel", "Plant died from overwatering!")
+                    _plantDiedFromOverWatering.postValue(true)
+                    _localSessionPlant.value?.let { deadPlant ->
+                        savePlantToHistoryRemote(deadPlant)
+                        deletePlantFromRemote() // Delete plant when it dies
+                    }
+                } else {
+                    Log.d("PlantViewModel", "Plant died from lack of water or nutrients!")
+                    // The plant was not null before, but now it is - this means it just died
+                    _plantJustDied.postValue(true)
+                    _localSessionPlant.value?.let { deadPlant ->
+                        savePlantToHistoryRemote(deadPlant)
+                        deletePlantFromRemote() // Delete plant when it dies
+                    }
                 }
-            }
-            if (plant == null) {
-                deletePlantFromRemote() // Delete plant when it dies
+//                _localSessionPlant.value?.let { deadPlant ->
+//                    savePlantToHistoryRemote(deadPlant)
+//                    deletePlantFromRemote() // Delete plant when it dies
+//                }
             }
         },
         onAutoSave = { plant ->
             updateRemotePlant(plant)
         }
-    )
-
+)
+    /** Reset death to start gameLoop */
+    fun resetPlantDeath() {
+        gameManager.resetPlantDeathState()
+    }
     fun resetPlantDeathState() {
         _plantJustDied.postValue(false)
+    }
+    fun resetOverWateringDeathState() {
+        _plantDiedFromOverWatering.postValue(false)
     }
 
     /** Delete plant on Firestore */
     private fun deletePlantFromRemote() {
         viewModelScope.launch(Dispatchers.IO) {
-            plantRepository.deletePlant().onFailure { error ->
+            plantRepository.deletePlant().onSuccess {
+                _localSessionPlant.postValue(null) // dead plant removes from memory and don´t follow in to newplant
+            }.onFailure { error ->
                 _errorMessage.postValue(error.message)
             }
         }
@@ -126,10 +166,22 @@ class PlantViewModel : ViewModel() {
      */
     fun savePlantToRemote(plant: Plant) {
         viewModelScope.launch(Dispatchers.IO) {
-            plantRepository.savePlant(plant).onFailure { error ->
+            val newPlant = Plant(
+                name = plant.name,
+                waterLevel = 100, // Start value for every new plant
+                fertilizerLevel = 100,
+                sunLevel = 100,
+                infected = false,
+                createdAt = com.google.firebase.Timestamp.now(),
+                lastUpdated = com.google.firebase.Timestamp.now(),
+                protectedFromSun = false
+            )
+            plantRepository.savePlant(newPlant).onSuccess {
+                gameManager.updateLocalPlant(newPlant)
+                _localSessionPlant.postValue(newPlant) // Updates LiveData with new plant
+            }.onFailure { error ->
                 _errorMessage.postValue(error.message)
             }
-            gameManager.updateLocalPlant(plant)
         }
     }
 

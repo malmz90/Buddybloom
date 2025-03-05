@@ -24,7 +24,8 @@ class GameManager
     /**
      * This is called whenever the plant receives an update in the local game session. Choose how to react to it.
      */
-    private val onPlantEvent: (Plant?) -> Unit,
+     val onPlantEvent: (Plant?) -> Unit,
+
     /**
      * Choose what should happen when the auto save timer triggers.
      */
@@ -66,6 +67,8 @@ class GameManager
 
         // *** -------------------------------------------------------- ***
 
+        // Sets true if plant dies to stop loop while its dead.
+        private var isPlantDead = false
 
         //Do not modify these
         private const val AUTO_SAVE_TIMER = (AUTO_SAVE_MINUTES * 60 * 1000).toLong()
@@ -83,17 +86,32 @@ class GameManager
     This is whatever happens on each game tick (every hour). Use this to control game events.
      */
     fun runGameLoop(iterations: Int = 1) {
+        // check if plant is dead before looping
+        if (isPlantDead) {
+            Log.d("GameManager", "Plant is dead, skipping game loop.")
+            return  // Stop loop if plant is dead
+        }
+        // For every iteration check plant health
         for (i in 1..iterations) {
+            //  is plant dead or alive
+            if (localPlant?.waterLevel == 0 || localPlant?.fertilizerLevel == 0) {
+                Log.d("GameManager", "Plant died due to lack of water or fertilizer.")
+                isPlantDead = true
+                onPlantEvent(null)  // Notify viewmodel plant is dead
+                return  // Abort loop
+            }
+            else if ((localPlant?.waterLevel ?: 0) > 100) {
+                Log.d("GameManager", "Plant died due to overwatering.")
+                isPlantDead = true
+                onPlantEvent(null)  // Notify plant is dead
+                return  // Abort loop
+            }
+            // If plant is alive loop continues
             decreaseWaterLevel()
             decreaseFertilizerLevel()
         }
-        localPlant?.protectedFromSun = false
-
-        if (localPlant?.waterLevel == 0 || localPlant?.fertilizerLevel == 0) {
-            onPlantEvent(null) // Notify ViewModel to delete plant
-        } else {
-            onPlantEvent(localPlant)
-        }
+        // Update plant if it is alive
+        onPlantEvent(localPlant)
     }
 
     /**
@@ -118,7 +136,7 @@ class GameManager
      */
     private fun startGameLoop() {
         scope.launch {
-            while (true) {
+            while (!isPlantDead) {
                 delay(GAME_LOOP_TIMER)
                 runGameLoop()
                 Log.i("GameEngine", "Game loop triggered!")
@@ -133,7 +151,10 @@ class GameManager
         localPlant = newPlant
         onPlantEvent(localPlant)
     }
+    fun resetPlantDeathState() {
+        isPlantDead = false // Reset death to start gameLoop
 
+    }
     fun updateLocalDailyWeather(newWeather: WeatherReport.Daily) {
         localDailyWeather = newWeather
     }
@@ -174,9 +195,16 @@ class GameManager
      */
     fun waterPlant() {
         localPlant?.let {
-            it.waterLevel = (minOf(100, it.waterLevel + WATER_INCREASE))
+            it.waterLevel = (minOf(120, it.waterLevel + WATER_INCREASE))
             startRandomInfection()
             onPlantEvent(localPlant)
+            // triggers to kill plant if overWatering plant when user presses watering button,
+            // instead of waiting for loop
+            if (it.waterLevel > 100) {
+                onPlantEvent(null)
+            } else {
+                onPlantEvent(localPlant)
+            }
         }
     }
 
