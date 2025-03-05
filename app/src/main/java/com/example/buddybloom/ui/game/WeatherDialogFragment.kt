@@ -4,7 +4,6 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.icu.util.Calendar
 import android.os.Bundle
-import android.util.Log
 import android.util.TypedValue
 import android.view.View
 import android.view.WindowManager
@@ -50,7 +49,6 @@ class WeatherDialogFragment : DialogFragment(R.layout.dialog_weather) {
         }
 
         pvm.currentWeatherReport.observe(viewLifecycleOwner) { report ->
-            Log.d("WeatherDialogFragment", "Received new weather report: $report")
             weatherAdapter.updateAdapter(report)
             scrollToCurrentHour(linearLayoutManager)
         }

@@ -11,8 +11,6 @@ import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import java.util.Calendar
 
-//TODO Remake this so it triggers somewhere in the game loop, or create a new timer for weather.
-
 class WeatherRepository {
     private val db = Firebase.firestore
     private val auth = FirebaseAuth.getInstance()
@@ -27,7 +25,7 @@ class WeatherRepository {
         val dayConditions = availableHours.map { hour ->
             val randomCondition = WeatherReport.Condition.entries.toTypedArray()
                 .filter { it != WeatherReport.Condition.NIGHT }
-                .random() //Condition.values().random()
+                .random()
             WeatherReport.MyPair(hour, randomCondition)
         }
         val morningConditions = morningHours.map { hour ->
@@ -46,7 +44,6 @@ class WeatherRepository {
 
         val dailyReport = WeatherReport.Daily(
             hourlyWeather = weatherConditions,
-//            timestamp = Calendar.getInstance()
             timestamp = System.currentTimeMillis()
         )
         return dailyReport
@@ -82,30 +79,4 @@ class WeatherRepository {
             }
         }
     }
-
-
-    /*fun fetchCurrentWeatherReport(onWeatherReportFetched: (WeatherReport.Weekly) -> Unit) {
-        if (userId != null) {
-            db.collection("users").document(userId).get().addOnSuccessListener { snapshot ->
-                var report = snapshot?.toObject<User>()?.weeklyWeatherReport
-                if (report == null) {
-                    report = generateNewSunnyWeeklyReport()
-                    updateWeatherReport(report)
-                }
-                onWeatherReportFetched(report)
-            }.addOnFailureListener {
-                Log.e("Error fetching current weather report from Firebase!", it.message.toString())
-            }
-        } else {
-            Log.e("FirebaseUser error: ", "User id = null")
-        }
-    }*/
-
-    fun updateWeatherReport(weeklyWeatherReport: WeatherReport.Daily) {
-        currentUserId?.let {
-            db.collection("users").document(it).update("weeklyWeatherReport", weeklyWeatherReport)
-        }
-    }
-
-
 }

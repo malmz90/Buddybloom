@@ -70,11 +70,8 @@ class RegisterFragment : Fragment() {
         }
     }
 
-    //TODO ta bort test under dev
-    // Function to check if the password is strong
     private fun isPasswordStrong(password: String): Boolean {
-//        val passwordPattern = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@!#\$%^&+=]).{8,}$"
-        val passwordPattern = "^(?=.*[a-z]).{3,}$" // Tempo under dev
+        val passwordPattern = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@!#\$%^&+=]).{8,}$"
         return password.matches(passwordPattern.toRegex())
     }
 
@@ -90,21 +87,21 @@ class RegisterFragment : Fragment() {
 
         // Check that the fields are not empty
         if (email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty() || name.isEmpty()) {
-            Toast.makeText(context, "Fill in all fields!", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, getString(R.string.fill_in_all_fields), Toast.LENGTH_SHORT).show()
             return
         }
 
         // Check the email is in the correct format
         if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            Toast.makeText(context, "Invalid email address!", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, getString(R.string.invalid_email_address), Toast.LENGTH_SHORT).show()
             return
         }
 
         // Check if the password meets security
         if (!isPasswordStrong(password)) {
             Toast.makeText(
-                context, "The password must be at least 8 characters long " +
-                        "and contain an uppercase letter, lowercase letter, number and special character!",
+                context, getString(R.string.password_characters) +
+                        getString(R.string.password_contains),
                 Toast.LENGTH_LONG
             ).show()
             return
@@ -112,7 +109,8 @@ class RegisterFragment : Fragment() {
 
         // Check that the passwords match
         if (password != confirmPassword) {
-            Toast.makeText(context, "The passwords do not match!", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context,
+                getString(R.string.the_passwords_do_not_match), Toast.LENGTH_SHORT).show()
             return
         }
         avm.registerUser(email, password, name)

@@ -74,6 +74,29 @@
     <string name="plant">Plant</string>
     <string name="home">Home</string>
     <string name="overwatering">Oh no! Your plant couldn\'t survive. \nYou watered it too much. Don\'t worry, you can choose a new plant now!</string>
+    <string name="fill_in_all_fields">Fill in all fields!</string>
+    <string name="invalid_email_address">Invalid email address!</string>
+    <string name="password_contains">and contain an uppercase letter, lowercase letter, number and special character!</string>
+    <string name="password_characters">"The password must be at least 8 characters long "</string>
+    <string name="the_passwords_do_not_match">The passwords do not match!</string>
+    <string name="enter_a_valid_email">Enter a valid Email</string>
+    <string name="password_is_required">Password is required!</string>
+    <string name="email_is_required">Email is required!</string>
+    <string name="invalid_email">Invalid Email</string>
+    <string name="check_your_email">Check your Email!</string>
+    <string name="failed_to_log_in_with_google">Failed to log in with Google</string>
+    <string name="login_failed_check_your_fields">Login failed! Check your fields</string>
+    <string name="login_successful">Login successful!</string>
+    <string name="google_sign_in_successful">Google sign-in successful!</string>
+    <string name="google_sign_in_failed">Google sign-in failed</string>
+    <string name="at_least_one_field_needs_to_be_filled">" At least one field needs to be filled!"</string>
+    <string name="user_name_updated">User name updated!</string>
+    <string name="update_success_verify_before_signing_in">Update Success! Verify before signing in!!.</string>
+    <string name="signing_out">Signing out</string>
+    <string name="notifications_off">Notifications OFF!</string>
+    <string name="notifications_on">Notifications ON!!</string>
+    <string name="buddybloom">BuddyBloom Master!</string>
+    <string name="your_plant_is_thirsty">Your plant is Thirsty</string>
 
     <!--Flower descriptions-->
     <string name="desc_hibiscus">Hibiscus \n Loves sun and temperatures around 15-32°. Should be kept moist but not soggy. \nNeeds fertilizing every few weeks.

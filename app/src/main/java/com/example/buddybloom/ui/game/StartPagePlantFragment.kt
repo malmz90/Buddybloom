@@ -8,7 +8,6 @@ import android.media.SoundPool
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -39,13 +38,12 @@ class StartPagePlantFragment : Fragment() {
     private var blindsSoundEnd: Int = 0
     private var bugSpraySound: Int = 0
     private var errorSound: Int = 0
-    private var testPlant: Plant? = null
+    private var observerPlant: Plant? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        Log.i("!!!", "PlantFragment onCreateView")
         binding = FragmentStartPagePlantBinding.inflate(inflater, container, false)
         pvm = ViewModelProvider(requireActivity())[PlantViewModel::class.java]
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -89,9 +87,9 @@ class StartPagePlantFragment : Fragment() {
 
         pvm.localSessionPlant.observe(viewLifecycleOwner) { plant ->
             //Checks if user is logging in
-            testPlant = plant
+            observerPlant = plant
 
-            binding.switchBlinds.isChecked = testPlant?.protectedFromSun ?: false
+            binding.switchBlinds.isChecked = observerPlant?.protectedFromSun ?: false
             updateBlindsVisibility(binding.ivBlinds)
 
             if (plant == null) return@observe
@@ -122,8 +120,7 @@ class StartPagePlantFragment : Fragment() {
                         ContextCompat.getColor(
                             requireContext(),
                             R.color.turquise
-                        )
-                    )
+                        ))
                 }
                 binding.btnPlantNeeds.setOnClickListener {
                     val plantNeedsDialog = PlantNeedsDialogFragment.newInstance(plant)
@@ -133,7 +130,8 @@ class StartPagePlantFragment : Fragment() {
         }
 
         if (pvm.isPlantThirsty()) {
-            Toast.makeText(requireContext(), "Your plant is Thirsty", Toast.LENGTH_SHORT)
+            Toast.makeText(requireContext(),
+                getString(R.string.your_plant_is_thirsty), Toast.LENGTH_SHORT)
                 .show()
         }
 
@@ -211,7 +209,6 @@ class StartPagePlantFragment : Fragment() {
                 }
             }
 
-
 //------------------------------------FERTILIZE-------------------------------------------------------
             btnFertilize.setOnClickListener {
 
@@ -226,21 +223,31 @@ class StartPagePlantFragment : Fragment() {
                     binding.ivAnimationWateringCan.setImageDrawable(drawable)
                     drawable.start()
 
+                    //Disable button while animation is running.
+                    binding.btnFertilize.setBackgroundColor(Color.parseColor("#DEDEDE"))
+                    binding.btnFertilize.setTextColor(Color.parseColor("#FFFFFF"))
+                    binding.btnFertilize.isEnabled = false
+
                     // Hide the animation after 3 seconds.
                     Handler(Looper.getMainLooper()).postDelayed({
                         binding.ivAnimationWateringCan.visibility = View.INVISIBLE
                         pvm.fertilizePlant()
+
+                        // Enable button after animation is done.
+                        binding.btnFertilize.setBackgroundColor(Color.parseColor("#F6F1DE"))
+                        binding.btnFertilize.setTextColor(Color.parseColor("#246246"))
+                        binding.btnFertilize.isEnabled = true
+
                         pvm.localSessionPlant.value?.let { plant ->
                         plantImageManager.checkPlantDeath(plant, binding)}
                     }, 3000)
                 }
             }
 
-
 //------------------------------------BLINDS-------------------------------------------------------
             switchBlinds.setOnClickListener {
                 pvm.toggleBlinds()
-                if (testPlant!!.protectedFromSun) {
+                if (observerPlant!!.protectedFromSun) {
                     // Play sound
                     soundPool.play(blindsSoundStart, 1f, 1f, 0, 0, 1f)
 
@@ -257,13 +264,11 @@ class StartPagePlantFragment : Fragment() {
                 }
             }
 
-
 //------------------------------------WEATHER-------------------------------------------------------
             binding.btnWeather.setOnClickListener {
                 val weatherDialog = WeatherDialogFragment()
                 weatherDialog.show(parentFragmentManager, "WeatherDialogFragment")
             }
-
 
 //------------------------------------BUGSPRAY-------------------------------------------------------
             imgBtnBugspray.setOnClickListener {
@@ -314,7 +319,6 @@ class StartPagePlantFragment : Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         soundPool.release()
-        Log.d("!!!", "PlantFragment onDestroyView")
     }
 
     /**
@@ -330,9 +334,8 @@ class StartPagePlantFragment : Fragment() {
         }
     }
 
-    //*******************
     private fun updateBlindsVisibility(myImageView: View) {
-        if (testPlant?.protectedFromSun == true) {
+        if (observerPlant?.protectedFromSun == true) {
             myImageView.visibility = View.VISIBLE
         } else {
             myImageView.visibility = View.INVISIBLE

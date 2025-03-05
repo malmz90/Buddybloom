@@ -2,7 +2,6 @@ package com.example.buddybloom.ui.game
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -11,10 +10,12 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.buddybloom.R
+import com.example.buddybloom.data.model.Plant
 import com.example.buddybloom.databinding.ActivityGameBinding
 import com.example.buddybloom.ui.authentication.AuthenticationActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
+import kotlinx.coroutines.runBlocking
 
 class GameActivity : AppCompatActivity() {
     private lateinit var binding: ActivityGameBinding
@@ -22,11 +23,10 @@ class GameActivity : AppCompatActivity() {
     private val profileFragment = ProfileFragment()
     private val startPagePlantFragment = StartPagePlantFragment()
     private val choosePlantFragment = ChoosePlantFragment()
-
+    private var observerPlant : Plant? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.i("GameActivity", "onCreate() called")
         enableEdgeToEdge()
         binding = ActivityGameBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -67,17 +67,14 @@ class GameActivity : AppCompatActivity() {
                     showFragment(profileFragment)
                     true
                 }
-
                 R.id.nav_plant -> {
                     showFragment(startPagePlantFragment)
                     true
                 }
-
                 R.id.nav_home -> {
                     showFragment(choosePlantFragment)
                     true
                 }
-
                 else -> false
             }
         }
@@ -101,6 +98,7 @@ class GameActivity : AppCompatActivity() {
 
     private fun checkUserPlant() {
         pvm.localSessionPlant.observe(this) { plant ->
+            observerPlant = plant
             //Check Authentication status
             if (FirebaseAuth.getInstance().currentUser == null) {
                 navigateToLogin()
@@ -120,7 +118,13 @@ class GameActivity : AppCompatActivity() {
         }
     }
 
-    //TODO få in en loadingbar när man byter mellan fragment
-
-
+    //TODO kolla upp detta med att spara plantans stadie när man stänger ner
+    override fun onDestroy() {
+        super.onDestroy()
+        observerPlant?.let {
+            runBlocking {
+                pvm.updateRemotePlant(it)
+            }
+        }
+    }
 }
