@@ -13,5 +13,4 @@ data class Plant(
     val difficulty: String = "Easy",
     var infected: Boolean = false,
     var protectedFromSun : Boolean = false,
-    var deathCause : String = ""
 )

@@ -41,6 +41,8 @@ class AddPlantDialogFragment(private val newPlant: Plant) :
                 //I user has no plant (null), skip confirmation dialog.
                 if (currentPlant == null) {
                     pvm.savePlantToRemote(newPlant)
+                    pvm.resetPlantDeath()
+
                     dismiss()
                 } else {
                     ReplacePlantDialogFragment(newPlant).show(parentFragmentManager, null)

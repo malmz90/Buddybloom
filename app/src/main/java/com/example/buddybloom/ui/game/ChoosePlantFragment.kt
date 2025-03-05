@@ -1,6 +1,8 @@
 package com.example.buddybloom.ui.game
 
 import AddPlantDialogFragment
+import android.media.AudioAttributes
+import android.media.SoundPool
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -20,6 +22,9 @@ class ChoosePlantFragment : Fragment() {
     private val plants = mutableListOf<Plant>()
     private lateinit var pvm: PlantViewModel
 
+    private lateinit var soundPool: SoundPool
+    private var gameOver: Int = 0
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
@@ -32,8 +37,31 @@ class ChoosePlantFragment : Fragment() {
 
         pvm = ViewModelProvider(requireActivity())[PlantViewModel::class.java]
 
-        pvm.plantDiedFromOverWatering.observe(viewLifecycleOwner) { isDead ->
-            if (isDead) {
+        // Creating SoundPool to play gameOver Sound
+        soundPool = SoundPool.Builder()
+            .setMaxStreams(1)
+            .setAudioAttributes(
+                AudioAttributes.Builder()
+                    .setUsage(AudioAttributes.USAGE_GAME)
+                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                    .build()
+            )
+            .build()
+
+        gameOver = soundPool.load(requireContext(), R.raw.game_over, 1)
+
+        soundPool.setOnLoadCompleteListener { _, sampleId, status ->
+            if (status == 0) {
+                // Loading sound, now its Ready to play when plant dies
+                if (sampleId == gameOver) {
+                    soundPool.play(gameOver, 1.0f, 1.0f, 1, 0, 1.0f)
+                }
+            }
+        }
+
+        pvm.plantDiedFromOverWatering.observe(viewLifecycleOwner) { justDrowned ->
+            if (justDrowned) {
+                soundPool.play(gameOver, 1.0f, 1.0f, 1, 0, 1.0f)
                 showOverWateringDialog()
                 pvm.resetOverWateringDeathState() // Reset Plant
             }
@@ -41,8 +69,9 @@ class ChoosePlantFragment : Fragment() {
 
         pvm.plantJustDied.observe(viewLifecycleOwner) { justDied ->
             if (justDied) {
+                soundPool.play(gameOver, 1.0f, 1.0f, 1, 0, 1.0f)
                 showPlantDeathDialog()
-                pvm.resetPlantDeathState()  // Reset Plant
+               pvm.resetPlantDeathState()  // Reset Plant
             }
         }
 
@@ -86,8 +115,8 @@ class ChoosePlantFragment : Fragment() {
 
     private fun showOverWateringDialog() {
         val dialog = AlertDialog.Builder(requireContext())
-            .setTitle("Your Plant Has Died")
-            .setMessage("Oh no! Your plant drowned. You watered it to much. Don't worry, you can choose a new plant now!")
+            .setTitle("Your Plant Has Drowned")
+            .setMessage("Oh no! Your plant couldn't survive. You watered it too much. Don't worry, you can choose a new plant now!")
             .setPositiveButton("OK") { dialog, _ ->
                 dialog.dismiss()
             }
@@ -98,7 +127,7 @@ class ChoosePlantFragment : Fragment() {
     private fun showPlantDeathDialog() {
         val dialog = AlertDialog.Builder(requireContext())
             .setTitle("Your Plant Has Died")
-            .setMessage("Oh no! Your plant couldn't survive. It needed more water or care. Don't worry, you can choose a new plant now!")
+            .setMessage("Oh no! Your plant couldn't survive. It needed more water or fertilizer. Don't worry, you can choose a new plant now!")
             .setPositiveButton("OK") { dialog, _ ->
                 dialog.dismiss()
             }
@@ -112,5 +141,9 @@ class ChoosePlantFragment : Fragment() {
             show(AddPlantDialogFragment(plant))
             commit()
         }
+    }
+    override fun onDestroyView() {
+        super.onDestroyView()
+        soundPool.release()
     }
 }
