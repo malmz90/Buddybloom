@@ -12,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.Button
+import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -41,7 +42,7 @@ class ChoosePlantFragment : Fragment() {
 
         pvm = ViewModelProvider(requireActivity())[PlantViewModel::class.java]
 
-        // Creating SoundPool to play gameOver Sound
+         //Creating SoundPool to play gameOver Sound
         soundPool = SoundPool.Builder()
             .setMaxStreams(1)
             .setAudioAttributes(
@@ -54,18 +55,9 @@ class ChoosePlantFragment : Fragment() {
 
         gameOver = soundPool.load(requireContext(), R.raw.game_over, 1)
 
-        soundPool.setOnLoadCompleteListener { _, sampleId, status ->
-            if (status == 0) {
-                // Loading sound, now its Ready to play when plant dies
-                if (sampleId == gameOver) {
-                    soundPool.play(gameOver, 1.0f, 1.0f, 1, 0, 1.0f)
-                }
-            }
-        }
 
         pvm.plantDiedFromOverWatering.observe(viewLifecycleOwner) { justDrowned ->
             if (justDrowned) {
-                soundPool.play(gameOver, 1.0f, 1.0f, 1, 0, 1.0f)
                 showOverWateringDialog()
                 pvm.resetOverWateringDeathState() // Reset Plant
             }
@@ -73,7 +65,6 @@ class ChoosePlantFragment : Fragment() {
 
         pvm.plantJustDied.observe(viewLifecycleOwner) { justDied ->
             if (justDied) {
-                soundPool.play(gameOver, 1.0f, 1.0f, 1, 0, 1.0f)
                 showPlantDeathDialog()
                pvm.resetPlantDeathState()  // Reset Plant
             }
@@ -119,19 +110,32 @@ class ChoosePlantFragment : Fragment() {
 
 
     private fun showOverWateringDialog() {
+        playDeadSound()
+        val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_dead_plant, null)
         val dialog = AlertDialog.Builder(requireContext())
-            .setTitle("Your Plant Has Drowned")
-            .setMessage("Oh no! Your plant couldn't survive. You watered it too much. Don't worry, you can choose a new plant now!")
-            .setPositiveButton("OK") { dialog, _ ->
-                dialog.dismiss()
-            }
+            .setView(dialogView)
             .create()
+
+        val btnYes = dialogView.findViewById<Button>(R.id.btn_yes_pls)
+        btnYes.setOnClickListener {
+            dialog.dismiss()
+        }
+        val infoText = dialogView.findViewById<TextView>(R.id.tv_info_dead)
+        infoText.text = getString(R.string.overwatering)
+
+        dialog.window?.setLayout(
+            WindowManager.LayoutParams.MATCH_PARENT,
+            WindowManager.LayoutParams.WRAP_CONTENT
+        )
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
         dialog.show()
     }
-    
+
+
     //dead plant dialog
     private fun showPlantDeathDialog() {
+        playDeadSound()
         val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_dead_plant, null)
             val dialog = AlertDialog.Builder(requireContext())
             .setView(dialogView)
@@ -158,6 +162,18 @@ class ChoosePlantFragment : Fragment() {
             commit()
         }
     }
+
+    private fun playDeadSound() {
+        soundPool.setOnLoadCompleteListener { _, sampleId, status ->
+            if (status == 0) {
+                if (sampleId == gameOver) {
+                    soundPool.play(gameOver, 1.0f, 1.0f, 1, 0, 1.0f)
+                }
+            }
+        }
+        soundPool.play(gameOver, 1.0f, 1.0f, 1, 0, 1.0f)
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         soundPool.release()
