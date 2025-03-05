@@ -1,84 +1,16 @@
 package com.example.buddybloom.data.model
 
-import android.util.Log
-import com.example.buddybloom.R
-import com.example.buddybloom.data.repository.PlantRepository
+import com.google.firebase.Timestamp
 
-
-data class Plant(val name : String, var waterLevel: Int, var createdAt: Long = System.currentTimeMillis()) {
-    constructor() : this("", 100,System.currentTimeMillis())
-
-    fun getPlantImage(): Int {
-        val daysOld = (System.currentTimeMillis() - createdAt) / (1000 * 60 * 60 * 24)
-    //  val daysOld = 3
-
-        val stage = when {
-            daysOld >= 6 -> 4
-            daysOld >= 4 -> 3
-            daysOld >= 2 -> 2
-            else -> 1
-        }
-
-        return when(name.lowercase()) {
-            "elephant" -> when(stage) {
-                1 -> R.drawable.flower_elefant1
-                2 -> R.drawable.flower_elefant2
-                3 -> R.drawable.flower_elefant3
-                4 -> R.drawable.flower_elefant4
-                else -> R.drawable.flower_elefant1
-            }
-            "hibiscus" -> when(stage) {
-                1 -> R.drawable.flower_hibiscus1
-                2 -> R.drawable.flower_hibiscus2
-                3 -> R.drawable.flower_hibiscus3
-                4 -> R.drawable.flower_hibiscus4
-                else -> R.drawable.flower_hibiscus1
-            }
-            "zebra" -> when(stage) {
-                1 -> R.drawable.flower_zebra1
-                2 -> R.drawable.flower_zebra2
-                3 -> R.drawable.flower_zebra3
-                4 -> R.drawable.flower_zebra4
-                else -> R.drawable.flower_zebra1
-            }
-            else -> R.drawable.flower_elefant1
-        }
-    }
-
-    val plantRepository = PlantRepository()
-
-    fun decreaseWaterLevel(amount: Int) {
-        if (waterLevel < 0) waterLevel = 0
-        waterLevel -= amount
-        Log.d("PlantStatus", "Your Plant lost water by amount of 10!")
-    }
-
-    fun increaseWaterLevel(amount: Int) {
-        plantRepository.getCurrentUserPlant { plant ->
-            if (plant != null) {
-                plant.waterLevel += amount
-                Log.d("PlantStatus", "Your plant increased!")
-                if (plant.waterLevel > 100) plant.waterLevel = 100
-
-                plantRepository.saveUserPlant(plant) { success ->
-                    if (success) {
-                        Log.d("PlantStatus", "Water level updated successfully in Firebase!")
-                    } else {
-                        Log.e("PlantStatus", "Failed to update water level in Firebase.")
-                    }
-                }
-            } else {
-                Log.e("PlantStatus", "No plant found to update.")
-            }
-        }
-    }
-
-    fun isThirsty(): Boolean {
-        val isThirsty = waterLevel < 100
-        if (isThirsty) {
-            Log.d("PlantStatus", "Your plant is thirsty!")
-        }
-        return waterLevel < 30
-    }
-
-}
+data class Plant(
+    val name: String = "",
+    var waterLevel: Int = 100,
+    var sunLevel: Int = 100,
+    var fertilizerLevel: Int = 100,
+    val info: String = "",
+    var createdAt: Timestamp = Timestamp.now(),
+    var lastUpdated: Timestamp = Timestamp.now(),
+    val difficulty: String = "Easy",
+    var infected: Boolean = false,
+    var protectedFromSun : Boolean = false,
+)

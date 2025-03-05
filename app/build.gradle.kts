@@ -10,7 +10,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.buddybloom"
-        minSdk = 26
+        minSdk = 28
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -41,6 +41,11 @@ android {
 }
 
 dependencies {
+    implementation("com.google.firebase:firebase-bom:33.1.0")
+    implementation(libs.play.services.auth)
+    implementation (libs.lifecycle.viewmodel.ktx)
+    implementation (libs.coroutines.core)
+    implementation (libs.coroutines.android)
     implementation (libs.glide)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)

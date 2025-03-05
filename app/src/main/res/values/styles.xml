@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style name="CustomButtonStyle" parent="Widget.AppCompat.Button">
-        
+
         <item name="android:background">@drawable/border_shadow</item>
         <item name="android:textColor">@color/darkgreen</item>
     </style>

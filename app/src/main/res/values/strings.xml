@@ -1,18 +1,19 @@
 <resources>
     <string name="app_name">BuddyBloom</string>
-    <string name="water">WATER</string>
-    <string name="fertilize">FERTILIZE</string>
-    <string name="blinds">BLINDS</string>
-    <string name="about_buddybloom">About BuddyBloom</string>
     <string name="about_info">Welcome to BuddyBloom!\n
     Your virtual plantapp for every user who just can’t \n
         seem to keep their plants alive at home. \n
         Practice watering, fertilize and generally take care \n
-        of 1 or more plants right here!\n \n
+        of a plant, right here!\n \n
     Check up on it daily or there will be consequences\n
         for your plant... \n\n
     So, \n how many daystreaks will you pass!? \n
-        Try it out and share with your friends!</string>
+        Try it out and share with your friends! \n\n
+    🤖 We use AI generated pictures in this app 🤖</string>
+    <string name="water">WATER</string>
+    <string name="fertilize">FERTILIZE</string>
+    <string name="blinds">BLINDS</string>
+    <string name="about_buddybloom">About BuddyBloom</string>
     <string name="forgot_password">Forgot Password?</string>
     <string name="reset_link">A reset link will be sent \n to your email!</string>
     <string name="confirm">CONFIRM</string>
@@ -31,10 +32,91 @@
     <string name="confirm_password">Confirm Password</string>
     <string name="password">Password</string>
     <string name="choose_your_plant">Choose Your Plant</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="sign_inCAPS">SIGN IN</string>
     <string name="login">LOGIN</string>
     <string name="forgot_password_btn">Forgot Password?</string>
+    <string name="add_plant_info">The option “YES” is permanent \nand can not be regretted.</string>
+    <string name="delete_account">Are you sure you want to delete your account?</string>
+    <string name="permanent_answer">The option \'YES\' is permanent and can not be undone.</string>
+    <string name="yes">YES</string>
+    <string name="no">NO</string>
+    <string name="delete_your_account">Delete Your Account?</string>
+    <string name="save_button">Save button</string>
+    <string name="history">HISTORY</string>
+    <string name="daily_notifications">Daily Notifications</string>
+    <string name="about_plant">About Plant</string>
+    <string name="add_plant">ADD PLANT</string>
+    <string name="replace_plant">Are you sure you want to replace your current plant?</string>
+    <string name="flower">Flower</string>
+    <string name="add_plant_caps">ADD PLANT</string>
+    <string name="info_dead_plant">Oh no! Your plant couldn\'t survive. \n It needed more water and care. \n Don\'t worry, you can choose a new plant now!</string>
+    <string name="yes_please">YES. PLEASE!</string>
+    <string name="buddybloom_master">BuddyBloom Master!</string>
+    <string name="dead_plant">Your plant has died!💀</string>
+    <string name="history_details">Your Plant History Details:</string>
+    <string name="no_history">No history to show!</string>
+    <string name="your_plant_needs">Your plant needs</string>
+    <string name="water_level">Water Level:</string>
+    <string name="_100_100">100/100</string>
+    <string name="fertilize_level">Fertilize Level:</string>
+    <string name="_77_100">77/100</string>
+    <string name="sun_protect">Sun Protect:</string>
+    <string name="your_plant_is_in_need_of_water">Your plant is in need of water!</string>
+    <string name="e">E</string>
+    <string name="daily_weather_report">Daily Weather Report</string>
+    <string name="_3">3</string>
+    <string name="water_level_">Water Level</string>
+    <string name="_100">100%</string>
+    <string name="managed_alive">You managed to keep your hibiscus alive for 7 days!</string>
+    <string name="_00">00</string>
+    <string name="profile">Profile</string>
+    <string name="plant">Plant</string>
+    <string name="home">Home</string>
+    <string name="overwatering">Oh no! Your plant couldn\'t survive. \nYou watered it too much. Don\'t worry, you can choose a new plant now!</string>
+    <string name="fill_in_all_fields">Fill in all fields!</string>
+    <string name="invalid_email_address">Invalid email address!</string>
+    <string name="password_contains">and contain an uppercase letter, lowercase letter, number and special character!</string>
+    <string name="password_characters">"The password must be at least 8 characters long "</string>
+    <string name="the_passwords_do_not_match">The passwords do not match!</string>
+    <string name="enter_a_valid_email">Enter a valid Email</string>
+    <string name="password_is_required">Password is required!</string>
+    <string name="email_is_required">Email is required!</string>
+    <string name="invalid_email">Invalid Email</string>
+    <string name="check_your_email">Check your Email!</string>
+    <string name="failed_to_log_in_with_google">Failed to log in with Google</string>
+    <string name="login_failed_check_your_fields">Login failed! Check your fields</string>
+    <string name="login_successful">Login successful!</string>
+    <string name="google_sign_in_successful">Google sign-in successful!</string>
+    <string name="google_sign_in_failed">Google sign-in failed</string>
+    <string name="at_least_one_field_needs_to_be_filled">" At least one field needs to be filled!"</string>
+    <string name="user_name_updated">User name updated!</string>
+    <string name="update_success_verify_before_signing_in">Update Success! Verify before signing in!!.</string>
+    <string name="signing_out">Signing out</string>
+    <string name="notifications_off">Notifications OFF!</string>
+    <string name="notifications_on">Notifications ON!!</string>
+    <string name="buddybloom">BuddyBloom Master!</string>
+    <string name="your_plant_is_thirsty">Your plant is Thirsty</string>
 
+    <!--Flower descriptions-->
+    <string name="desc_hibiscus">Hibiscus \n Loves sun and temperatures around 15-32°. Should be kept moist but not soggy. \nNeeds fertilizing every few weeks.
+\nWatch out for aphids, whiteflies and spider mites! \n\nDifficulty : Hard  </string>
+    <string name="desc_elephant">Elephantplant \n Thrives in warm, humid environments with indirect sunlight. \n Prefers well-draining soil and regular watering, but avoid overwatering. \n
+Fertilize monthly during the growing season. \n
+Watch out for root rot, mealybugs, and spider mites!
+\n\nDifficulty: Easy</string>
+    <string name="desc_zebra">Zebraplant \n Requires bright, indirect light and consistently moist soil. \n Avoid letting the soil dry out completely.
+Fertilize every two weeks during active growth.\n
+Watch out for leaf browning, powdery mildew, and spider mites!
+\n\nDifficulty: Medium</string>
+    <string name="desc_ficus">Ficusplant \n Prefers bright, indirect sunlight but can tolerate some shade. \n Keep soil consistently moist, but avoid waterlogging.
+\n Fertilize once a month during the growing season. \n
+Watch out for leaf drop, spider mites, and scale insects!
+\n\nDifficulty: Medium</string>
+    <string name="desc_colues">Coleusplant \n Thrives in bright, indirect light or partial sun. \n Keep the soil evenly moist, but avoid overwatering. \n
+    Watch out for wilting, aphids, and whiteflies!
+        \n\nDifficulty: Easy</string>
+
+    <!--client id-->
+    <string name="default_web_client_id">252935872818-gssfq5e5j2t58fujfss3p8htsjevbio7.apps.googleusercontent.com</string>
 </resources>

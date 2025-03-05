@@ -1,114 +1,193 @@
 package com.example.buddybloom.data.repository
 
-import android.util.Log
+import android.content.Intent
 import com.example.buddybloom.data.model.User
-import com.google.android.gms.tasks.Task
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.firebase.Firebase
-import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.firestore.firestore
 import com.google.firebase.firestore.toObject
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 
-class AccountRepository {
+class AccountRepository
+    (
+    private val auth: FirebaseAuth = FirebaseAuth.getInstance(),
+    private val googleSignInClient: GoogleSignInClient
+) {
 
     private val db = Firebase.firestore
-    private val auth = FirebaseAuth.getInstance()
-    private val userId = auth.currentUser?.uid
+    private val currentUser get() = auth.currentUser
+    private val userException =
+        Exception("Firebase authentication error: FirebaseUser is null.")
 
-
-
-    fun loginUser(email: String, password: String, callback: (Boolean) -> Unit) {
-        auth.signInWithEmailAndPassword(email, password).addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    Log.d("Firebase", "Login successful")
-                    callback(true)
-                } else {
-                    Log.e("Firebase", "Login failed: ${task.exception?.message}")
-                    callback(false)
-                }
+    //To get userdata to fill fields in profilefragment
+    suspend fun getUserData(): Result<User?> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val userId = currentUser?.uid ?: return@withContext Result.failure(userException)
+                val user = db.collection("users").document(userId).get().await().toObject<User>()
+                Result.success(user)
+            } catch (error: Exception) {
+                Result.failure(error)
             }
+        }
     }
 
-    fun registerUser(email: String, password: String, name: String, callback: (Boolean) -> Unit) {
-        auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    val currentUser = auth.currentUser
+    suspend fun loginUser(email: String, password: String): Result<Unit> {
+        return withContext(Dispatchers.IO) {
+            try {
+                auth.signInWithEmailAndPassword(email, password).await()
+                Result.success(Unit)
+            } catch (error: Exception) {
+                Result.failure(error)
+            }
+        }
+    }
+
+    /**
+     * Registers a new user with the provided email and password.
+     */
+    suspend fun registerUser(
+        email: String,
+        password: String,
+        name: String,
+    ): Result<Unit> {
+        return withContext(Dispatchers.IO) {
+            try {
+                auth.createUserWithEmailAndPassword(email, password).await()
+                val userId = currentUser?.uid ?: return@withContext Result.failure(userException)
+                val newUser = User(
+                    id = userId, email = email, name = name
+                )
+                saveUser(newUser)
+                Result.success(Unit)
+            } catch (error: Exception) {
+                Result.failure(error)
+            }
+        }
+    }
+
+    /**
+     * Saves a user to the Firestore database.
+     * Called upon in registerUser above.
+     */
+    private suspend fun saveUser(user: User) {
+        val userId = currentUser?.uid ?: throw userException
+        db.collection("users").document(userId).set(user).await()
+    }
+
+    //Send email link to reset password
+    suspend fun sendPasswordResetEmail(email: String): Result<Unit> {
+        return withContext(Dispatchers.IO) {
+            try {
+                auth.sendPasswordResetEmail(email).await()
+                Result.success(Unit)
+            } catch (error: Exception) {
+                Result.failure(error)
+            }
+        }
+    }
+
+    /**
+     * Updates userName in fireBase
+     */
+    suspend fun updateUserName(newUserName: String): Result<Unit> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val user = currentUser ?: return@withContext Result.failure(userException)
+                // Updates username in Firebase Authentication
+                val profileUpdates = UserProfileChangeRequest.Builder()
+                    .setDisplayName(newUserName)
+                    .build()
+                user.updateProfile(profileUpdates).await()
+                // Update Firestore
+                val userRef = db.collection("users").document(user.uid)
+                userRef.update("name", newUserName).await()
+                Result.success(Unit)
+            } catch (error: Exception) {
+                Result.failure(error)
+            }
+        }
+    }
+
+    /**
+     * Function that updates Email when user presses save button in profile fragment
+     * and user needs to verify email address to change email, User automatically sign out
+     * and comes to login page. User needs to sign in again.
+     */
+    suspend fun updateUserEmail(newEmail: String): Result<Unit> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val user =
+                    currentUser ?: return@withContext Result.failure(userException)
+                //Updates email in Firebase Authentication
+                // And send email verification to email address
+                user.verifyBeforeUpdateEmail(newEmail).await()
+                user.sendEmailVerification().await()
+                //Updates firestore to with email
+                val userRef = db.collection("users").document(user.uid)
+                val updates = mapOf(
+                    "email" to newEmail
+                )
+                userRef.update(updates).await()
+                // User logs out, and needs to sign in again after verification of email
+                auth.signOut()
+                Result.success(Unit)
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
+        }
+    }
+
+    //Function to delete account from app
+    suspend fun deleteAccount(): Result<Unit> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val user = currentUser ?: return@withContext Result.failure(userException)
+                db.collection("users").document(user.uid).delete().await()
+                user.delete().await()
+                googleSignInClient.signOut().await()
+                auth.signOut()
+                Result.success(Unit)
+            } catch (error: Exception) {
+                Result.failure(error)
+            }
+        }
+    }
+
+    fun signOut() {
+        auth.signOut()
+        googleSignInClient.signOut()
+    }
+
+    fun signInGoogleIntent(): Intent {
+        return googleSignInClient.signInIntent
+    }
+
+    suspend fun firebaseAuthWithGoogle(idToken: String): Result<Unit> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val credential = GoogleAuthProvider.getCredential(idToken, null)
+                val authResult = auth.signInWithCredential(credential).await()
+                val firebaseUser = currentUser ?: return@withContext Result.failure(userException)
+                if (authResult.additionalUserInfo?.isNewUser == true) {
                     val user = User(
-                        id = currentUser?.uid ?: "", email = email, name = name
+                        id = firebaseUser.uid,
+                        email = firebaseUser.email ?: "",
+                        name = firebaseUser.displayName ?: ""
                     )
-                    saveUser(user) { success ->
-                        callback(success)
-                    }
+                    saveUser(user)
+                    Result.success(Unit)
                 } else {
-                    Log.d("!!!", "user not created ${task.exception}")
-                    callback(false)
+                    Result.success(Unit)
                 }
-            }
-    }
-
-
-
-    private fun saveUser(user: User, callback: (Boolean) -> Unit) {
-        val userId = auth.currentUser?.uid ?: return
-        val docRef = db.collection("users").document(userId)
-        val batch = db.batch()
-       // val startingWeeklyWeatherReport = generateStartingSunnyWeeklyReport(Calendar.getInstance())
-
-        batch.set(docRef, user)
-        // batch.update(docRef, "weeklyWeatherReport", startingWeeklyWeatherReport)
-
-        batch.commit().addOnSuccessListener {
-            Log.i("Firebase", "User added successfully")
-            callback(true)
-        }.addOnFailureListener { e ->
-            Log.e("Firebase", "Failed to add user ${e.message}")
-            callback(false)
-        }
-    }
-
-    fun sendPasswordResetEmail(email: String): Task<Void> {
-        return auth.sendPasswordResetEmail(email)
-    }
-
-    fun getUserCreationDate(onCreationDateFetched: (Timestamp?) -> Unit) {
-        userId?.let {
-            db.collection("users").document(it).get().addOnSuccessListener { snapshot ->
-                val timestamp = snapshot.toObject<User>()?.creationDate
-                onCreationDateFetched(timestamp)
+            } catch (error: Exception) {
+                Result.failure(error)
             }
         }
     }
-
-    fun getLastUpdated(onLastUpdateFetched: (Timestamp?) -> Unit) {
-        if (userId != null) {
-            db.collection("users").document(userId).get().addOnSuccessListener { snapshot ->
-                val timestamp = snapshot.toObject<User>()?.lastUpdated
-                onLastUpdateFetched(timestamp)
-            }.addOnFailureListener { error ->
-                    Log.e(
-                        "Unable to fetch timestamp lastUpdated", error.message.toString()
-                    )
-                }
-        } else {
-            Log.e("FirebaseUser error: ", "User id = null")
-        }
-    }
-
-    fun updateLastUpdated(timestamp: Timestamp) {
-        Log.e("FirebaseManager: ", "updateLastUpdate triggered")
-        userId?.let {
-            db.collection("users").document(it).update("lastUpdated", timestamp)
-            Log.i("FirebaseManager:", "lastUpdate updated!")
-        }
-    }
-
-
-
-
-
-
-
-
 }
-
-

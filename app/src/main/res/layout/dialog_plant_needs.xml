@@ -4,10 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/dialog_daily_goals">
+    android:id="@+id/dialog_plant_needs">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/dialog_daily_box"
+        android:id="@+id/dialog_box"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/border_lightgreen"
@@ -15,14 +15,15 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/tv_daily_goals"
+            android:id="@+id/tv_title"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_marginBottom="15dp"
             android:drawableEnd="@drawable/icon_day_count"
             android:gravity="center"
-            android:text="@string/daily_goals"
+            android:text="@string/your_plant_needs"
             android:textSize="20sp"
+            android:textColor="@color/darkbrown"
             app:layout_constraintBottom_toTopOf="@+id/gold_line"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -39,96 +40,103 @@
             app:layout_constraintTop_toTopOf="parent" />
 
 
-        <com.google.android.material.checkbox.MaterialCheckBox
-            android:id="@+id/cb1_daily"
+        <TextView
+            android:id="@+id/tv_water_level"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="30dp"
-            android:layout_marginTop="15dp"
-            app:layout_constraintBottom_toTopOf="@+id/cb2_daily"
+            android:layout_marginStart="60dp"
+            android:layout_marginTop="30dp"
+            android:drawableStart="@drawable/icon_drop"
+            android:text="@string/water_level"
+            android:textSize="16sp"
+            android:textColor="@color/darkbrown"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/gold_line" />
 
         <TextView
-            android:id="@+id/tv_cb1_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Goal 1"
-            android:textSize="16sp"
-            android:layout_marginTop="27dp"
-            app:layout_constraintStart_toEndOf="@+id/cb1_daily"
-            app:layout_constraintTop_toBottomOf="@+id/gold_line"/>
-
-        <com.google.android.material.checkbox.MaterialCheckBox
-            android:id="@+id/cb2_daily"
+            android:id="@+id/tv_water_count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="30dp"
-            android:layout_marginTop="15dp"
-            app:layout_constraintBottom_toTopOf="@+id/cb3_daily"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/cb1_daily" />
+            android:text="@string/_100_100"
+            android:textColor="@color/darkbrown"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_water_level"
+            app:layout_constraintStart_toEndOf="@+id/tv_water_level"
+            app:layout_constraintTop_toTopOf="@+id/tv_water_level" />
 
         <TextView
-            android:id="@+id/tv_cb2_text"
+            android:id="@+id/tv_fertilize_level"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="43dp"
-            android:text="Goal 2"
+            android:layout_marginStart="60dp"
+            android:layout_marginTop="30dp"
+            android:drawableStart="@drawable/icon_fertilize"
+            android:text="@string/fertilize_level"
             android:textSize="16sp"
-            app:layout_constraintStart_toEndOf="@+id/cb2_daily"
-            app:layout_constraintTop_toBottomOf="@+id/tv_cb1_text" />
+            android:textColor="@color/darkbrown"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_water_level" />
 
-        <com.google.android.material.checkbox.MaterialCheckBox
-            android:id="@+id/cb3_daily"
+        <TextView
+            android:id="@+id/tv_fertilize_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="17dp"
+            android:text="@string/_77_100"
+            android:textColor="@color/darkbrown"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_fertilize_level"
+            app:layout_constraintStart_toEndOf="@+id/tv_fertilize_level"
+            app:layout_constraintTop_toTopOf="@+id/tv_fertilize_level" />
+
+        <TextView
+            android:id="@+id/tv_sun_level"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="60dp"
+            android:layout_marginTop="30dp"
+            android:drawableStart="@drawable/icon_sunny"
+            android:text="@string/sun_protect"
+            android:textSize="16sp"
+            android:textColor="@color/darkbrown"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_fertilize_level" />
+
+        <TextView
+            android:id="@+id/tv_sun_count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="30dp"
-            android:layout_marginTop="15dp"
-            app:layout_constraintBottom_toTopOf="@+id/cb4_daily"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/cb2_daily" />
+            android:text="@string/_100_100"
+            android:textColor="@color/darkbrown"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_sun_level"
+            app:layout_constraintStart_toEndOf="@+id/tv_sun_level"
+            app:layout_constraintTop_toTopOf="@+id/tv_sun_level" />
 
         <TextView
-            android:id="@+id/tv_cb3_text"
+            android:id="@+id/tv_updates"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="43dp"
-            android:text="Goal 3"
+            android:layout_marginTop="30dp"
+            android:text="@string/your_plant_is_in_need_of_water"
             android:textSize="16sp"
-            app:layout_constraintStart_toEndOf="@+id/cb3_daily"
-            app:layout_constraintTop_toBottomOf="@+id/tv_cb2_text" />
-
-        <com.google.android.material.checkbox.MaterialCheckBox
-            android:id="@+id/cb4_daily"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="30dp"
-            android:layout_marginTop="15dp"
+            android:textColor="@color/darkbrown"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/cb3_daily" />
-
-        <TextView
-            android:id="@+id/tv_cb4_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="43dp"
-            android:text="Goal 4"
-            android:textSize="16sp"
-            app:layout_constraintStart_toEndOf="@+id/cb4_daily"
-            app:layout_constraintTop_toBottomOf="@+id/tv_cb3_text" />
+            app:layout_constraintTop_toBottomOf="@+id/tv_sun_level" />
 
         <Button
             android:id="@+id/btn_close"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
             android:backgroundTint="@color/darkgreen"
             android:elevation="4dp"
             android:text="@string/close"
             android:textColor="@color/eggwhite"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/cb4_daily"
+            app:layout_constraintTop_toBottomOf="@+id/tv_updates"
             app:strokeColor="@color/darkbrown"
             app:strokeWidth="1dp" />
 
@@ -140,16 +148,18 @@
             app:layout_constraintStart_toEndOf="@+id/btn_close">
 
             <ImageView
+                android:id="@+id/icon_difficulty"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:src="@drawable/icon_difficulty" />
 
             <TextView
+                android:id="@+id/tv_difficulty"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="E"
-                android:textColor="@color/black"
+                android:text="@string/e"
+                android:textColor="@color/darkbrown"
                 android:textSize="18sp" />
         </FrameLayout>
 

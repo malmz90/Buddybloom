@@ -55,4 +55,25 @@
         app:layout_constraintBottom_toTopOf="@+id/btn_about"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/btn_signIn" />
+
+    <!-- Google Sign In Button -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_google"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="30dp"
+        android:backgroundTint="@color/whiteish"
+        android:elevation="1dp"
+        android:stateListAnimator="@null"
+        android:text="@string/google"
+        android:textColor="@color/greenish"
+        android:translationZ="1dp"
+        app:cornerRadius="18dp"
+        app:icon="@drawable/google"
+        app:iconGravity="textStart"
+        app:iconTint="@null"
+        app:layout_constraintBottom_toTopOf="@+id/btn_about"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_signIn" />
 </androidx.constraintlayout.widget.ConstraintLayout>

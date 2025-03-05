@@ -1,10 +1,10 @@
-package com.example.buddybloom.ui.weather
+package com.example.buddybloom.ui.game
 
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.icu.util.Calendar
 import android.os.Bundle
 import android.util.TypedValue
-import android.view.MotionEvent
 import android.view.View
 import android.view.WindowManager
 import androidx.fragment.app.DialogFragment
@@ -17,7 +17,8 @@ import com.google.android.material.button.MaterialButton
 class WeatherDialogFragment : DialogFragment(R.layout.dialog_weather) {
     private lateinit var closeButton: MaterialButton
     private lateinit var recyclerView: RecyclerView
-    private lateinit var viewModel: WeatherViewModel
+    private lateinit var pvm: PlantViewModel
+    lateinit var weatherAdapter: WeatherAdapter
 
     override fun onStart() {
         super.onStart()
@@ -34,33 +35,29 @@ class WeatherDialogFragment : DialogFragment(R.layout.dialog_weather) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        closeButton = view.findViewById(R.id.btn_close)
-        recyclerView = view.findViewById(R.id.rv_weather_dialog)
-        viewModel = ViewModelProvider(this)[WeatherViewModel::class.java]
-        val weatherAdapter = WeatherAdapter(null)
-        val linearLayoutManager =
-            LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false).apply {
+        pvm = ViewModelProvider(requireActivity())[PlantViewModel::class.java]
 
-            }
+        closeButton = view.findViewById(R.id.btn_history_close)
+        recyclerView = view.findViewById(R.id.rv_weather_dialog)
+
+        weatherAdapter = WeatherAdapter(null)
+        val linearLayoutManager = LinearLayoutManager(context)
+
         recyclerView.apply {
             adapter = weatherAdapter
             layoutManager = linearLayoutManager
-            //Disables scrolling and tap/drag animations
-            setOnTouchListener { v, event ->
-                if (event.action == MotionEvent.ACTION_UP) {
-                    v.performClick()
-                }
-                true
-            }
         }
 
-        viewModel.weeklyWeatherReport.observe(this) {
-            it?.let {
-                weatherAdapter.update(it)
-            }
+        pvm.currentWeatherReport.observe(viewLifecycleOwner) { report ->
+            weatherAdapter.updateAdapter(report)
+            scrollToCurrentHour(linearLayoutManager)
         }
+
         closeButton.setOnClickListener { dismiss() }
     }
 
-
+    private fun scrollToCurrentHour(layoutManager: LinearLayoutManager) {
+        val currentHour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
+        layoutManager.scrollToPositionWithOffset(currentHour, 0)
+    }
 }

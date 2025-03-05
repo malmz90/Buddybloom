@@ -1,9 +1,11 @@
 package com.example.buddybloom.ui.game
 
+import AddPlantDialogFragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.example.buddybloom.R
 import com.example.buddybloom.data.model.Plant
@@ -22,14 +24,18 @@ class ChoosePlantRecyclerAdapter(val plants : MutableList<Plant>, val onPlantCli
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val chosenPlant = plants[position]
         val imageResource = when(chosenPlant.name) {
-            "Elephant" -> R.drawable.flower_elefant4
-            "Hibiscus" -> R.drawable.flower_hibiscus4
-            "Zebra" -> R.drawable.flower_zebra4
-            else -> R.drawable.flower_elefant4
+            "Elephant" -> R.drawable.flower_elephant6
+            "Hibiscus" -> R.drawable.flower_hibiscus5
+            "Zebra" -> R.drawable.flower_zebra6
+            "Ficus" -> R.drawable.flower_ficus6
+            "Coleus" -> R.drawable.flower_coleus5
+            else -> R.drawable.flower_elephant6
         }
         holder.ivChoosePlant.setImageResource(imageResource)
         holder.itemView.setOnClickListener {
-            onPlantClicked(chosenPlant)
+            val dialog = AddPlantDialogFragment(chosenPlant)
+            dialog.show((holder.itemView.context as AppCompatActivity).supportFragmentManager, "PlantInfoDialog")
+           onPlantClicked(chosenPlant)
         }
     }
 

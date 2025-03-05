@@ -28,6 +28,7 @@ class AuthenticationActivity : AppCompatActivity() {
             insets
         }
 
+        //back button on start pages
         binding.btnBack.setOnClickListener {
             loadFragment(AuthenticationFragment())
         }
@@ -39,6 +40,7 @@ class AuthenticationActivity : AppCompatActivity() {
             .commit()
     }
 
+    //hides keyboard if pressing outside of keyboard when logging in and register
     fun hideKeyboard() {
         val inputMethodManager = getSystemService(android.content.Context.INPUT_METHOD_SERVICE) as android.view.inputmethod.InputMethodManager
         inputMethodManager.hideSoftInputFromWindow(currentFocus?.windowToken, 0)
