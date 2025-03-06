@@ -1,4 +1,4 @@
-package com.example.buddybloom.ui.game
+package com.example.buddybloom.data
 
 import android.content.Context
 import android.graphics.drawable.AnimatedImageDrawable
