@@ -211,13 +211,17 @@ class GameManager
     fun sprayWaterPlant(){
         localPlant?.let {
             it.waterLevel = when (it.difficulty.lowercase()) {
-                "medium" -> minOf(100, it.waterLevel + WATERSPRAY_INCREASE_MEDIUM)
-                "hard" -> minOf(100, it.waterLevel + WATERSPRAY_INCREASE_HARD)
+                "medium" -> minOf(140, it.waterLevel + WATERSPRAY_INCREASE_MEDIUM)
+                "hard" -> minOf(140, it.waterLevel + WATERSPRAY_INCREASE_HARD)
                 else -> {
-                    minOf(100, it.waterLevel + WATERSPRAY_INCREASE_EASY)
+                    minOf(140, it.waterLevel + WATERSPRAY_INCREASE_EASY)
                 }
             }
-            onPlantEvent(localPlant)
+            if (it.waterLevel > 120) {
+                onPlantEvent(null)
+            } else {
+                onPlantEvent(localPlant)
+            }
         }
     }
 
@@ -231,7 +235,8 @@ class GameManager
             val baseLevel: Int = when (it.difficulty.lowercase()) {
                 "medium" -> WATER_DECREASE_MEDIUM
                 "hard" -> WATER_DECREASE_HARD
-                else -> { WATER_DECREASE_EASY }
+                "easy" -> WATER_DECREASE_EASY
+                else -> { 4 }
             }
             val sunnyLevel = when (localDailyWeather?.hourlyWeather?.get(currentHour)?.second) {
                 WeatherReport.Condition.SUNNY -> baseLevel * 1.5
