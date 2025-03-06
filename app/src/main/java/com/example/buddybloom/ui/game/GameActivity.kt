@@ -52,7 +52,6 @@ class GameActivity : AppCompatActivity() {
             return
         }
 
-        // Add this line to check for plant when activity starts
         checkUserPlant()
 
         val bottomNavigationView: BottomNavigationView = binding.navbarMenu
@@ -119,15 +118,4 @@ class GameActivity : AppCompatActivity() {
             }
         }
     }
-
-
-//    //TODO kolla upp detta med att spara plantans stadie när man stänger ner
-//    override fun onDestroy() {
-//        super.onDestroy()
-//        observerPlant?.let {
-//            runBlocking {
-//                pvm.updateRemotePlant(it)
-//            }
-//        }
-//    }
 }
