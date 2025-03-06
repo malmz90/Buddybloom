@@ -1,6 +1,9 @@
 package com.example.buddybloom.data
 
+import android.animation.ObjectAnimator
+import android.animation.ValueAnimator
 import android.content.Context
+import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.drawable.AnimatedImageDrawable
 import android.graphics.drawable.Drawable
@@ -9,13 +12,53 @@ import android.view.View
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.ProgressBar
 import androidx.core.content.ContextCompat
 import com.example.buddybloom.R
 
 class AnimationManager(
     private val context : Context,
     private val handler: Handler,
+    private val progressWater: ProgressBar
 ) {
+
+    private var redBlinkAnimator: ObjectAnimator? = null
+    private var yellowBlinkAnimator: ObjectAnimator? = null
+
+    init {
+        redBlinkAnimator = ObjectAnimator.ofFloat(progressWater, "alpha", 1f, 0.5f).apply {
+            duration = 400
+            repeatMode = ValueAnimator.REVERSE
+            repeatCount = androidx.core.animation.ValueAnimator.INFINITE
+        }
+        yellowBlinkAnimator = ObjectAnimator.ofFloat(progressWater, "alpha", 1f, 0.5f).apply {
+            duration = 1000
+            repeatMode = ValueAnimator.REVERSE
+            repeatCount = androidx.core.animation.ValueAnimator.INFINITE
+        }
+    }
+
+    fun alarmProgressBar(waterLevel: Int) {
+        if(waterLevel <= 30 || waterLevel > 110) {
+            progressWater.progressTintList = ColorStateList.valueOf(Color.parseColor("#852221"))
+            yellowBlinkAnimator?.cancel()
+            redBlinkAnimator?.start()
+        } else if(waterLevel in 31..49 || waterLevel in 101..110) {
+            progressWater.progressTintList = ColorStateList.valueOf(Color.parseColor("#C19B2F"))
+            redBlinkAnimator?.cancel()
+            yellowBlinkAnimator?.start()
+        } else {
+            progressWater.progressTintList = ColorStateList.valueOf(Color.parseColor("#24231F"))
+            redBlinkAnimator?.cancel()
+            yellowBlinkAnimator?.cancel()
+            progressWater.alpha = 1f // Se till att den är helt synlig
+        }
+    }
+
+    fun stopAlarmProgressBar() {
+        redBlinkAnimator?.cancel()
+        yellowBlinkAnimator?.cancel()
+    }
 
     fun showWateringAnimation(ivAnimationWateringCan: ImageView, btnWater: Button){
         val drawable: Drawable? =

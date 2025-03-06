@@ -14,8 +14,8 @@ import androidx.core.content.ContextCompat
 import com.example.buddybloom.R
 import androidx.lifecycle.ViewModelProvider
 import com.example.buddybloom.data.AnimationManager
+import com.example.buddybloom.data.PlantImageManager
 import com.example.buddybloom.data.SoundManager
-import androidx.lifecycle.lifecycleScope
 import com.example.buddybloom.data.model.Plant
 import com.example.buddybloom.data.repository.AccountRepository
 import com.example.buddybloom.databinding.FragmentStartPagePlantBinding
@@ -24,7 +24,6 @@ import com.example.buddybloom.ui.authentication.AccountViewModelFactory
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
-import kotlinx.coroutines.launch
 
 class StartPagePlantFragment : Fragment() {
 
@@ -59,7 +58,8 @@ class StartPagePlantFragment : Fragment() {
 
         animationManager = AnimationManager(
             requireContext(),
-            Handler(Looper.getMainLooper()))
+            Handler(Looper.getMainLooper()),
+            binding.progressWater)
 
         soundManager = SoundManager(requireContext())
 
@@ -100,6 +100,8 @@ class StartPagePlantFragment : Fragment() {
                 //Progress indicator
                 "${plant.waterLevel}%".also { binding.tvWaterLevel.text = it }
                 binding.progressWater.progress = plant.waterLevel
+
+                animationManager.alarmProgressBar(plant.waterLevel)
 
                 if (plant.infected) {
                     binding.imgBtnBugspray.backgroundTintList =
@@ -215,6 +217,11 @@ class StartPagePlantFragment : Fragment() {
         }
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        animationManager.stopAlarmProgressBar()
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         soundManager.release()
@@ -240,12 +247,11 @@ class StartPagePlantFragment : Fragment() {
             ivBlinds.visibility = View.INVISIBLE
         }
     }
+
     override fun onPause() {
         super.onPause()
         observerPlant?.let {
-            lifecycleScope.launch {
-                pvm.updateRemotePlant(it)
-            }
+            pvm.updateRemotePlant(it)
         }
     }
 }
