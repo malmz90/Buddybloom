@@ -149,7 +149,8 @@ class PlantViewModel : ViewModel() {
                 infected = false,
                 createdAt = com.google.firebase.Timestamp.now(),
                 lastUpdated = com.google.firebase.Timestamp.now(),
-                protectedFromSun = false
+                protectedFromSun = false,
+                difficulty = plant.difficulty
             )
             plantRepository.savePlant(newPlant).onSuccess {
                 gameManager.updateLocalPlant(newPlant)

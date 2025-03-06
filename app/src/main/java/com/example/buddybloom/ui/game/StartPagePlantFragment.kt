@@ -15,6 +15,7 @@ import com.example.buddybloom.R
 import androidx.lifecycle.ViewModelProvider
 import com.example.buddybloom.data.AnimationManager
 import com.example.buddybloom.data.SoundManager
+import androidx.lifecycle.lifecycleScope
 import com.example.buddybloom.data.model.Plant
 import com.example.buddybloom.data.repository.AccountRepository
 import com.example.buddybloom.databinding.FragmentStartPagePlantBinding
@@ -23,6 +24,7 @@ import com.example.buddybloom.ui.authentication.AccountViewModelFactory
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
+import kotlinx.coroutines.launch
 
 class StartPagePlantFragment : Fragment() {
 
@@ -236,6 +238,14 @@ class StartPagePlantFragment : Fragment() {
             ivBlinds.visibility = View.VISIBLE
         } else {
             ivBlinds.visibility = View.INVISIBLE
+        }
+    }
+    override fun onPause() {
+        super.onPause()
+        observerPlant?.let {
+            lifecycleScope.launch {
+                pvm.updateRemotePlant(it)
+            }
         }
     }
 }
